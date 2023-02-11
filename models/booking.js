@@ -1,4 +1,4 @@
-const {Sequelize,DataTypes,Model}=require('Sequelize');
+const {Sequelize,DataTypes,Model}=require('sequelize');
 const sequelize=require('../config/database');
 
 class Booking extends Model{
