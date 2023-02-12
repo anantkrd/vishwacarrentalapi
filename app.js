@@ -74,15 +74,15 @@ app.use(function(err, req, res, next) {
 });
 console.log("=====port=="+process.env.API_PORT);
 port=process.env.API_PORT;
-
+/*
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`)
-})
-/*const httpServer = http.createServer(app);
+})*/
+const httpServer = http.createServer(app);
 
 
 httpServer.listen(port, () => {
   console.log(`Example app listening at https://localhost:${port}`)
     console.log('HTTP Server running on port '+port);
-});*/
+});
 module.exports = app;
