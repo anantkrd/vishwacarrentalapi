@@ -334,6 +334,9 @@ module.exports = {
                     }
                     //responce=JSON.stringify({code:'200',msg:'',data:dataObj});
                     console.log("returnDateTime:"+returnDateTime)
+                    if(returnDateTime=="0000-00-00 00:00:00"){
+                        returnDateTime=null;
+                    }
                     await SearchLog.create({
                         mobileNo:mobileNo,
                         pickup:pickupCity,
