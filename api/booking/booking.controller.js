@@ -333,7 +333,7 @@ module.exports = {
                         dataObj.push(dataObj1);
                     }
                     //responce=JSON.stringify({code:'200',msg:'',data:dataObj});
-        
+                    console.log("returnDateTime:"+returnDateTime)
                     await SearchLog.create({
                         mobileNo:mobileNo,
                         pickup:pickupCity,
