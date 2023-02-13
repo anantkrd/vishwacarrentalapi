@@ -20,7 +20,7 @@ var http = require('http');
 var https = require('https');
 
 const sequelize=require("./config/database");
-var credentials = {key: privateKey, cert: certificate};
+
 var app = express();
 app.use(cors());
 // view engine setup
@@ -90,7 +90,8 @@ httpServer.listen(port, () => {
  * ** */
 var privateKey  = fs.readFileSync('/etc/letsencrypt/live/vishwacarrental.com/privkey.pem', 'utf8');
 var certificate = fs.readFileSync('/etc/letsencrypt/live/vishwacarrental.com/fullchain.pem', 'utf8');
-console.log("certificate:"+certificate)
+console.log("certificate:"+certificate);
+var credentials = {key: privateKey, cert: certificate};
 const httpServer = http.createServer(app);
 const httpsServer = https.createServer(credentials, app);
 
