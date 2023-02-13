@@ -19,7 +19,6 @@ var fs = require('fs');
 var http = require('http');
 var https = require('https');
 
-console.log("certificate:"+certificate)
 const sequelize=require("./config/database");
 var credentials = {key: privateKey, cert: certificate};
 var app = express();
@@ -91,11 +90,12 @@ httpServer.listen(port, () => {
  * ** */
 var privateKey  = fs.readFileSync('/etc/letsencrypt/live/vishwacarrental.com/privkey.pem', 'utf8');
 var certificate = fs.readFileSync('/etc/letsencrypt/live/vishwacarrental.com/fullchain.pem', 'utf8');
+console.log("certificate:"+certificate)
 const httpServer = http.createServer(app);
 const httpsServer = https.createServer(credentials, app);
 
 httpServer.listen(4434, () => {
-    console.log('HTTP Server running on port '+port);
+    console.log('HTTP Server running on port 4434');
 });
 
 httpsServer.listen(port, () => {
