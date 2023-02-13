@@ -12,7 +12,7 @@ const Surge = require('../../models/surge');
 const smsLog = require("../../models/smsLog");
 var request = require('request');
 module.exports = {
-    sentBookingSmsDriverAssined: async (orderId, type = 'partner') => {
+    sentAgentTripConfirmation: async (orderId, type = 'partner') => {
         try {
             bookingData = await Booking.findOne({ where: { orderId: orderId, isDeleted: 'N' } });
             if (bookingData == null) {
@@ -63,7 +63,7 @@ module.exports = {
                     let msgAdmin = 'TOURPR:: Hi Admin, Agent ' + agentName + ' confirmed booking. Booking ID:' + orderId + '. Customer Name: ' + userName + ' (' + userMobileNo + '), Pickup : ' + pickupCityName + ' Drop : ' + dropCityName + ' starting on ' + pickupDate
                         + ', Total Limit:' + distance + 'KM, Extra Km Charges:Rs ' + extraRate + ', Night driving charges(If Applicable):Rs 250, Total Amount: Rs ' + finalAmount + ', Advance Paid:Rs ' + paid + ', cash to collect Rs' + pending + ' + Extra,Toll,Parking,Other. For any queries call +919821224861. Team BookOurCar';
                     console.log("msgAdmin:" + msgAdmin);
-                    await module.exports.sendSms('9821224861', 'Admin', msgAdmin, '1507167043883852283');
+                    await module.exports.sendSms('9987973223', 'Admin', msgAdmin, '1507167043883852283');
                     await module.exports.sendSms('7722055354', 'Admin', msgAdmin, '1507167043883852283');
 
                     let msgAgent = 'TOURPR: Dear ' + agentName + ' You have confirmed trip, Booking ID:' + orderId + '. Customer Name: ' + userName + ' (' + userMobileNo + '), Pickup : ,' + pickupCityName + ' Drop : ' + dropCityName + ', starting on ' + pickupDate

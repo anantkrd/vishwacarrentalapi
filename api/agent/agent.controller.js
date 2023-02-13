@@ -1,7 +1,7 @@
 const { json } = require('body-parser');
 const { create, getCabs, getBookingsForAgent, getMyBookings, getMyCompletedBookings } = require('./agent.service');
 
-const { sentBookingSmsDriverAssined } = require('../common/sendSms');
+const { sentAgentTripConfirmation } = require('../common/sendSms');
 const { createUser, getUserByMobile } = require('../user/user.controller');
 const moment = require('moment');
 const User = require('../../models/user');
@@ -516,7 +516,7 @@ module.exports = {
                 }, { where: { paymentId: razorpayOrderId } });
 
                 updateBooking = await Booking.update({ agentId: agentId, status: 'confirm' }, { where: { orderId: bookingId } });
-                let sendSms = sentBookingSmsDriverAssined(bookingId, 'agent');
+                let sendSms = sentAgentTripConfirmation(bookingId, 'agent');
                 responce = JSON.stringify({ code: '200', message: "payment completed successfully", data: '' });
                 res.status(200).send(responce);
             }
