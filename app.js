@@ -18,8 +18,7 @@ var driverRouters=require('./api/driver/driver.router');
 var fs = require('fs');
 var http = require('http');
 var https = require('https');
-var privateKey  = '';//fs.readFileSync('/etc/letsencrypt/live/www.bookourcar.com/privkey.pem', 'utf8');
-var certificate = '';//fs.readFileSync('/etc/letsencrypt/live/www.bookourcar.com/fullchain.pem', 'utf8');
+
 console.log("certificate:"+certificate)
 const sequelize=require("./config/database");
 var credentials = {key: privateKey, cert: certificate};
@@ -74,10 +73,11 @@ app.use(function(err, req, res, next) {
 });
 console.log("=====port=="+process.env.API_PORT);
 port=process.env.API_PORT;
+
+/**
+ * Server code for Local
+ */
 /*
-app.listen(port, () => {
-  console.log(`Example app listening at http://localhost:${port}`)
-})*/
 const httpServer = http.createServer(app);
 
 
@@ -85,4 +85,21 @@ httpServer.listen(port, () => {
   console.log(`Example app listening at https://localhost:${port}`)
     console.log('HTTP Server running on port '+port);
 });
+*/
+/****
+ * Server code for live
+ * ** */
+var privateKey  = fs.readFileSync('/etc/letsencrypt/live/vishwacarrental.com/privkey.pem', 'utf8');
+var certificate = fs.readFileSync('/etc/letsencrypt/live/vishwacarrental.com/fullchain.pem', 'utf8');
+const httpServer = http.createServer(app);
+const httpsServer = https.createServer(credentials, app);
+
+httpServer.listen(4434, () => {
+    console.log('HTTP Server running on port '+port);
+});
+
+httpsServer.listen(port, () => {
+    console.log('HTTPS Server running on port'+port);
+});
+
 module.exports = app;
