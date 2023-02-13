@@ -1,7 +1,5 @@
 const { json } = require('body-parser');
-const { create, getCabs, createSearchLog, updateCab } = require('./booking.service');
-const { createUser, getUserByMobile } = require('../user/user.controller');
-//const {getCabs}=require('../common/cabs');
+const { sentBookingSmsToCustomer } = require('../common/sendSms');
 const pool = require('../../config/database');
 const jwt = require('jsonwebtoken');
 const moment = require('moment');
@@ -19,7 +17,7 @@ const { Sequelize, DataTypes, Model } = require('sequelize');
 module.exports = {
     bookCab: async (req, res) => {
         try {
-            console.log("mobileNo post==" + req.body.mobileNo);
+            
             let userId = 0;
             let error = '';
 
@@ -100,11 +98,10 @@ module.exports = {
             const Op = Sequelize.Op;
             distance.key('AIzaSyDzlGIoqMbQKaNwu1tCMXCtW3UEjzCfUvs');
             distance.mode('driving');
-            console.log(req);
+           
             originObj = JSON.parse(req.query.originObj);
             destinationObj = JSON.parse(req.query.destinationObj);
-            //console.log("=**=="+originObj.lat);
-
+            
             let originlat = originObj.lat;
             let originlng = originObj.lng;
             let destinationlat = destinationObj.lat;
@@ -133,23 +130,21 @@ module.exports = {
             let timeNow = moment().format("YYYY-MM-DD H:mm:ss");
             timeNow = moment().add(5, 'hours');
             timeNow = moment(timeNow).add(30, 'minutes');
-            console.log("debug 1====================="+pickdateTime);
+            
             let formattedDate = moment(pickdateTime);//.format("YYYY-MM-DD H:mm:ss");
-            console.log(timeNow + "==pickdate =" + moment(formattedDate).format("YYYY-MM-DD H:mm:ss"));
-            console.log("debug 2=====================");
+           
             let tripBookingBEforHours = moment(formattedDate).diff(moment(timeNow), 'hours');
-            console.log("debug 3=====================");
+            
             let earlyBookingCharges = 0;
             if (tripBookingBEforHours < 10) {
                 earlyBookingCharges = Math.round((6 / tripBookingBEforHours) * 100) / 100;
             }
-            console.log(tripBookingBEforHours + "==earlyBookingCharges==" + earlyBookingCharges);
+            //console.log(tripBookingBEforHours + "==earlyBookingCharges==" + earlyBookingCharges);
             let distancekm = 0;
 
             distance.matrix(origins, destinations, async function (err, distances) {
                 if (!err)
-                    //console.log("distances****"+JSON.stringify(distances.rows[0].elements[0]));
-                    //console.log("distances****"+JSON.stringify(distances.rows[0].elements[0].duration.text));
+                    
                     distanceObj = JSON.parse(distances.rows[0].elements[0].distance.value);
                 journyTime = JSON.parse(distances.rows[0].elements[0].duration.value);
                 journyTime1 = distances.rows[0].elements[0].duration.text.toString();
@@ -164,14 +159,11 @@ module.exports = {
                 let searchLog = [];
                 //booking=[data.mobileNo,data.pickup,data.destination,data.pickupDate,data.returnDate,data.pickupLat,data.pickupLong,data.destinationLat,data.destinationLong,data.distance,data.journyTime,'N'];
 
-
                 let sedanPrice = 0;
                 let luxuryPrice = 0;
-                let compactPrice = 0;
-                //let pickupcityName = pickupCity.split(",")[0];
-                //let surgePickpuResult=await getSurge(pickupcityName,pickupCityName);                    
+                let compactPrice = 0;             
                 let surgePickpuResult = await Surge.findOne({ where: {[Op.or]:{ city: { [Op.like]: '%' + pickupCityName + '%' },location: { [Op.like]: '%' + pickupDistrict + '%' } }} ,order: [['city', 'DESC']]});
-                //console.log("surgePickpuResult:"+JSON.stringify(surgePickpuResult))
+               
                 let destinationcityName = destinationCity.split(",")[0];
                 //let surgedestinationResult=await getSurge(destinationcityName,dropCityName);
                 let surgedestinationResult = await Surge.findOne({ where: {[Op.or]:{ city: { [Op.like]: '%' + destinationcityName + '%' },location: { [Op.like]: '%' + dropDistrict + '%' } }} ,order: [['city', 'DESC']]});
@@ -182,7 +174,6 @@ module.exports = {
                 if (surgedestinationResult === null) {
                     surgedestinationResult = { "city": "Pune", "surge": '{"Compact":1,"Sedan":1,"Luxury":1,"SUVErtiga":1,"Innova":1,"InnovaCrysta":1,"other":1,"local":20}' };
                 }
-                //console.log(distancekm+"**************surgeResult===");
 
                 //let results=await getCabs(req);
                 cabObj = await Cabs.findAll({ where: { isDeleted: 'N' } });
@@ -195,11 +186,11 @@ module.exports = {
                 } else {
                     for (const cabData of cabObj) {
                         rate = cabData['rate'];
-                        console.log("rate===================="+rate)
+                        
                         let originalRate = rate;
                         returnTripRate = cabData['returnTripRate'];
                         id = cabData['id'];
-                        //console.log("ID: " + id);
+                        
                         cabType = cabData['cabType'];
 
                         discount = cabData['discount'];
@@ -261,18 +252,18 @@ module.exports = {
 
 
                         let cabTypecheck = cabType.toLowerCase();
-                        console.log("=returnDateTime=" + returnDateTime + "+==multiply=" + multiply + "==cabTypecheck==" + cabType);
-                        console.log("surgePickpuResult==="+JSON.stringify(surgePickpuResult));
-                        //console.log("surgedestinationResult==="+JSON.stringify(surgedestinationResult));
+                        //console.log("=returnDateTime=" + returnDateTime + "+==multiply=" + multiply + "==cabTypecheck==" + cabType);
+                        //console.log("surgePickpuResult==="+JSON.stringify(surgePickpuResult));
+                        
                         surgePrice = 0;
                         if (isReturnTrip == 'N') {
                             if (cabTypecheck != "") {
                                 let surgeDataPickup = surgePickpuResult['surge'];
                                 let surgeDataPickupObj = JSON.parse(surgeDataPickup);
-                                //console.log("surgeData Pick============="+surgeDataPickupObj+"====="+surgeDataPickupObj[cabType]);
+                                
                                 let surgeDataDrop = surgedestinationResult['surge'];
                                 let surgeDataDropObj = JSON.parse(surgeDataDrop);
-                                //console.log("surgeData Drop============="+surgeDataDropObj+"====="+surgeDataDropObj[cabType]);
+                                
                                 if (tripType == 'local' && distanceValue <= 80) {
                                     surgePrice = surgeDataPickupObj['local'];
                                     //surgePrice=surgePrice+(surgekm*surgeDataDropObj['local']);
@@ -290,7 +281,7 @@ module.exports = {
                                 finalRate = finalRate + surgePrice;
                                 sedanPrice = finalRate;
                             }
-                            //console.log(finalRate+"============surgePrice=========="+surgePrice);
+                            
                         } else {
                             sedanPrice = finalRate;
                         }
@@ -300,9 +291,6 @@ module.exports = {
                         discountedRate = finalRate - discount;
                         finalAmount = Math.round(distanceValue * discountedRate);
 
-                        //console.log("surgekm"+surgekm);
-                        //console.log("surgePrice"+surgePrice);
-                        //console.log("finalRate"+finalRate);
                         idKey = 'id';
                         logPrice = logPrice + " " + cabType + ":" + finalAmount;
                         dataObj1 = {};
@@ -366,16 +354,6 @@ module.exports = {
                     responce = JSON.stringify({ code: '200', message: "", data: dataObj });
                     res.status(200).send(responce);
                 }
-
-                /*const logData={mobileNo:mobileNo,pickup:pickupCity,destination:destinationCity,pickupDate:pickdateTime,returnDate:returnDateTime,pickupLat:originlat,pickupLong:originlng,destinationLat:destinationlat,destinationLong:destinationlng,distance:distanceValue,
-                    journyTime:journyTime1,sedanRate:sedanPrice,luxuryRate:luxuryPrice,compactRate:compactPrice,note:logPrice}
-                //console.log("logData==="+JSON.stringify(logData));
-                create_booking_log(logData,(err,results)=>{
-                    //console.log("create_booking_log Error====="+err);
-                    //console.log("create_booking_log results====="+JSON.stringify(results));
-                });
-                res.send(responce);*/
-
             });
         } catch (e) {
             console.log(e)
@@ -392,16 +370,14 @@ module.exports = {
                 key_id: process.env.paymentId,
                 key_secret: process.env.paymentSecreat,
             });
-            console.log("*****************amount**********" + amount);
-
+            
             const options = {
                 amount: amount, // amount in smallest currency unit
                 currency: "INR",
                 receipt: receiptId,
             };
             const order = await instance.orders.create(options);
-            console.log("order=====******" + order)
-            console.log("order====" + JSON.stringify(order));
+            
             let orgAmount = amount / 100;
             if (!order) {
                 responce = JSON.stringify({ code: '501', message: "Sorry, something went wrong", data: '' });
@@ -435,9 +411,21 @@ module.exports = {
             let razorpaySignature = req.body.razorpaySignature;
             let rawResponce = req.body.rawResponce;
             let bookingAmount = 0;//req.body.bookingAmount;
-            console.log("Body==" + JSON.stringify(req.body))
-            let resData = await updateBookingDetails(razorpayOrderId, rawResponce);
-            res.json(resData);
+            let bookingPaymentObj=await BookingPayment.findOne({where:{paymentId:razorpayOrderId}});
+            let rawResponcedata=JSON.stringify(rawResponce);
+            if(bookingPaymentObj!==null){
+                bookingAmount=bookingPaymentObj['amount'];
+                orderId=bookingPaymentObj['orderId'];
+                updateBookingPay=await BookingPayment.update({status:'completed',rawResponce:rawResponcedata},{where:{paymentId:razorpayOrderId}});
+                updateBooking=await Booking.update({paid:bookingAmount,status:'waiting'},{where:{payment_orderId:razorpayOrderId}});
+                let sendSms=sentBookingSmsToCustomer(razorpayOrderId);
+                responce = JSON.stringify({ code: '200', message: "Payment completed successfully", data: '' });
+                res.status(200).send(responce);
+            }else{
+                responce = JSON.stringify({ code: '500', message: "Sorry, something went wrong", data: '' });
+                res.status(500).send(responce);
+            }
+           
         } catch (e) {
             console.log(e)
             responce = JSON.stringify({ code: '501', message: e.message || "Some error occurred while retrieving data.", data: '' });
@@ -469,42 +457,6 @@ module.exports = {
             console.log(e)
             responce = JSON.stringify({ code: '501', message: e.message || "Some error occurred while retrieving data.", data: '' });
             res.status(500).send(responce);
-        }
-    },
-
-    create_booking: async (data) => {
-        let datares = await create(data);
-        console.log("created Booking*==" + JSON.stringify(datares));
-        return datares;
-        /*console.log("data===="+JSON.stringify(data));
-        create(data,(err,results)=>{
-            if(err)return callBack(err);
-            return callBack(null,results);
-        });*/
-    },
-    create_booking_log: (data, callBack) => {
-        console.log("data====" + JSON.stringify(data));
-        createSearchLog(data, (err, results) => {
-            if (err) {
-                return callBack(err);
-            } else {
-
-            }
-            console.log("results==" + results);
-            return callBack(null, results);
-        });
-    },
-    getCabs_old: async (data, callBack) => {
-        let datares = await getCabs(data);
-        console.log("datares*==" + JSON.stringify(datares));
-        return datares;
-    },
-    updateCab: async (data) => {
-        try {
-            let res = await this.updateCab(data);
-            return res;
-        } catch (err) {
-            throw err;
         }
     }
 }

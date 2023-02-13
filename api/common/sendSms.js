@@ -88,7 +88,7 @@ module.exports = {
 
     },
     tripCompletedsms: async (orderId, type = 'customer') => {
-        let bookingData = await getBookingByOrderId(orderId);
+        
         bookingObj = await Booking.findOne({ where: { orderId: orderId } });
         if (bookingObj == null) {
             console.log("Something went wrong while sending sms");
@@ -138,6 +138,58 @@ module.exports = {
             await module.exports.sendSms(userMobileNo, 'Customer', msgCusotmer, '1507167044075062761');
 
         }
+    },
+    sentBookingSmsToCustomer:async(orderId,type='Customer')=>{
+        try{
+            bookingObj = await Booking.findOne({ where: { payment_orderId: orderId } });
+            if (bookingObj == null) {
+                console.log("Something went wrong while sending sms");
+            } else {
+                userMobileNo=bookingObj['userMobileNo'];
+                userName=bookingObj['userName'];
+                driverName=bookingObj['driverName'];
+                driverContact=bookingObj['driverContact'];
+                gadiNo=bookingObj['gadiNo'];
+                gadiModel=bookingObj['gadiModel'];
+                agentId=bookingObj['agentId'];
+                distance=bookingObj['distance'];
+                actualJourny=bookingObj['journyDistance'];
+                journyTime=bookingObj['journyTime'];
+                extraRate=bookingObj['extraRate'];
+                finalAmount=bookingObj['finalAmount'];
+                paid=bookingObj['paid'];
+                pending=finalAmount-paid;
+                gadiNo=gadiNo+" "+gadiModel
+                
+                pickup=bookingObj['pickup'];
+                destination=bookingObj['destination'];
+                let pickupCityName=pickup.split(",")[0];
+                let dropCityName=destination.split(",")[0];
+                pickupDate='';
+                if(bookingObj['pickupDate']!=''){
+                    pickupDate=bookingObj['pickupDate'];
+                    pickupDate=moment(pickupDate).format('llll');
+                }
+                
+                returnDate='';
+                if(bookingObj['returnDate']!=''){
+                    returnDate=bookingObj['returnDate'];
+                    returnDate=moment(returnDate).format('llll');
+                }
+                orderId=bookingObj['orderId'];
+                adminMobile=7722055354;
+                var msgDriver='TRVLPR: Hi Admin, We have new booking. Customer Name: '+userName+', Pickup : '+pickupCityName+' Drop : '+dropCityName+' On '+pickupDate+" PRN : "+orderId;
+                await module.exports.sendSms(adminMobile,'Admin',msgDriver,'1507167043980322643');
+                await module.exports.sendSms('9987973223','Admin',msgDriver,'1507167043980322643');
+                //var msgCusotmer='TOURPR: Hi '+userName+' Thank you for booking with us, Your trip details Pickup : '+pickupCityName+', Drop : '+dropCityName+' On '+pickupDate+' PRN : '+orderId+' www.bookourcar.com';
+                var msgCusotmer='TOURPR: Hi '+userName+' Thank you for booking with us, here is your trip details Pickup : '+pickupCityName+', Drop : '+dropCityName+' On '+pickupDate+' PRN : '+orderId+' Team BookOurCar'
+                await module.exports.sendSms(userMobileNo,'Customer',msgCusotmer,'1507167043966993678');  
+                console.log("Sms sent");
+            }
+        }catch(e){
+            console.log("ERror:"+e);
+        }
+        
     },
     sendSms: async (mobileNo, type, message, templateId = '001') => {
         try {
