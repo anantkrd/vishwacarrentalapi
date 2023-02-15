@@ -34,6 +34,30 @@ module.exports = {
             responce = JSON.stringify({ code: '501', message: e.message || "Some error occurred while retrieving tutorials.", data: '' });
             res.status(500).send(responce);
         }
+    },    
+    getNewBookings: async (req, res) => {
+        try {
+            agentId = req.query.agentId;
+            let pageId = req.query.pageId;
+            let start = ((pageId - 1) * 10);
+            let perPage = 10;
+
+            let agentData = await AgentBooking.findAll({ where: { isDeleted: 'N', status: 'waiting' }, offset: start, limit: perPage, order: [['id', 'desc']] });
+            if (agentData !== null) {
+                let rowCount = await AgentBooking.count({ where: { isDeleted: 'N', status: 'waiting' }, offset: start, limit: perPage, order: [['id', 'desc']] });
+                totalPage = rowCount / perPage;
+                totalPage = Math.ceil(totalPage);
+                responce = JSON.stringify({ code: '200', message: 'Agents Booking', data: agentData, rowCount: rowCount, totalPage: totalPage });
+                res.status(200).send(responce);
+            } else {
+                responce = JSON.stringify({ code: '404', message: 'Agent Booking not found', data: '' });
+                res.status(404).send(responce);
+            }
+        } catch (e) {
+            console.log(e)
+            responce = JSON.stringify({ code: '500', message: e.message || "Some error occurred while retrieving data.", data: '' });
+            res.status(500).send(responce);
+        }
     },
     getbookingByAgent: async (req, res) => {
         try {
@@ -42,9 +66,9 @@ module.exports = {
             let start = ((pageId - 1) * 10);
             let perPage = 10;
 
-            let agentData = await AgentBooking.findAll({ where: { agentId: agentId, isDeleted: 'N', status: 'confirm' }, offset: start, limit: perPage, order: [['id', 'desc']] });
+            let agentData = await AgentBooking.findAll({ where: { agentId: agentId, isDeleted: 'N' }, offset: start, limit: perPage, order: [['id', 'desc']] });
             if (agentData !== null) {
-                let rowCount = await AgentBooking.count({ where: { agentId: agentId, isDeleted: 'N', status: 'confirm' }, offset: start, limit: perPage, order: [['id', 'desc']] });
+                let rowCount = await AgentBooking.count({ where: { agentId: agentId, isDeleted: 'N' }, offset: start, limit: perPage, order: [['id', 'desc']] });
                 totalPage = rowCount / perPage;
                 totalPage = Math.ceil(totalPage);
                 responce = JSON.stringify({ code: '200', message: 'Agents Booking', data: agentData, rowCount: rowCount, totalPage: totalPage });
@@ -316,6 +340,7 @@ module.exports = {
                         responce = JSON.stringify({ code: '500', message: 'Something went wrong', data: '' });
                         res.status(500).send(responce);
                     } else {
+                        let sendSms = sentAgentTripConfirmation(bookingId, 'drivers');
                         responce = JSON.stringify({ code: '200', message: 'Success', data: assignDriverObj });
                         res.status(200).send(responce);
                     }

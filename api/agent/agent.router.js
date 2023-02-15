@@ -10,7 +10,7 @@ const router = express.Router();
 var distance = require('google-distance-matrix');
 const Razorpay = require("razorpay");
 const agentController = require('./agent.controller');
-
+router.get('/get_new_bookings', agentController.getNewBookings);
 router.get('/get_my_bookings', agentController.getbookingByAgent);
 router.get('/get_my_completed_bookings', agentController.getCompletedBookings);
 router.get('/get_cars', agentController.getCars);

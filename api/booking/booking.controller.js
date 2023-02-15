@@ -81,7 +81,7 @@ module.exports = {
                 userId: userId, userName: userName, email: email, orderId: orderId, cabId: cabId, pickup: pickup, destination: destination, pickupDate: pickupDate, returnDate: returnDate, isReturn: isReturn, pickupLat: pickupLat, pickupLong: pickupLong,
                 destinationLat: destinationLat, destinationLong: destinationLong, distance: distance, rate: rate, amount: amount, discount: discount, finalAmount: finalAmount, status: 'pending', journyTime: journyTime,
                 payment_orderId: payment_orderId, pickupCityName: pickupCityName, pickupDistrict: pickupDistrict, pickupState: pickupState,
-                dropCityName: dropCityName, dropDistrict: dropDistrict, dropState: dropState, mobileNo: mobileNo, extraRate: extraRate
+                dropCityName: dropCityName, dropDistrict: dropDistrict, dropState: dropState, userMobileNo: mobileNo, extraRate: extraRate
             });
             if (bookingData !== null) {
                 responce = JSON.stringify({ code: '200', message: "Booking Created successfully", data: bookingData });
