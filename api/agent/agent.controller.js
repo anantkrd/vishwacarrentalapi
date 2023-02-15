@@ -42,9 +42,9 @@ module.exports = {
             let start = ((pageId - 1) * 10);
             let perPage = 10;
 
-            let agentData = await AgentBooking.findAll({ where: { isDeleted: 'N', status: 'waiting' }, offset: start, limit: perPage, order: [['id', 'desc']] });
+            let agentData = await Booking.findAll({ where: { isDeleted: 'N', status: 'waiting' }, offset: start, limit: perPage, order: [['id', 'desc']] });
             if (agentData !== null) {
-                let rowCount = await AgentBooking.count({ where: { isDeleted: 'N', status: 'waiting' }, offset: start, limit: perPage, order: [['id', 'desc']] });
+                let rowCount = await Booking.count({ where: { isDeleted: 'N', status: 'waiting' }, offset: start, limit: perPage, order: [['id', 'desc']] });
                 totalPage = rowCount / perPage;
                 totalPage = Math.ceil(totalPage);
                 responce = JSON.stringify({ code: '200', message: 'Agents Booking', data: agentData, rowCount: rowCount, totalPage: totalPage });
