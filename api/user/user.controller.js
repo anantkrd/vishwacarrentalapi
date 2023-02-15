@@ -90,7 +90,7 @@ module.exports = {
                     lastName: req.body.lname,
                     mobileNo: req.body.mobileNo,
                     email: req.body.email,
-                    userPassword: req.body.mobileNo,
+                    userPassword: req.body.userPassword,
                     userType: req.body.type,
                     status: 'active'
                 })
