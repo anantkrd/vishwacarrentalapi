@@ -509,7 +509,7 @@ module.exports = {
                 responce = JSON.stringify({ code: '400', message: "Something went wrong while adding agent booking", data: '' });
                 res.status(400).send(responce);
             } else {
-                updateBooking = await Booking.update({ agentPaid: advance }, { orderId: receiptId });
+                updateBooking = await Booking.update({ agentPaid: advance }, { where:{orderId: receiptId} });
                 responce = JSON.stringify({ code: '200', message: "success", data: '' });
                 res.status(200).send(responce);
             }
