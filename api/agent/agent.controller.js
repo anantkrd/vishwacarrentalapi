@@ -480,7 +480,7 @@ module.exports = {
             let pendingAmount = req.body.userAmount;
             let tripAmount = req.body.tripAmount;
             let userPaid = req.body.userPaid;
-            let advance=(bookingAmount*5)/100;
+            let advance=amount;
             const instance = new Razorpay({
                 key_id: process.env.paymentId,
                 key_secret: process.env.paymentSecreat,
@@ -509,7 +509,7 @@ module.exports = {
                 responce = JSON.stringify({ code: '400', message: "Something went wrong while adding agent booking", data: '' });
                 res.status(400).send(responce);
             } else {
-                updateBooking = await Booking.update({ agentPaid: advance }, { orderId: bookingId });
+                updateBooking = await Booking.update({ agentPaid: advance }, { orderId: receiptId });
                 responce = JSON.stringify({ code: '200', message: "success", data: '' });
                 res.status(200).send(responce);
             }
