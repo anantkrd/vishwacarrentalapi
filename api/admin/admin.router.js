@@ -6,41 +6,40 @@ const { getBookingsAdminHome, updateAgentAmount, getWaitingForAgentBooking, getC
     getAgents } = require('./admin.controller');
 const { addPaymentAgent, updateBookingDetails, assignAggent, addSurge, addCab, getSurge, getCab } = require('./admin.service');
 const { json } = require('body-parser');
-const authenticate = require("../auth/index");
 var distance = require('google-distance-matrix');
 const Razorpay = require("razorpay");
 
 const bookingController = require("../booking/booking.controller");
 const userController = require("../user/user.controller");
 const adminController = require("./admin.controller");
+const authenticate = require("../auth/index");
+router.get('/get_booking_admin', authenticate,adminController.getBookings);
+router.get('/get_bookings', authenticate,adminController.getAllBookings);
 
-router.get('/get_booking_admin', adminController.getBookings);
-router.get('/get_bookings', adminController.getAllBookings);
-
-router.get('/get_completed_bookings', adminController.getCompletedBookings);
-router.get('/get_ready_booking', adminController.getReadyBookings);
-router.get('/get_confirms_booking', adminController.getConfirmBookings);
-router.get('/get_waiting_agent_bookings', adminController.getWaitingForAgentBookings);
-router.get('/update_agent_amount', adminController.updateAgentAmount);
-router.get('/get_agent', adminController.getAgents);
-router.get('/get_agentbyid', adminController.getAgentById);
-router.put('/update_cab', adminController.updateCab);
-router.post('/add_cab', adminController.addCab);
-router.get('/get_cabs', adminController.getCabs);
-router.get('/get_cabbyid', adminController.getCabById);
-router.post('/add_surge', adminController.addSurge);
-router.get('/get_surge', adminController.getSurge);
-router.get('/get_surgebyid', adminController.getSurgeById);
-router.put('/update_surge', adminController.updateSurge);
-router.get('/assign_agent', adminController.assignAggent);
-router.get('/get_cars', adminController.getCars);
-router.get('/get_drivers', adminController.getDrivers);
-router.put('/update_driver_status', adminController.updatDriverStatus);
-router.put('/update_car_status', adminController.updatCarStatus);
-router.put('/update_agent_status', adminController.updatAgentStatus);
-router.put('/agent_activate', adminController.activateAgent);
-router.delete('/cab', adminController.deleteCab);
-router.delete('/surge', adminController.deleteSurge);
+router.get('/get_completed_bookings',authenticate, adminController.getCompletedBookings);
+router.get('/get_ready_booking', authenticate,adminController.getReadyBookings);
+router.get('/get_confirms_booking',authenticate, adminController.getConfirmBookings);
+router.get('/get_waiting_agent_bookings',authenticate, adminController.getWaitingForAgentBookings);
+router.get('/update_agent_amount',authenticate, adminController.updateAgentAmount);
+router.get('/get_agent', authenticate,adminController.getAgents);
+router.get('/get_agentbyid',authenticate, adminController.getAgentById);
+router.put('/update_cab',authenticate, adminController.updateCab);
+router.post('/add_cab',authenticate, adminController.addCab);
+router.get('/get_cabs',authenticate, adminController.getCabs);
+router.get('/get_cabbyid',authenticate, adminController.getCabById);
+router.post('/add_surge',authenticate, adminController.addSurge);
+router.get('/get_surge',authenticate, adminController.getSurge);
+router.get('/get_surgebyid',authenticate, adminController.getSurgeById);
+router.put('/update_surge',authenticate, adminController.updateSurge);
+router.get('/assign_agent',authenticate, adminController.assignAggent);
+router.get('/get_cars',authenticate, adminController.getCars);
+router.get('/get_drivers', authenticate,adminController.getDrivers);
+router.put('/update_driver_status', authenticate,adminController.updatDriverStatus);
+router.put('/update_car_status', authenticate,adminController.updatCarStatus);
+router.put('/update_agent_status', authenticate,adminController.updatAgentStatus);
+router.put('/agent_activate', authenticate,adminController.activateAgent);
+router.delete('/cab', authenticate,adminController.deleteCab);
+router.delete('/surge',authenticate, adminController.deleteSurge);
 
 
 router.get('/get_booking_admin_old', authenticate, async function (req, res, next) {
