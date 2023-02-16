@@ -480,6 +480,7 @@ module.exports = {
             let pendingAmount = req.body.userAmount;
             let tripAmount = req.body.tripAmount;
             let userPaid = req.body.userPaid;
+            let advance=(bookingAmount*5)/100;
             const instance = new Razorpay({
                 key_id: process.env.paymentId,
                 key_secret: process.env.paymentSecreat,
@@ -490,8 +491,7 @@ module.exports = {
                 receipt: receiptId,
             };
             const order = await instance.orders.create(options);
-            console.log("order=====******" + order)
-            console.log("order====" + JSON.stringify(order));
+            
             let orgAmount = amount / 100;
             insertAgentBooking = await AgentBooking.create({
                 agentId: agentId,
