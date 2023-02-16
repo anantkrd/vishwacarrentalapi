@@ -21,7 +21,7 @@ module.exports = {
             let perPage = 10;
             let dataObj = [];
             const Op = Sequelize.Op;
-            let BookingDataObj = await Booking.findAll({ where: { isDeleted: 'N',status: { [Op.or]: ['pending', 'waiting'] } }, offset: start, limit: perPage, order: [['id', 'desc']] })
+            let BookingDataObj = await Booking.findAll({ where: { isDeleted: 'N',status: { [Op.or]: ['waiting'] } }, offset: start, limit: perPage, order: [['id', 'desc']] })
             if (BookingDataObj === null) {
                 responce = JSON.stringify({ code: '404', message: 'Booking details not found', data: '' });
                 res.status(404).send(responce);
@@ -145,7 +145,8 @@ module.exports = {
             responce = JSON.stringify({ code: '501', message: e.message || "Some error occurred while retrieving tutorials.", data: '' });
             res.status(500).send(responce);
         }
-    },getAllBookings: async (req, res) => {
+    },
+    getAllBookings: async (req, res) => {
         try {
             let pageId = req.query.pageId;
             let start = ((pageId - 1) * 10);
