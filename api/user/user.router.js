@@ -23,7 +23,7 @@ router.get('/get_booking_details', userController.getBookingById);
 router.get('/user_login', userController.verifyPassword);
 router.get('/get_booking', userController.getBookings);
 router.get('/get_my_booking', userController.getMyBookings);
-router.get('/get_user_booking', userController.getMyBookings);
+router.get('/get_user_booking',authenticate, userController.getMyBookings);
 
 router.get('/get_search_log', userController.getBookingSearchLog);
 router.get('/cancel_booking', userController.cancelBooking);
