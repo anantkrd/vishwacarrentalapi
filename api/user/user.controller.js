@@ -11,7 +11,7 @@ const Booking = require('../../models/booking');
 const Cabs = require('../../models/cabs');
 const SearchLog = require('../../models/searchLog');
 const CanceledBooking = require('../../models/canceledBooking');
-
+const Razorpay = require("razorpay");
 const AgentDetials = require('../../models/agentDetials');
 module.exports = {
     getUser: async (req, res) => {

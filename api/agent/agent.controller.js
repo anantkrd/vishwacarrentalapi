@@ -503,7 +503,7 @@ module.exports = {
                 userPending: pendingAmount,
                 payToAgent: '0',
                 payToAgentType: 'debit',
-                paymentId: paymentid
+                paymentId: order.id
             });
             if (insertAgentBooking === null) {
                 responce = JSON.stringify({ code: '400', message: "Something went wrong while adding agent booking", data: '' });
