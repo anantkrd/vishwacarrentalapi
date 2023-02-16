@@ -13,11 +13,11 @@ const authenticate = require("../auth/index");
 const bookingController = require("./booking.controller");
 const userController = require("../user/user.controller");
 
-router.post('/book_cab',authenticate, bookingController.bookCab);
-router.get('/getCabs',authenticate, bookingController.getCabs);
+router.post('/book_cab', bookingController.bookCab);
+router.get('/getCabs', bookingController.getCabs);
 router.get('/getBookingById', authenticate,userController.getBookingById);
-router.post('/payment',authenticate, bookingController.payment);
-router.post('/success',authenticate, bookingController.paymentSuccess);
-router.get('/prepayment', authenticate,bookingController.prepayment);
+router.post('/payment', bookingController.payment);
+router.post('/success', bookingController.paymentSuccess);
+router.get('/prepayment',bookingController.prepayment);
 
 module.exports = router;
