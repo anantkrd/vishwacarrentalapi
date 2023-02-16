@@ -10,7 +10,7 @@ const authenticate = require("../auth/index");
 router.get('/get_new_bookings',authenticate, agentController.getNewBookings);
 router.get('/get_my_bookings',authenticate, agentController.getbookingByAgent);
 router.get('/get_my_completed_bookings',authenticate, agentController.getCompletedBookings);
-router.get('/get_cars',authenticate. agentController.getCars);
+router.get('/get_cars',authenticate, agentController.getCars);
 router.get('/get_carbyid',authenticate, agentController.getCarById);
 router.put('/update_car',authenticate, agentController.updateCar);
 
