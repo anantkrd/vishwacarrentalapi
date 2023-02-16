@@ -16,8 +16,8 @@ router.post('/create_user', userController.createUser);
 router.post('/register_agent', userController.createPartner);
 
 
-router.get('/get_user_byid', userController.getUser);
-router.get('/get_user', userController.getUserByMobile);
+router.get('/get_user_byid', authenticate,userController.getUser);
+router.get('/get_user',  userController.getUserByMobile);
 router.get('/send_otp', userController.getUserByMobile);
 router.get('/get_booking_details', userController.getBookingById);
 router.get('/user_login', userController.verifyPassword);
