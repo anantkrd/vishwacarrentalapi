@@ -1,36 +1,37 @@
 const express = require('express');
 const jwt = require('jsonwebtoken');
 
-const { authenticate } = require('../auth/index');
+
 const router = express.Router();
 var distance = require('google-distance-matrix');
 const Razorpay = require("razorpay");
 const agentController = require('./agent.controller');
-router.get('/get_new_bookings', agentController.getNewBookings);
-router.get('/get_my_bookings', agentController.getbookingByAgent);
-router.get('/get_my_completed_bookings', agentController.getCompletedBookings);
-router.get('/get_cars', agentController.getCars);
-router.get('/get_carbyid', agentController.getCarById);
-router.put('/update_car', agentController.updateCar);
+const authenticate = require("../auth/index");
+router.get('/get_new_bookings',authenticate, agentController.getNewBookings);
+router.get('/get_my_bookings',authenticate, agentController.getbookingByAgent);
+router.get('/get_my_completed_bookings',authenticate, agentController.getCompletedBookings);
+router.get('/get_cars',authenticate. agentController.getCars);
+router.get('/get_carbyid',authenticate, agentController.getCarById);
+router.put('/update_car',authenticate, agentController.updateCar);
 
-router.get('/add_car', agentController.addCar);
-router.get('/get_driver_bymobile', agentController.getDriverByMobile);
-router.post('/assign_booking_car', agentController.assignBookingCar);
-router.post('/assign_booking_driver', agentController.assignBookingDriver);
-router.post('/add_driver', agentController.addDriver);
-router.put('/update_driver', agentController.updateDriver);
-router.put('/updateImage', agentController.updateImage);
+router.get('/add_car',authenticate, agentController.addCar);
+router.get('/get_driver_bymobile', authenticate,agentController.getDriverByMobile);
+router.post('/assign_booking_car',authenticate, agentController.assignBookingCar);
+router.post('/assign_booking_driver', authenticate,agentController.assignBookingDriver);
+router.post('/add_driver',authenticate, agentController.addDriver);
+router.put('/update_driver',authenticate, agentController.updateDriver);
+router.put('/updateImage',authenticate, agentController.updateImage);
 
-router.delete('/driver', agentController.deleteDriver);
-router.delete('/car', agentController.deleteCar);
+router.delete('/driver',authenticate, agentController.deleteDriver);
+router.delete('/car',authenticate, agentController.deleteCar);
 
-router.get('/get_driverbyid', agentController.getDriverById);
+router.get('/get_driverbyid', authenticate,agentController.getDriverById);
 
-router.post('/assign_booking_driver', agentController.assignBookingDriver);
-router.get('/get_drivers', agentController.getDrivers);
-router.post('/payment', agentController.agentPayment);
-router.post('/success', agentController.agentPaymentSuccess);
-router.get('/prepayment', agentController.agentPrePayment);
-router.get('/get_agent', agentController.getAgent);
+router.post('/assign_booking_driver',authenticate, agentController.assignBookingDriver);
+router.get('/get_drivers', authenticate,agentController.getDrivers);
+router.post('/payment',authenticate, agentController.agentPayment);
+router.post('/success',authenticate, agentController.agentPaymentSuccess);
+router.get('/prepayment', authenticate,agentController.agentPrePayment);
+router.get('/get_agent',authenticate, agentController.getAgent);
 
 module.exports = router;
