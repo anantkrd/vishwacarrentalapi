@@ -495,7 +495,7 @@ module.exports = {
             let orgAmount = amount / 100;
             insertAgentBooking = await AgentBooking.create({
                 agentId: agentId,
-                bookingId: bookingId,
+                bookingId: receiptId,
                 agentAmount: bookingAmount,
                 advance: advance,
                 tripAmount: tripAmount,
