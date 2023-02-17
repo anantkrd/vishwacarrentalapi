@@ -1397,9 +1397,9 @@ module.exports = {
     
     cancelBooking: async (req, res) => {
         try {
-            let bookingId = req.query.bookingId;
+            let idProof = req.query.bookingId;
             let userId = req.query.userId;
-            const bookingData = await Booking.findOne({ where: { orderId: bookingId, isDeleted: 'N' } });
+            const bookingData = await Booking.findOne({ where: { id: id, isDeleted: 'N' } });
             if (bookingData === null) {
                 responce = JSON.stringify({ code: '404', message: 'No Booking Found', data: '' });
                 res.status(404).send(responce)
@@ -1409,6 +1409,8 @@ module.exports = {
                 bookingUserId = bookingData['userId'];
                 finalAmount = bookingData['finalAmount'];
                 paid = bookingData['paid'];
+                bookingId = bookingData['orderId'];
+                
                 let bokkingStatus = '';
                 let canCancel = 'N';
                 userData=await User.findOne({where:{id:userId,userType:'admin'}});
