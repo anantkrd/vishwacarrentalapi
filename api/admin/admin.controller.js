@@ -1397,7 +1397,7 @@ module.exports = {
     
     cancelBooking: async (req, res) => {
         try {
-            let idProof = req.query.bookingId;
+            let id = req.query.bookingId;
             let userId = req.query.userId;
             const bookingData = await Booking.findOne({ where: { id: id, isDeleted: 'N' } });
             if (bookingData === null) {
