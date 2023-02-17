@@ -40,6 +40,8 @@ router.put('/update_agent_status', authenticate,adminController.updatAgentStatus
 router.put('/agent_activate', authenticate,adminController.activateAgent);
 router.delete('/cab', authenticate,adminController.deleteCab);
 router.delete('/surge',authenticate, adminController.deleteSurge);
+router.delete('/cancel_booking',authenticate, adminController.cancelBooking);
+
 
 
 router.get('/get_booking_admin_old', authenticate, async function (req, res, next) {

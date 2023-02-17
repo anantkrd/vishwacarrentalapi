@@ -942,7 +942,6 @@ module.exports = {
     },
     addCab: async (req, res) => {
         try {
-            console.log("data===================:"+req.body.cabType);
             
             cabObj = await Cabs.create({
                 cabType:req.body.cabType,
@@ -1392,6 +1391,78 @@ module.exports = {
         }catch (e) {
             console.log(e)
             responce = JSON.stringify({ code: '500', message: e.message || "Some error occurred while retrieving data.", data: '' });
+            res.status(500).send(responce);
+        }
+    },
+    
+    cancelBooking: async (req, res) => {
+        try {
+            let bookingId = req.query.bookingId;
+            let userId = req.query.userId;
+            const bookingData = await Booking.findOne({ where: { orderId: bookingId, isDeleted: 'N' } });
+            if (bookingData === null) {
+                responce = JSON.stringify({ code: '404', message: 'No Booking Found', data: '' });
+                res.status(404).send(responce)
+            } else {
+                let status = bookingData['status'];
+                id = bookingData['id'];
+                bookingUserId = bookingData['userId'];
+                finalAmount = bookingData['finalAmount'];
+                paid = bookingData['paid'];
+                let bokkingStatus = '';
+                let canCancel = 'N';
+                userData=await User.findOne({where:{id:userId,userType:'admin'}});
+                if (userData !=null ) {
+                    if (status == 'waiting') {
+                        bokkingStatus = "Waiting for Approval";
+                        canCancel = 'Y';
+                    } else if (status == 'confirm') {
+                        bokkingStatus = "Driver Assigned";
+                        canCancel = 'Y';
+                    }
+                    let timeNow = moment().format("YYYY-MM-DD H:mm:ss");
+                    timeNow = moment().add(5, 'hours');
+                    timeNow = moment(timeNow).add(30, 'minutes');
+                    let pickdateTime = bookingData['pickupDate'];
+                    let formattedDate = moment(pickdateTime);//.format("YYYY-MM-DD H:mm:ss");
+
+                    let tripBookingBEforHours = moment(formattedDate).diff(moment(timeNow), 'hours');
+                    let earlyBookingCharges = 0;
+                    returnAmount = 0;
+                    if (tripBookingBEforHours > 24 && canCancel == 'Y') {
+                        returnAmount = paid;
+                    } else if (tripBookingBEforHours > 2 && canCancel == 'Y') {
+                        returnAmount = (finalAmount * 50) / 100;
+                        if (paid < returnAmount) {
+                            returnAmount = paid;
+                        }
+                    }
+                    reason = 'Booking canceled by Admin';
+                    await Booking.update({ status: "canceled" }, {
+                        where: {
+                            id: id
+                        }
+                    });
+                    const userCollection = await CanceledBooking.create({
+                        bookingId: id,
+                        orderId: bookingId,
+                        canceledBy: 'Admin',
+                        userId: userId,
+                        returnAmount: returnAmount,
+                        reason: reason,
+                        returnStatus: 'pending'
+                    });
+
+                    responce = JSON.stringify({ code: '404', message: 'Booking cancelled successfully', data: '' });
+                    res.status(404).send(responce)
+                } else {
+                    responce = JSON.stringify({ code: '404', message: "Sorry, you can not cancel this booking", data: '' });
+                    res.status(404).send(responce)
+                }
+            }
+        } catch (e) {
+            console.log(e)
+            responce = JSON.stringify({ code: '501', message: e.message || "Some error occurred while retrieving tutorials.", data: '' });
             res.status(500).send(responce);
         }
     },
