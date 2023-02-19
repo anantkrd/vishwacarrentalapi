@@ -60,6 +60,7 @@ module.exports = {
             }
             let payment_orderId = req.body.payment_orderId;
             let responce;
+            console.log("userId*************:"+userId)
             if(userId<1){
                 const checkUser = await User.findOne({ where: { mobileNo: req.body.mobileNo } });
                 if (checkUser === null) {
@@ -82,6 +83,7 @@ module.exports = {
             if(returnDate=="0000-00-00 00:00:00"){
                 returnDate=null;
             }
+            
             bookingData = await Booking.create({
                 userId: userId, userName: userName, email: email, orderId: orderId, cabId: cabId, pickup: pickup, destination: destination, pickupDate: pickupDate, returnDate: returnDate, isReturn: isReturn, pickupLat: pickupLat, pickupLong: pickupLong,
                 destinationLat: destinationLat, destinationLong: destinationLong, distance: distance, rate: rate, amount: amount, discount: discount, finalAmount: finalAmount, status: 'pending', journyTime: journyTime,
