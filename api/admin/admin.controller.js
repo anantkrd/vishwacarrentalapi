@@ -1455,8 +1455,8 @@ module.exports = {
                         returnStatus: 'pending'
                     });
 
-                    responce = JSON.stringify({ code: '404', message: 'Booking cancelled successfully', data: '' });
-                    res.status(404).send(responce)
+                    responce = JSON.stringify({ code: '200', message: 'Booking cancelled successfully', data: '' });
+                    res.status(200).send(responce)
                 } else {
                     responce = JSON.stringify({ code: '404', message: "Sorry, you can not cancel this booking", data: '' });
                     res.status(404).send(responce)

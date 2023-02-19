@@ -50,6 +50,8 @@ module.exports = {
             let dropState = req.body.dropState;
             let journyTime = req.body.journyTime;
             let extraRate = req.body.extraRate;
+            userId = req.body.userId;
+            
             if(pickupDistrict=='' || pickupDistrict==null){
                 pickupDistrict=pickupState;
             }
@@ -58,21 +60,24 @@ module.exports = {
             }
             let payment_orderId = req.body.payment_orderId;
             let responce;
-            const checkUser = await User.findOne({ where: { mobileNo: req.body.mobileNo } });
-            if (checkUser === null) {
-                const userCollection = await User.create({
-                    firstName: req.body.fname,
-                    lastName: req.body.lname,
-                    mobileNo: req.body.mobileNo,
-                    email: req.body.email,
-                    userPassword: req.body.mobileNo,
-                    userType: 'user',
-                    status: 'Active'
-                })
-                userId = userCollection.id;
-            } else {
-                userId = checkUser.id;
+            if(userId<1){
+                const checkUser = await User.findOne({ where: { mobileNo: req.body.mobileNo } });
+                if (checkUser === null) {
+                    const userCollection = await User.create({
+                        firstName: req.body.fname,
+                        lastName: req.body.lname,
+                        mobileNo: req.body.mobileNo,
+                        email: req.body.email,
+                        userPassword: req.body.mobileNo,
+                        userType: 'user',
+                        status: 'Active'
+                    })
+                    userId = userCollection.id;
+                } else {
+                    userId = checkUser.id;
+                }
             }
+            
             userName = fname + " " + lname;
             if(returnDate=="0000-00-00 00:00:00"){
                 returnDate=null;
@@ -115,6 +120,8 @@ module.exports = {
             let returnDateTime = req.query.returnDateTime;
             let mobileNo = req.query.mobileNo;
             let bookingId = req.query.bookingId;
+            let userId = req.query.userId;
+            
             var origins = [originObj.lat + ',' + originObj.lng];
             var destinations = [destinationObj.lat + ',' + destinationObj.lng];
 
@@ -294,12 +301,13 @@ module.exports = {
                         discountedRate = finalRate - discount;
                         finalAmount = Math.round(distanceValue * discountedRate);
 
-                        idKey = 'id';
+                        idKey = Math.floor(Math.random() * (999 - 100))
                         logPrice = logPrice + " " + cabType + ":" + finalAmount;
                         dataObj1 = {};
-                        bookingId = id + "" + new Date().valueOf();
+                        bookingId = idKey + "" + new Date().valueOf();
                         dataObj1['id'] = id;
                         dataObj1['bookingId'] = bookingId;
+                        dataObj1['userId'] = userId;
 
                         dataObj1['pickupCityName'] = pickupCityName;
                         dataObj1['pickupDistrict'] = pickupDistrict;
