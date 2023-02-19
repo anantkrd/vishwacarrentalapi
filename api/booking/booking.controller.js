@@ -61,7 +61,7 @@ module.exports = {
             let payment_orderId = req.body.payment_orderId;
             let responce;
             console.log("userId*************:"+userId)
-            if(userId<1){
+            if(userId<1 || userId==null|| userId==undefined){
                 const checkUser = await User.findOne({ where: { mobileNo: req.body.mobileNo } });
                 if (checkUser === null) {
                     const userCollection = await User.create({
