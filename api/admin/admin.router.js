@@ -41,6 +41,12 @@ router.put('/agent_activate', authenticate,adminController.activateAgent);
 router.delete('/cab', authenticate,adminController.deleteCab);
 router.delete('/surge',authenticate, adminController.deleteSurge);
 router.delete('/cancel_booking',authenticate, adminController.cancelBooking);
+router.get('/get_cab_types',authenticate, adminController.getCabTypes);
+router.get('/get_specialprice',authenticate, adminController.getSpecialPrice);
+router.get('/get_specialpricebyid',authenticate, adminController.getSpecialPriceById);
+router.post('/add_specialprice',authenticate, adminController.addSpecialPrice);
+router.delete('/remove_specialprice',authenticate, adminController.deleteSpecialPrice);
+router.put('/update_specialprice',authenticate, adminController.updateSpecialPrice);
 
 
 

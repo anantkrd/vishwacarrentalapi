@@ -10,9 +10,8 @@ Cabs.init({
         primaryKey:true,
         autoIncrement:true
     },
-    cabType:{
-        type:DataTypes.ENUM('Sedan','SUVErtiga','Innova','InnovaCrysta')
-    },
+    cabType:DataTypes.STRING,
+    
     image:DataTypes.STRING,
     images:DataTypes.TEXT,
     ac:DataTypes.CHAR,

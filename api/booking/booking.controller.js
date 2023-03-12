@@ -11,6 +11,7 @@ const SearchLog = require('../../models/searchLog');
 const CanceledBooking = require('../../models/canceledBooking');
 const Surge = require('../../models/surge');
 const BookingPayment = require('../../models/bookingPayment');
+const SpecialPrices = require('../../models/specialPrices');
 var distance = require('google-distance-matrix');
 const Razorpay = require("razorpay");
 const { Sequelize, DataTypes, Model } = require('sequelize');
@@ -60,7 +61,7 @@ module.exports = {
             }
             let payment_orderId = req.body.payment_orderId;
             let responce;
-            console.log("userId*************:"+userId)
+            
             if(userId<1 || userId==null|| userId==undefined){
                 const checkUser = await User.findOne({ where: { mobileNo: req.body.mobileNo } });
                 if (checkUser === null) {
@@ -144,7 +145,7 @@ module.exports = {
             timeNow = moment(timeNow).add(30, 'minutes');
             
             let formattedDate = moment(pickdateTime);//.format("YYYY-MM-DD H:mm:ss");
-           
+            
             let tripBookingBEforHours = moment(formattedDate).diff(moment(timeNow), 'hours');
             
             let earlyBookingCharges = 0;
@@ -153,7 +154,7 @@ module.exports = {
             }
             //console.log(tripBookingBEforHours + "==earlyBookingCharges==" + earlyBookingCharges);
             let distancekm = 0;
-
+                   
             distance.matrix(origins, destinations, async function (err, distances) {
                 if (!err)
                     
@@ -177,14 +178,24 @@ module.exports = {
                 let surgePickpuResult = await Surge.findOne({ where: {[Op.or]:{ city: { [Op.like]: '%' + pickupCityName + '%' },location: { [Op.like]: '%' + pickupDistrict + '%' } }} ,order: [['city', 'DESC']]});
                
                 let destinationcityName = destinationCity.split(",")[0];
-                //let surgedestinationResult=await getSurge(destinationcityName,dropCityName);
+                
                 let surgedestinationResult = await Surge.findOne({ where: {[Op.or]:{ city: { [Op.like]: '%' + destinationcityName + '%' },location: { [Op.like]: '%' + dropDistrict + '%' } }} ,order: [['city', 'DESC']]});
-                //let surgedestinationResult = await Surge.findOne({ where: { city: { [Op.like]: '%' + destinationcityName + '%' }  }});
+                
                 if (surgePickpuResult === null) {
-                    surgePickpuResult = { "city": "Pune", "surge": '{"Compact":1,"Sedan":1,"Luxury":1,"SUVErtiga":1,"Innova":1,"InnovaCrysta":1,"other":1,"local":20}' };
+                    let surgePickpuResultOther = await Surge.findOne({ where: {city:'Other'}});
+                    if(surgePickpuResultOther==null){
+                        surgePickpuResult = { "city": "Pune", "surge": '{"Compact":1,"Sedan":1,"Luxury":1,"SUVErtiga":1,"Innova":1,"InnovaCrysta":1,"other":1,"local":20}' };
+                    }else{
+                        surgePickpuResult=surgePickpuResultOther;
+                    }                    
                 }
                 if (surgedestinationResult === null) {
-                    surgedestinationResult = { "city": "Pune", "surge": '{"Compact":1,"Sedan":1,"Luxury":1,"SUVErtiga":1,"Innova":1,"InnovaCrysta":1,"other":1,"local":20}' };
+                    let surgedestinationResultOther = await Surge.findOne({ where: {city:'Other'}});
+                    if(surgedestinationResultOther===null){
+                        surgedestinationResult = { "city": "Pune", "surge": '{"Compact":1,"Sedan":1,"Luxury":1,"SUVErtiga":1,"Innova":1,"InnovaCrysta":1,"other":1,"local":20}' };
+                    }else{
+                        surgedestinationResult=surgedestinationResultOther;
+                    }                    
                 }
 
                 //let results=await getCabs(req);
@@ -204,24 +215,39 @@ module.exports = {
                         id = cabData['id'];
                         
                         cabType = cabData['cabType'];
-
+                        let speacialRate=0;
+                        let speacialReturnRate=0;
+                        let speacialExtraRate=0;
+                        const weekDay = moment(pickdateTime).day();
+                        const pickdateTimeFormate = moment(pickdateTime).format("YYYY-MM-DD");
+                        let specialPricesResult=await SpecialPrices.findOne({where:{cabType:cabType,type:'dateRange',isDeleted:'N',startDate:{[Op.gte]:pickdateTimeFormate},startDate:{[Op.lte]:pickdateTimeFormate}},order: [['id', 'DESC']]});
+                        if(specialPricesResult===null){
+                            if(weekDay==0 || weekDay==6){
+                                let specialPricesWeekDayResult=await SpecialPrices.findOne({where:{cabType:cabType,type:'weekday',isDeleted:'N'},order: [['id', 'DESC']]});
+                                if(specialPricesWeekDayResult!=null){
+                                    speacialRate=specialPricesWeekDayResult['rate'];
+                                    speacialReturnRate=specialPricesWeekDayResult['returnTripRate'];
+                                    speacialExtraRate=specialPricesWeekDayResult['extraRate'];
+                                }
+                            }
+                        }else{
+                            speacialRate=specialPricesResult['rate'];
+                            speacialReturnRate=specialPricesResult['returnTripRate'];
+                            speacialExtraRate=specialPricesResult['extraRate'];
+                        }
+                        rate=rate+speacialRate;
+                        returnTripRate=returnTripRate+speacialReturnRate;
                         discount = cabData['discount'];
 
                         finalRate = rate + earlyBookingCharges;
                         image = cabData['image'];
-                        /*imageArray = cabData['images'];
-                        imageArray = JSON.parse(imageArray);
-                        let max = imageArray.length - 1;
-                        let min = 0;
-                        let imageNo = Math.floor(Math.random() * (max - min + 1)) + min;
                         
-                        image = imageArray[imageNo];*/
                         ac = cabData['ac'];
                         bags = cabData['bags'];
                         cars = cabData['cars'];
                         capacity = cabData['capacity'];
                         note = cabData['note'];
-                        extraRate = cabData['extraRate'];
+                        extraRate = cabData['extraRate']+speacialExtraRate;
                         multiply = 2;
                         distanceValue = 0;
                         let isReturnTrip = 'N';
@@ -241,7 +267,7 @@ module.exports = {
                             returnDateTime = "0000-00-00 00:00:00";
                         } else {
                             distanceValue = distancekm * 2;
-                            //distancekm=distancekm*2;                        
+                                                   
                             finalRate = returnTripRate + earlyBookingCharges;
                             originalRate = returnTripRate;
                             isReturnTrip = 'Y';
@@ -253,20 +279,15 @@ module.exports = {
                             } else {
                                 calculateKm = PerDayKm;
                             }
-                            //console.log(distanceValue+"=====tripDays*****************: " + tripDays+"======calculateKm==="+calculateKm);  
+                            
                             if (calculateKm > distanceValue) {
                                 distanceValue = calculateKm;
                             } else {
                                 calculateKm = distanceValue;
                             }
                         }
-
-
-
                         let cabTypecheck = cabType.toLowerCase();
-                        //console.log("=returnDateTime=" + returnDateTime + "+==multiply=" + multiply + "==cabTypecheck==" + cabType);
-                        //console.log("surgePickpuResult==="+JSON.stringify(surgePickpuResult));
-                        
+                                                
                         surgePrice = 0;
                         if (isReturnTrip == 'N') {
                             if (cabTypecheck != "") {
@@ -280,10 +301,15 @@ module.exports = {
                                     surgePrice = surgeDataPickupObj['local'];
                                     //surgePrice=surgePrice+(surgekm*surgeDataDropObj['local']);
                                 } else {
-                                    surgePrice = surgekm * surgeDataPickupObj[cabType];
-                                    surgePrice = surgePrice + (surgekm * surgeDataDropObj[cabType]);
+                                    if(surgeDataPickupObj[cabType]>0){
+                                        surgePrice = surgekm * surgeDataPickupObj[cabType];
+                                    }
+                                    if(surgeDataDropObj[cabType]>0){
+                                        surgePrice = surgePrice + (surgekm * surgeDataDropObj[cabType]);
+                                    }
+                                    
                                 }
-                                console.log(cabType+"***********surgePrice:"+surgePrice);
+                                //console.log(cabType+"***********surgePrice:"+surgePrice);
                                 finalRate = finalRate + surgePrice;
                                 sedanPrice = finalRate;
                             } else {

@@ -527,7 +527,7 @@ module.exports = {
             let razorpaySignature = req.body.razorpaySignature;
             let rawResponce = req.body.rawResponce;
             let bookingAmount = 0;//req.body.bookingAmount;
-            console.log("Body==" + JSON.stringify(req.body));
+            //console.log("Body==" + JSON.stringify(req.body));
             agentBookingData = await AgentBooking.findOne({ where: { paymentId: razorpayOrderId } });
             if (agentBookingData == null) {
                 responce = JSON.stringify({ code: '400', message: e.message || "Some error occurred.", data: '' });

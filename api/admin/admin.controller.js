@@ -10,6 +10,8 @@ const CanceledBooking = require('../../models/canceledBooking');
 const AgentBooking = require('../../models/agentBooking');
 const AgentCars=require('../../models/agentCars');
 const AgentDetials=require('../../models/agentDetials');
+const CabTypes=require('../../models/cabTypes');
+const SpecailPrices=require('../../models/specialPrices');
 const { Sequelize, DataTypes, Model, where } = require('sequelize');
 const Surge = require('../../models/surge');
 module.exports = {
@@ -31,7 +33,7 @@ module.exports = {
                     let data = {};
                     let status = bookingData['status'];
                     let bookingStatus = '';
-                    console.log("status:" + status)
+                    
                     let canCancel = 'N';
                     if (status == 'pending') {
                         bookingStatus = "Pending";
@@ -59,7 +61,7 @@ module.exports = {
                     timeNow = moment(timeNow).add(30, 'minutes');
                     let pickdateTime = bookingData['pickupDate'];
                     let formattedDate = moment(pickdateTime);//.format("YYYY-MM-DD H:mm:ss");
-                    console.log(timeNow + "==pickdate =" + moment(formattedDate).format("YYYY-MM-DD H:mm:ss"));
+                    
                     let tripBookingBEforHours = moment(formattedDate).diff(moment(timeNow), 'hours');
                     let earlyBookingCharges = 0;
                     if (tripBookingBEforHours < 2 && canCancel == 'Y') {
@@ -162,7 +164,7 @@ module.exports = {
                     let data = {};
                     let status = bookingData['status'];
                     let bookingStatus = '';
-                    console.log("status:" + status)
+                    
                     let canCancel = 'N';
                     if (status == 'pending') {
                         bookingStatus = "Pending";
@@ -190,7 +192,7 @@ module.exports = {
                     timeNow = moment(timeNow).add(30, 'minutes');
                     let pickdateTime = bookingData['pickupDate'];
                     let formattedDate = moment(pickdateTime);//.format("YYYY-MM-DD H:mm:ss");
-                    console.log(timeNow + "==pickdate =" + moment(formattedDate).format("YYYY-MM-DD H:mm:ss"));
+                    
                     let tripBookingBEforHours = moment(formattedDate).diff(moment(timeNow), 'hours');
                     let earlyBookingCharges = 0;
                     if (tripBookingBEforHours < 2 && canCancel == 'Y') {
@@ -294,7 +296,7 @@ module.exports = {
                     let data = {};
                     let status = bookingData['status'];
                     let bookingStatus = '';
-                    console.log("status:" + status)
+                    
                     let canCancel = 'N';
                     if (status == 'pending') {
                         bookingStatus = "Pending";
@@ -322,7 +324,7 @@ module.exports = {
                     timeNow = moment(timeNow).add(30, 'minutes');
                     let pickdateTime = bookingData['pickupDate'];
                     let formattedDate = moment(pickdateTime);//.format("YYYY-MM-DD H:mm:ss");
-                    console.log(timeNow + "==pickdate =" + moment(formattedDate).format("YYYY-MM-DD H:mm:ss"));
+                    
                     let tripBookingBEforHours = moment(formattedDate).diff(moment(timeNow), 'hours');
                     let earlyBookingCharges = 0;
                     if (tripBookingBEforHours < 2 && canCancel == 'Y') {
@@ -424,7 +426,7 @@ module.exports = {
                     let data = {};
                     let status = bookingData['status'];
                     let bookingStatus = '';
-                    console.log("status:" + status)
+                    
                     let canCancel = 'N';
                     if (status == 'pending') {
                         bookingStatus = "Pending";
@@ -452,7 +454,7 @@ module.exports = {
                     timeNow = moment(timeNow).add(30, 'minutes');
                     let pickdateTime = bookingData['pickupDate'];
                     let formattedDate = moment(pickdateTime);//.format("YYYY-MM-DD H:mm:ss");
-                    console.log(timeNow + "==pickdate =" + moment(formattedDate).format("YYYY-MM-DD H:mm:ss"));
+                    
                     let tripBookingBEforHours = moment(formattedDate).diff(moment(timeNow), 'hours');
                     let earlyBookingCharges = 0;
                     if (tripBookingBEforHours < 2 && canCancel == 'Y') {
@@ -554,7 +556,7 @@ module.exports = {
                     let data = {};
                     let status = bookingData['status'];
                     let bookingStatus = '';
-                    console.log("status:" + status)
+                    
                     let canCancel = 'N';
                     if (status == 'pending') {
                         bookingStatus = "Pending";
@@ -582,7 +584,7 @@ module.exports = {
                     timeNow = moment(timeNow).add(30, 'minutes');
                     let pickdateTime = bookingData['pickupDate'];
                     let formattedDate = moment(pickdateTime);//.format("YYYY-MM-DD H:mm:ss");
-                    console.log(timeNow + "==pickdate =" + moment(formattedDate).format("YYYY-MM-DD H:mm:ss"));
+                   
                     let tripBookingBEforHours = moment(formattedDate).diff(moment(timeNow), 'hours');
                     let earlyBookingCharges = 0;
                     if (tripBookingBEforHours < 2 && canCancel == 'Y') {
@@ -685,7 +687,7 @@ module.exports = {
                     let data = {};
                     let status = bookingData['status'];
                     let bookingStatus = '';
-                    console.log("status:" + status)
+                    
                     let canCancel = 'N';
                     if (status == 'pending') {
                         bookingStatus = "Pending";
@@ -713,7 +715,7 @@ module.exports = {
                     timeNow = moment(timeNow).add(30, 'minutes');
                     let pickdateTime = bookingData['pickupDate'];
                     let formattedDate = moment(pickdateTime);//.format("YYYY-MM-DD H:mm:ss");
-                    console.log(timeNow + "==pickdate =" + moment(formattedDate).format("YYYY-MM-DD H:mm:ss"));
+                    
                     let tripBookingBEforHours = moment(formattedDate).diff(moment(timeNow), 'hours');
                     let earlyBookingCharges = 0;
                     if (tripBookingBEforHours < 2 && canCancel == 'Y') {
@@ -912,8 +914,8 @@ module.exports = {
     },
     updateCab: async (req, res) => {
         try {
-            console.log("ReqData:"+JSON.stringify(req.body));
-           updateCab= await Cabs.update({
+            
+            updateCab= await Cabs.update({
             cabType:req.body.cabType,
             image:req.body.cabImage,
             ac: req.body.ac,
@@ -976,7 +978,32 @@ module.exports = {
             let pageId = req.query.pageId;
             let start = ((pageId - 1) * 10);
             let perPage = 10;
-            cabObj = await Cabs.findAll({ where: { isDeleted: 'N' }, offset: start, limit: perPage, order: [['id', 'desc']] });
+            console.log("==========================Cabs===============")
+            cabObj = await Cabs.findAll({ where: { isDeleted: 'N' }, order: [['id', 'desc']] });
+            console.log("==========================responce==============="+JSON.stringify(cabObj));
+            if (cabObj === null) {
+                responce = JSON.stringify({ code: '404', message: "something went wrong", data: '' });
+                res.status(404).send(responce);
+            } else {
+                let rowCount = 10;//await Surge.count({ where: { isDeleted: 'N' } });
+               
+                totalPage = 1;
+                responce = JSON.stringify({ code: '200', message: "success cabs", data: cabObj, rowCount: rowCount, totalPage: totalPage });
+                console.log("==========================responce==============="+JSON.stringify(cabObj));
+                res.status(200).send(responce);
+            }
+        } catch (e) {
+            console.log(e)
+            responce = JSON.stringify({ code: '501', message: e.message || "Some error occurred while retrive data", data: '' });
+            res.status(500).send(responce);
+        }
+    },
+    getCabTypes:async(req,res)=>{
+        try {
+            let pageId = req.query.pageId;
+            let start = ((pageId - 1) * 10);
+            let perPage = 10;
+            cabObj = await CabTypes.findAll({ where: { isDeleted: 'N' }, order: [['id', 'desc']] });
             if (cabObj === null) {
                 responce = JSON.stringify({ code: '404', message: "something went wrong", data: '' });
                 res.status(404).send(responce);
@@ -984,7 +1011,7 @@ module.exports = {
                 let rowCount = await Surge.count({ where: { isDeleted: 'N' } });
                 totalPage = rowCount / perPage;
                 totalPage = Math.ceil(totalPage);
-                responce = JSON.stringify({ code: '200', message: "success", data: cabObj, rowCount: rowCount, totalPage: totalPage });
+                responce = JSON.stringify({ code: '200', message: "success type", data: cabObj, rowCount: rowCount, totalPage: totalPage });
                 res.status(200).send(responce);
             }
         } catch (e) {
@@ -1029,9 +1056,12 @@ module.exports = {
     },
     addSurge: async (req, res) => {
         try {
-            surgedata='{"Sedan":'+req.body.sedanSurge+',"SUVErtiga":'+req.body.ertigaSurga+',"Innova":'+req.body.innovaSurge+',"InnovaCrysta":'+req.body.innovaCrystaSurge+',"other":'+req.body.surge+'}';
+            console.log(JSON.stringify(req.body));
+            //surgedata='{"Sedan":'+req.body.sedanSurge+',"SUVErtiga":'+req.body.ertigaSurga+',"Innova":'+req.body.innovaSurge+',"InnovaCrysta":'+req.body.innovaCrystaSurge+',"other":'+req.body.surge+'}';
+            let surgedata=req.body.surgedata;
+            surgedata=JSON.stringify(surgedata);
             //surgedata=surgedata.toString();
-            console.log(req.body.city+"==surgedata:"+surgedata);
+            //console.log(req.body.cityName+"==surgedata:"+surgedata);
             if (req.body.isCity == 'N') {
                 surgeObj = await Surge.create({
                     location: req.body.cityName,
@@ -1058,8 +1088,9 @@ module.exports = {
     },
     updateSurge: async (req, res) => {
         try {
-            surgedata='{"Sedan":'+req.body.sedanSurge+',"SUVErtiga":'+req.body.ertigaSurga+',"Innova":'+req.body.innovaSurge+',"InnovaCrysta":'+req.body.innovaCrystaSurge+',"other":'+req.body.surge+'}';
-            
+            //surgedata='{"Sedan":'+req.body.sedanSurge+',"SUVErtiga":'+req.body.ertigaSurga+',"Innova":'+req.body.innovaSurge+',"InnovaCrysta":'+req.body.innovaCrystaSurge+',"other":'+req.body.surge+'}';
+            let surgedata=req.body.surgedata;
+            surgedata=JSON.stringify(surgedata);
             updateObj=await Surge.update({
                 city: req.body.cityName,
                 surge: surgedata
@@ -1465,6 +1496,115 @@ module.exports = {
         } catch (e) {
             console.log(e)
             responce = JSON.stringify({ code: '501', message: e.message || "Some error occurred while retrieving tutorials.", data: '' });
+            res.status(500).send(responce);
+        }
+    },
+    addSpecialPrice: async (req, res) => {
+        try {
+            console.log("Req========"+JSON.stringify(req.body));
+            priceObj = await SpecailPrices.create({
+                cabType:req.body.cabType,
+                startDate: req.body.startDate,
+                endDate: req.body.endDate,
+                weekDay: req.body.weekday,
+                rate: req.body.rate,
+                returnTripRate: req.body.returTripRate,
+                extraRate: req.body.extraRate,
+                type: req.body.type,
+                isDeleted:'N'
+            });
+            if (priceObj === null) {
+                responce = JSON.stringify({ code: '404', message: "something went wrong", data: '' });
+                res.status(404).send(responce);
+            } else {
+                responce = JSON.stringify({ code: '200', message: "pricing added successfully", data: priceObj });
+                res.status(200).send(responce);
+            }
+        } catch (e) {
+            console.log(e)
+            responce = JSON.stringify({ code: '501', message: e.message || "Internal server Error", data: '' });
+            res.status(500).send(responce);
+        }
+    },
+    updateSpecialPrice: async (req, res) => {
+        try {
+            updateObj=await SpecailPrices.update({
+                cabType:req.body.cabType,
+                startDate: req.body.startDate,
+                endDate: req.body.endDate,
+                weekDay: req.body.weekday,
+                rate: req.body.rate,
+                returnTripRate: req.body.returTripRate,
+                extraRate: req.body.extraRate,
+                type: req.body.type,
+                isDeleted:'N'
+            }, {
+                where: {
+                    id: req.body.priceId
+                }
+            });
+
+            responce = JSON.stringify({ code: '200', message: "Cab updated successfully", data: updateObj});
+            res.status(200).send(responce);
+        } catch (e) {
+            console.log(e)
+            responce = JSON.stringify({ code: '501', message: e.message || "Some error occurred while retrive data", data: '' });
+            res.status(500).send(responce);
+        }
+    },
+    getSpecialPrice: async (req, res) => {
+        try {
+            let pageId = req.query.pageId;
+            let start = ((pageId - 1) * 10);
+            let perPage = 10;
+
+            surgeObj = await SpecailPrices.findAll({ where: { isDeleted: 'N' }, offset: start, limit: perPage, order: [['id', 'desc']] });
+
+            if (surgeObj === null) {
+                responce = JSON.stringify({ code: '404', message: "No record found", data: '' });
+                res.status(404).send(responce);
+            } else {
+                let rowCount = await SpecailPrices.count({ where: { isDeleted: 'N' } });
+                totalPage = rowCount / perPage;
+                totalPage = Math.ceil(totalPage);
+                responce = JSON.stringify({ code: '200', message: "successfully", data: surgeObj, totalPage: totalPage, rowCount: rowCount });
+                res.status(200).send(responce);
+            }
+        } catch (e) {
+            console.log(e)
+            responce = JSON.stringify({ code: '501', message: e.message || "Internal server Error", data: '' });
+            res.status(500).send(responce);
+        }
+    },
+    getSpecialPriceById: async (req, res) => {
+        try {
+            let priceId = req.query.priceId;            
+            surgeObj = await SpecailPrices.findOne({ where: { isDeleted: 'N', id: priceId } });
+
+            if (surgeObj === null) {
+                responce = JSON.stringify({ code: '404', message: "something went wrong", data: '' });
+                res.status(404).send(responce);
+            } else {
+                responce = JSON.stringify({ code: '200', message: "Surge added successfully", data: surgeObj });
+                res.status(200).send(responce);
+            }
+        } catch (e) {
+            console.log(e)
+            responce = JSON.stringify({ code: '501', message: e.message || "Internal server Error", data: '' });
+            res.status(500).send(responce);
+        }
+    },    
+    deleteSpecialPrice:async(req,res)=>{
+        try{
+            let userId = req.query.userId;
+            let priceId = req.query.priceId;
+            deleteObj=await SpecailPrices.destroy({where:{id:priceId}});
+            responce = JSON.stringify({ code: '200', message: "special Price deleted successfully", data: deleteObj });
+            res.status(200).send(responce);
+
+        }catch (e) {
+            console.log(e)
+            responce = JSON.stringify({ code: '501', message: e.message || "Some error occurred while retrive data", data: '' });
             res.status(500).send(responce);
         }
     },
