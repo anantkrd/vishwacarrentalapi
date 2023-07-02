@@ -48,10 +48,23 @@ app.use('/admin', adminRouters);
 app.use('/driver', driverRouters);
 //app.use('/v1/user', indexRouter);
 //app.use('/v1/jaap', jaapRoute);
-app.get('/', (req, res) => {
-  
-  res.send('Hello World!')
-})
+app.use(function(req, res, next) {
+  next(createError(404));
+  //res.render('error');
+});
+
+// error handler
+app.use(function(err, req, res, next) {
+  console.log(req+"======*"+err.message);
+  // set locals, only providing error in development
+  res.locals.message = err.message;
+  res.locals.error = req.app.get('env') === 'development' ? err : {};
+
+  // render the error page
+  res.status(err.status || 500);
+  res.render('error');
+});
+
 let port=8080;//process.env.API_PORT;
 const httpServer = http.createServer(app);
 //mongodb+srv://vishwacarrental:<password>@cluster0.mzxxv66.mongodb.net/?retryWrites=true&w=majority
