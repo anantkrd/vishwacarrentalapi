@@ -7,7 +7,7 @@ const SearchLog = require('../../models/searchLog');
 const CanceledBooking = require('../../models/canceledBooking');
 const AgentBooking = require('../../models/agentBooking');
 
-const { Sequelize, DataTypes, Model, where } = require('sequelize');
+
 const Surge = require('../../models/surge');
 const smsLog = require("../../models/smsLog");
 var request = require('request');

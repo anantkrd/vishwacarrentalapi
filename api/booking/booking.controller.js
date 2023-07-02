@@ -14,7 +14,7 @@ const BookingPayment = require('../../models/bookingPayment');
 const SpecialPrices = require('../../models/specialPrices');
 var distance = require('google-distance-matrix');
 const Razorpay = require("razorpay");
-const { Sequelize, DataTypes, Model } = require('sequelize');
+//const { Sequelize, DataTypes, Model } = require('sequelize');
 module.exports = {
     bookCab: async (req, res) => {
         try {
@@ -106,7 +106,7 @@ module.exports = {
     },
     getCabs: async (req, res) => {
         try {
-            const Op = Sequelize.Op;
+            
             distance.key('AIzaSyDzlGIoqMbQKaNwu1tCMXCtW3UEjzCfUvs');
             distance.mode('driving');
            

@@ -5,7 +5,7 @@ require('dotenv').config()
 var cors = require('cors')
 var path = require('path');
 //const helmet = require("helmet");
-const port = 3000
+//const port = 3000
 app.use(cors());
 //app.use(helmet());
 // view engine setup
@@ -20,6 +20,7 @@ var bookingRouter=require('./api/booking/booking.router');
 var agentsRouters=require('./api/agent/agent.router');
 var adminRouters=require('./api/admin/admin.router');
 var driverRouters=require('./api/driver/driver.router');
+require('dotenv').config()
 const mongoose = require("mongoose");
 app.use(bodyParser.json());
 
@@ -48,6 +49,7 @@ app.get('/', (req, res) => {
   
   res.send('Hello World!')
 })
+let port=process.env.API_PORT;
 //mongodb+srv://vishwacarrental:<password>@cluster0.mzxxv66.mongodb.net/?retryWrites=true&w=majority
 mongoose.connect('mongodb+srv://vishwacarrental:L19pRrBYoa12UYv0@cluster0.mzxxv66.mongodb.net/vishwacarrental?retryWrites=true&w=majority')
   .then((result) =>{

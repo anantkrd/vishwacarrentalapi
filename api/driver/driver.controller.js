@@ -13,7 +13,7 @@ const CanceledBooking = require('../../models/canceledBooking');
 const AgentBooking = require('../../models/agentBooking');
 const Surge = require('../../models/surge');
 const AgentCars = require('../../models/agentCars');
-const { Sequelize, DataTypes, Model, where } = require('sequelize');
+
 const Razorpay = require("razorpay");
 module.exports = {
     getMyTrip: async (req, res) => {
@@ -22,7 +22,7 @@ module.exports = {
             pageId = req.query.pageId;
             let start = ((pageId - 1) * 10);
             let perPage = 10;
-            const Op = Sequelize.Op;
+            
 
             bookingObj = await Booking.find({isDeleted: 'N', status: { $or: ['confirm', 'started'] }, driverId: userId }).sort({createdAt:-1}).skip(start).limit(perPage);
             if (bookingObj !== null) {
@@ -48,7 +48,7 @@ module.exports = {
             pageId = req.query.pageId;
             let start = ((pageId - 1) * 10);
             let perPage = 10;
-            const Op = Sequelize.Op;
+            
 
             bookingObj = await Booking.find({isDeleted: 'N', driverId: userId }).sort({createdAt:-1}).skip(start).limit(perPage);
             if (bookingObj !== null) {
