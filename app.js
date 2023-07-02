@@ -20,6 +20,9 @@ var bookingRouter=require('./api/booking/booking.router');
 var agentsRouters=require('./api/agent/agent.router');
 var adminRouters=require('./api/admin/admin.router');
 var driverRouters=require('./api/driver/driver.router');
+var fs = require('fs');
+var http = require('http');
+var https = require('https');
 require('dotenv').config()
 const mongoose = require("mongoose");
 app.use(bodyParser.json());
@@ -50,12 +53,17 @@ app.get('/', (req, res) => {
   res.send('Hello World!')
 })
 let port=8080;//process.env.API_PORT;
+const httpServer = http.createServer(app);
 //mongodb+srv://vishwacarrental:<password>@cluster0.mzxxv66.mongodb.net/?retryWrites=true&w=majority
 mongoose.connect('mongodb+srv://vishwacarrental:L19pRrBYoa12UYv0@cluster0.mzxxv66.mongodb.net/vishwacarrental?retryWrites=true&w=majority')
   .then((result) =>{
     console.log('Connected!');
-    app.listen(port, () => {
+    /*app.listen(port, () => {
       console.log(`Example app listening on port ${port}`)
+    });*/
+    httpServer.listen(port, () => {
+      console.log(`Example app listening at https://localhost:${port}`)
+        console.log('HTTP Server running on port '+port);
     });
   } );
 //app.use('/', indexRouter);
