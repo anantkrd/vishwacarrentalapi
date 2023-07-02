@@ -1,33 +1,28 @@
-const{Sequelize,DataTypes,Model}=require('sequelize');
-const sequelize=require('../config/database');
 
-class CanceledBooking extends Model{
 
-}
+//import mongoose from "mongoose";
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
+const ObjectId = Schema.ObjectId;
 
-CanceledBooking.init({
-    id:{
-        type:DataTypes.INTEGER,
-        autoIncrement:true,
-        primaryKey:true
-    },
-    bookingId:DataTypes.INTEGER,
-    orderId:DataTypes.STRING,
-    canceledBy:DataTypes.ENUM('customer','admin'),
-    userId:DataTypes.INTEGER,
-    returnAmount:DataTypes.INTEGER,
-    reason:DataTypes.STRING,
-    returnStatus:DataTypes.ENUM('pending','approved','inprocess','completed','rejected'),
-    updatedTime:DataTypes.DATE,
-    createdTime:DataTypes.DATE
-},
-{
-    sequelize,
-    modelName:'CanceledBooking',
-    tableName:'vcr_canceled_booking',    
-    timestamps:true,
-    createdAt:false,
-    updatedAt:false
-})
+const bookingCancelSchema = new mongoose.Schema(
+  {
+    id:ObjectId,
+    bookingId:{type: Number,default:0},
+    orderId:{type: String,default:''},
+    canceledBy:{type: String,default:'customer'},
+    userId:{type: String,default:0},
+    returnAmount:{type: Number,default:0},
+    reason:{type: String,default:''},
+    returnStatus:{type: String,default:'pending'},
+    
+    isDeleted: {
+      type: String,
+      default: "N",
+    }
+  },
+  { timestamps: true }
+);
 
-module.exports=CanceledBooking;
+module.exports = mongoose.model('vcr_canceled_booking', bookingCancelSchema);
+

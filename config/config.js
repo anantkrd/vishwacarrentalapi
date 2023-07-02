@@ -5,7 +5,7 @@ module.exports = {
     username: process.env.DB_USER,
     password: process.env.DB_PASS,
     database: process.env.MYSQL_DB,
-    host: host:process.env.HOST,
+    host:process.env.HOST,
     port: 3306,
     dialect: 'mysql',
     dialectOptions: {
@@ -16,7 +16,7 @@ module.exports = {
     username: process.env.DB_USER,
     password: process.env.DB_PASS,
     database: process.env.MYSQL_DB,
-    host: host:process.env.HOST,
+    host:process.env.HOST,
     port: 3306,
     dialect: 'mysql',
     dialectOptions: {
@@ -27,7 +27,7 @@ module.exports = {
     username: process.env.DB_USER,
     password: process.env.DB_PASS,
     database: process.env.MYSQL_DB,
-    host: host:process.env.HOST,
+    host:process.env.HOST,
     port: 3306,
     dialect: 'mysql',
     

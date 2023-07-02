@@ -1,41 +1,34 @@
 
-const {Sequelize,DataTypes, Model}=require('sequelize');
-const sequelize=require('../config/database');
 
-class SearchLog extends Model{
+//import mongoose from "mongoose";
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
+const ObjectId = Schema.ObjectId;
 
-}
-SearchLog.init({
-    id:{
-        type:DataTypes.INTEGER,
-        primaryKey:true,
-        autoIncrement:true
-    },
-    mobileNo:DataTypes.STRING,
-    pickup:DataTypes.STRING,
-    destination:DataTypes.STRING,
-    city:DataTypes.STRING,
-    district:DataTypes.STRING,
-    state:DataTypes.STRING,
-    pickupDate:DataTypes.DATE,
-    returnDate:DataTypes.DATE,
-    pickupLat:DataTypes.STRING,
-    pickupLong:DataTypes.STRING,
-    destinationLat:DataTypes.STRING,
-    destinationLong:DataTypes.STRING,
-    distance:DataTypes.STRING,
-    journyTime:DataTypes.STRING,
-    note:DataTypes.STRING,    
-    isDeleted: DataTypes.ENUM('N','Y'),
-    updatedTime: DataTypes.DATE,
-    createdTime:DataTypes.DATE
-},{
-    // Other model options go here
-    sequelize, // We need to pass the connection instance
-    modelName: 'SearchLog', // We need to choose the model name
-    tableName:'vcr_search_log',
-    timestamps:true,
-    createdAt:false,
-    updatedAt:false
-})
-module.exports=SearchLog;
+const logSchema = new mongoose.Schema(
+  {
+    id:ObjectId,
+    mobileNo:{type: String,default:''},
+    pickup:{type: String,default:''},
+    destination:{type: String,default:''},
+    city:{type: String,default:''},
+    district:{type: String,default:''},
+    state:{type: String,default:''},
+    pickupDate:{type: Date},
+    returnDate:{type: Date},
+    pickupLat:{type: String,default:''},
+    pickupLong:{type: String,default:''},
+    destinationLat:{type: String,default:''},
+    destinationLong:{type: String,default:''},
+    distance:{type: String,default:''},
+    journyTime:{type: String,default:''},
+    note:{type: String,default:''},    
+    isDeleted: {
+      type: String,
+      default: "N",
+    }
+  },
+  { timestamps: true }
+);
+
+module.exports = mongoose.model('vcr_search_log', logSchema);

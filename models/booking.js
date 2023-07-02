@@ -1,74 +1,71 @@
-const {Sequelize,DataTypes,Model}=require('sequelize');
-const sequelize=require('../config/database');
 
-class Booking extends Model{
-    
-}
-Booking.init({
-    id:{
-        type:DataTypes.INTEGER,
-        primaryKey:true,
-        autoIncrement:true
-    },
-    userId:DataTypes.INTEGER,
-    userName:DataTypes.STRING,
-    userMobileNo:DataTypes.STRING,
-    orderId:DataTypes.STRING,
-    cabId:DataTypes.INTEGER,
-    pickup:DataTypes.STRING,
-    destination:DataTypes.STRING,
-    pickupCityName:DataTypes.STRING,
-    pickupDistrict:DataTypes.STRING,
-    pickupState:DataTypes.STRING,
-    dropCityName:DataTypes.STRING,
-    dropDistrict:DataTypes.STRING,
-    dropState:DataTypes.STRING,
-    pickupDate:DataTypes.DATE,
-    returnDate:DataTypes.DATE,
-    isReturn:DataTypes.CHAR,
-    pickupLat:DataTypes.STRING,
-    pickupLong:DataTypes.STRING,
-    destinationLat:DataTypes.STRING,
-    destinationLong:DataTypes.STRING,
-    distance:DataTypes.STRING,
-    journyDistance:DataTypes.INTEGER,
-    journyTime:DataTypes.STRING,
-    rate:DataTypes.INTEGER,
-    amount:DataTypes.INTEGER,
-    discount:DataTypes.INTEGER,
-    extraRate:DataTypes.INTEGER,
-    extraAmount:DataTypes.INTEGER,
-    tax:DataTypes.INTEGER,
-    charges:DataTypes.INTEGER,
-    finalAmount:DataTypes.INTEGER,
-    paid:DataTypes.INTEGER,
-    pending:DataTypes.INTEGER,
-    payment_orderId:DataTypes.TEXT,
-    agentId:DataTypes.INTEGER,
-    agentPrice:DataTypes.INTEGER,
-    driverName:DataTypes.STRING,
-    driverContact:DataTypes.STRING,
-    gadiNo:DataTypes.STRING,
-    gadiModel:DataTypes.STRING,
-    status:DataTypes.ENUM('pending','waiting','confirm','canceled','completed','returnInitiated','returnCompleted','returnRejected','started'),
-    journyStatus:DataTypes.ENUM('pending','start','completed'),
-    journyStartTime:DataTypes.DATE,
-    journyEndTime:DataTypes.DATE,
-    isDeleted:DataTypes.ENUM('N','Y'),
-    driverId:DataTypes.INTEGER,
-    carId:DataTypes.INTEGER,
-    startKm:DataTypes.INTEGER,
-    endKm:DataTypes.INTEGER,
-    agentPaid:DataTypes.INTEGER,
-    cashAmount:DataTypes.INTEGER,
-    updatedTime:DataTypes.DATE,
-    createdTime:DataTypes.DATE
-},{
-    sequelize,
-    modelName: 'Booking', 
-    tableName:'vcr_booking',
-    timestamps:true,
-    createdAt:false,
-    updatedAt:false
-})
-module.exports=Booking;
+
+//import mongoose from "mongoose";
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
+const ObjectId = Schema.ObjectId;
+
+const bookingSchema = new mongoose.Schema(
+  {
+    id:ObjectId,
+    userId:{type: String, required: true},    
+    userName:{type: String,default:''},
+    status:{type: String,default:'pending'},
+    userMobileNo:{type: String,default:''},
+    orderId:{type: String,default:''},
+    cabId:{type: String,default:''},
+    pickup:{type: String,default:''},
+    destination:{type: String,default:''},
+    pickupCityName:{type: String,default:''},
+    pickupDistrict:{type: String,default:''},
+    pickupState:{type: String,default:''},
+    dropCityName:{type: String,default:''},
+    dropDistrict:{type: String,default:''},
+    dropState:{type: String,default:''},
+    pickupDate:{type: Date},
+    returnDate:{type: Date},
+    destinationLat:{type: String,default:''},
+    isReturn:{type: String,default:''},
+    pickupLat:{type: String,default:''},
+    pickupLong:{type: String,default:''},
+    destinationLong:{type: String,default:''},
+    distance:{type: String,default:''},
+    journyDistance:{type: Number,default:0},
+    journyTime:{type: String,default:''},
+    rate:{type: Number,default:0},
+    amount:{type: Number,default:0},
+    discount:{type: Number,default:0},
+    extraRate:{type: Number,default:0},
+    extraAmount:{type: Number,default:0},
+    tax:{type: Number,default:0},
+    rate:{type: Number,default:0},
+    charges:{type: Number,default:0},
+    finalAmount:{type: Number,default:0},
+    paid:{type: Number,default:0},
+    pending:{type: Number,default:0},
+    pendpayment_orderIding:{type: String,default:''},
+    agentId:{type: Number,default:0},
+    agentPrice:{type: Number,default:0},
+    driverName:{type: String,default:''},
+    driverContact:{type: String,default:''},
+    gadiNo:{type: String,default:''},
+    gadiModel:{type: String,default:''},
+    status:{type: String,default:'pending'},
+    journyStatus:{type: String,default:'pending'},
+    journyStartTime:{type: Date},
+    journyEndTime:{type: Date},
+    driverId:{type: Number,default:0},
+    carId:{type: Number,default:0},
+    startKm:{type: Number,default:0},
+    endKm:{type: Number,default:0},
+    agentPaid:{type: Number,default:0},
+    cashAmount:{type: Number,default:0},
+    isDeleted: {
+      type: String,
+      default: "N",
+    }
+  },
+  { timestamps: true }
+);
+
+module.exports = mongoose.model('vcr_booking', bookingSchema);

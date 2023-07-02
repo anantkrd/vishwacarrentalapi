@@ -14,19 +14,19 @@ const AgentBooking = require('../../models/agentBooking');
 const Surge = require('../../models/surge');
 const AgentCars = require('../../models/agentCars');
 const AgentDetial=require('../../models/agentDetials');
-const { Sequelize, DataTypes, Model, where } = require('sequelize');
+//const { Sequelize, DataTypes, Model, where } = require('sequelize');
 const Razorpay = require("razorpay");
 module.exports = {
     getAgent: async (req, res) => {
         try {
             let userId = req.query.userId;
-            const userData = await User.findOne({attributes: { exclude: ['userPassword'] } , where: { id: userId }} );
+            const userData = await User.findOne({ _id: userId } );
             if (userData === null) {                
                 responce = JSON.stringify({ code: '404', message: 'User Not Found', data: '' });
                 res.status(404).send(responce)
             } else {
-                agentId=userData.id;
-                const agentData = await AgentDetial.findOne({where: { agentId: agentId }});
+                agentId=userData._id;
+                const agentData = await AgentDetial.findOne({ agentId: agentId });
                 responce = JSON.stringify({ code: '200', message: '', data: userData,agentData:agentData });
                 res.status(200).send(responce);
             }
@@ -42,10 +42,10 @@ module.exports = {
             let pageId = req.query.pageId;
             let start = ((pageId - 1) * 10);
             let perPage = 10;
-            const Op = Sequelize.Op;
-            let agentData = await Booking.findAll({ where: { isDeleted: 'N', status: 'waiting',agentPrice:{[Op.gt]:0} }, offset: start, limit: perPage, order: [['id', 'desc']] });
+            //const Op = Sequelize.Op;
+            let agentData = await Booking.find({isDeleted: 'N', status: 'waiting',agentPrice:{ $gt: 0 } } ).sort({createdAt:-1}).skip(start).limit(perPage);
             if (agentData !== null) {
-                let rowCount = await Booking.count({ where: { isDeleted: 'N', status: 'waiting',agentPrice:{[Op.gt]:0} }, offset: start, limit: perPage, order: [['id', 'desc']] });
+                let rowCount = await Booking.count({ isDeleted: 'N', status: 'waiting',agentPrice:{ $gt: 0 } }).count();
                 totalPage = rowCount / perPage;
                 totalPage = Math.ceil(totalPage);
                 responce = JSON.stringify({ code: '200', message: 'Agents Booking', data: agentData, rowCount: rowCount, totalPage: totalPage });
@@ -67,9 +67,9 @@ module.exports = {
             let start = ((pageId - 1) * 10);
             let perPage = 10;
 
-            let agentData = await Booking.findAll({ where: { agentId: agentId, isDeleted: 'N' }, offset: start, limit: perPage, order: [['id', 'desc']] });
+            let agentData = await Booking.find({ agentId: agentId, isDeleted: 'N' }).sort({createdAt:-1}).skip(start).limit(perPage);
             if (agentData !== null) {
-                let rowCount = await Booking.count({ where: { agentId: agentId, isDeleted: 'N' }, offset: start, limit: perPage, order: [['id', 'desc']] });
+                let rowCount = await Booking.find({agentId: agentId, isDeleted: 'N'}).count();
                 totalPage = rowCount / perPage;
                 totalPage = Math.ceil(totalPage);
                 responce = JSON.stringify({ code: '200', message: 'Agents Booking', data: agentData, rowCount: rowCount, totalPage: totalPage });
@@ -91,9 +91,9 @@ module.exports = {
             let start = ((pageId - 1) * 10);
             let perPage = 10;
 
-            let agentData = await AgentBooking.findAll({ where: { agentId: agentId, isDeleted: 'N', status: 'completed' }, offset: start, limit: perPage, order: [['id', 'desc']] });
+            let agentData = await AgentBooking.find({agentId: agentId, isDeleted: 'N', status: 'completed' }).sort({createdAt:-1}).skip(start).limit(perPage);;
             if (agentData !== null) {
-                let rowCount = await AgentBooking.count({ where: { agentId: agentId, isDeleted: 'N', status: 'completed' }, offset: start, limit: perPage, order: [['id', 'desc']] });
+                let rowCount = await AgentBooking.find({agentId: agentId, isDeleted: 'N', status: 'completed' }).count();
                 totalPage = rowCount / perPage;
                 totalPage = Math.ceil(totalPage);
                 responce = JSON.stringify({ code: '200', message: 'Agents Booking', data: agentData, rowCount: rowCount, totalPage: totalPage });
@@ -112,7 +112,7 @@ module.exports = {
         try {
             carNo = req.query.carNo;
             agentId = req.query.agentId;
-            let agentData = await AgentCars.findAll({ where: { isDeleted: 'N', agentId: agentId, carNo: carNo } });
+            let agentData = await AgentCars.find( { isDeleted: 'N', agentId: agentId, carNo: carNo });
             if (agentData !== null) {
                 responce = JSON.stringify({ code: '200', message: 'cars', data: agentData });
                 res.status(200).send(responce);
@@ -130,7 +130,7 @@ module.exports = {
         try {
             agentId = req.query.userId;            
             carId = req.query.carId;
-            let agentData = await AgentCars.findOne({ where: { isDeleted: 'N', agentId: agentId,id:carId}});
+            let agentData = await AgentCars.findOne({ isDeleted: 'N', agentId: agentId,_id:carId});
             if (agentData !== null) {
                 
                 responce = JSON.stringify({ code: '200', message: 'cars', data: agentData });
@@ -151,9 +151,9 @@ module.exports = {
             let pageId = req.query.pageId;
             let start = ((pageId - 1) * 10);
             let perPage = 10;
-            let agentData = await AgentCars.findAll({ where: { isDeleted: 'N', agentId: agentId},offset: start, limit: perPage, order: [['id', 'desc']] });
+            let agentData = await AgentCars.find({ isDeleted: 'N', agentId: agentId}).sort({createdAt:-1}).skip(start).limit(perPage);
             if (agentData !== null) {
-                let rowCount = await AgentCars.count({ where: { isDeleted: 'N', agentId: agentId}, offset: start, limit: perPage, order: [['id', 'desc']] });
+                let rowCount = await AgentCars.find({ isDeleted: 'N', agentId: agentId}).count();
                 totalPage = rowCount / perPage;
                 totalPage = Math.ceil(totalPage);
                 responce = JSON.stringify({ code: '200', message: 'cars', data: agentData,totalPage:totalPage,rowCount:rowCount });
@@ -171,7 +171,7 @@ module.exports = {
     getDriverByMobile: async (req, res) => {
         try {
             mobileNo = req.query.mobileNo;
-            let agentData = await User.findOne({ where: { isDeleted: 'N', mobileNo: mobileNo, userType: 'driver' } });
+            let agentData = await User.findOne({isDeleted: 'N', mobileNo: mobileNo, userType: 'driver'});
             if (agentData !== null) {
                 responce = JSON.stringify({ code: '200', message: 'Drives', data: agentData });
                 res.status(200).send(responce);
@@ -188,7 +188,7 @@ module.exports = {
     getDriverById:async(req,res)=>{
         try {
             driverId = req.query.driverId;
-            let agentData = await User.findOne({ where: { isDeleted: 'N', id: driverId, userType: 'driver' } });
+            let agentData = await User.findOne({isDeleted: 'N', _id: driverId, userType: 'driver' });
             if (agentData !== null) {
                 responce = JSON.stringify({ code: '200', message: 'Drives', data: agentData });
                 res.status(200).send(responce);
@@ -205,7 +205,7 @@ module.exports = {
     getDrivers: async (req, res) => {
         try {
             userId = req.query.userId;
-            let agentData = await User.findAll({ where: { isDeleted: 'N', parentId: userId, userType: 'driver' } });
+            let agentData = await User.find({ isDeleted: 'N', parentId: userId, userType: 'driver' });
             if (agentData !== null) {
                 responce = JSON.stringify({ code: '200', message: 'Drives', data: agentData });
                 res.status(200).send(responce);
@@ -256,12 +256,12 @@ module.exports = {
             carType= req.body.carType;
             rcBook=req.body.rcBook;
             carId=req.body.carId;
-            checkCarObj=await AgentCars.findOne({where:{id:carId, agentId:agentId}});
+            checkCarObj=await AgentCars.findOne({id:carId, agentId:agentId});
             if(checkCarObj==null){
                 responce = JSON.stringify({ code: '500', message: 'Not authorised for delete car', data: agentCarObj });
                 res.status(500).send(responce);
             }
-            agentCarObj = await AgentCars.update({
+            agentCarObj = await AgentCars.updateOne({id:carId},{$set:{
                 agentId: agentId,
                 carNo: carNo,
                 carModelName: carModelName,
@@ -269,7 +269,7 @@ module.exports = {
                 rcBook: rcBook,
                 status:'pending',
                 isDeleted: 'N'
-            },{where:{id:carId}});
+            }});
             if (agentCarObj === null) {
                 responce = JSON.stringify({ code: '500', message: 'Something went wrong', data: '' });
                 res.status(500).send(responce);
@@ -291,13 +291,11 @@ module.exports = {
             modelName = req.body.modelName;
             carNo = req.body.carNo;
             bookingId = req.body.bookingId;
-            updateObj = await Booking.update({
+            updateObj = await Booking.updateOne({ orderId: bookingId },{$set:{
                 carId: carId,
                 gadiNo: carNo,
                 gadiModel: modelName
-            }, {
-                where: { orderId: bookingId }
-            });
+            }});
             if (updateObj === null) {
                 responce = JSON.stringify({ code: '500', message: 'Something went wrong', data: '' });
                 res.status(500).send(responce);
@@ -314,29 +312,24 @@ module.exports = {
     assignBookingDriver: async (req, res) => {
         try {
             bookingId = req.body.bookingId;
-            driverName: req.body.driverName;
+            driverName= req.body.driverName;
             mobileNo = req.body.mobileNo;
             bookingId = req.body.bookingId;
             contactNo = req.body.contactNo;
             driverId = req.body.driverId;
-            assignDrive = await Booking.findOne({
-                where: {
-                    orderId: bookingId
-                }
-            });
+            assignDrive = await Booking.findOne({orderId: bookingId});
 
             if (assignDrive == null) {
                 responce = JSON.stringify({ code: '500', message: 'Something went wrong', data: '' });
                 res.status(500).send(responce);
             } else {
                 if (assignDrive.carId > 0) {
-                    assignDriverObj = await Booking.update({
+                    assignDriverObj = await Booking.updateOne({ orderId: bookingId },{
+                        $set:{
                         driverName: driverName,
                         driverContact: mobileNo,
                         driverId: driverId
-                    }, {
-                        where: { orderId: bookingId }
-                    });
+                    }});
                     if (assignDriverObj === null) {
                         responce = JSON.stringify({ code: '500', message: 'Something went wrong', data: '' });
                         res.status(500).send(responce);
@@ -366,7 +359,7 @@ module.exports = {
             licenseNo = req.body.licenseNo;
             licenseUrl = req.body.licenseUrl;
 
-            checkDriver = await User.findOne({ where: { mobileNo: mobileNo } });
+            checkDriver = await User.findOne({mobileNo: mobileNo });
             if (checkDriver !== null) {
                 responce = JSON.stringify({ code: '400', message: "mobile no is already register", data: '' });
                 res.status(400).send(responce);
@@ -408,14 +401,14 @@ module.exports = {
             licenseNo = req.body.licenseNo;
             licenseUrl = req.body.licenseUrl;
             driverId = req.body.driverId;
-            const Op = Sequelize.Op;
+            //const Op = Sequelize.Op;
             // { [Op.or]: ['pending', 'waiting'] } }
-            checkDriver = await User.findOne({ where: { mobileNo: mobileNo,id:{[Op.not]:driverId} } });
+            checkDriver = await User.findOne({mobileNo: mobileNo,_id:{$ne:driverId} });
             if (checkDriver !== null) {
                 responce = JSON.stringify({ code: '400', message: "mobile no is already register", data: '' });
                 res.status(400).send(responce);
             } else {
-                createUserObj = await User.update({
+                createUserObj = await User.updateOne({_id:driverId},{$set:{
                     firstName: firstName,
                     lastName: lastName,
                     mobileNo: mobileNo,
@@ -426,7 +419,7 @@ module.exports = {
                     idNumber: licenseNo,
                     userType: 'driver',
                     status: 'pending'
-                },{where:{id:driverId}})
+                }})
                 if (createUserObj == null) {
                     responce = JSON.stringify({ code: '400', message:"Something went wrong", data: '' });
                     res.status(400).send(responce);
@@ -446,7 +439,7 @@ module.exports = {
         try{
             let userId = req.query.userId;
             let driverId = req.query.driverId;
-            deleteObj=await User.update({isDeleted:'Y'},{where:{id:driverId}});
+            deleteObj=await User.updateOne({_id:driverId},{$set:{isDeleted:'Y'}});
             responce = JSON.stringify({ code: '200', message: "Driver deleted successfully", data: deleteObj });
             res.status(200).send(responce);
 
@@ -460,7 +453,7 @@ module.exports = {
         try{
             let userId = req.query.userId;
             let carId = req.query.carId;
-            deleteObj=await AgentCars.update({isDeleted:'Y'},{where:{id:carId}});
+            deleteObj=await AgentCars.updateOne({_id:carId},{$set:{isDeleted:'Y'}});
             responce = JSON.stringify({ code: '200', message: "Car deleted successfully", data: deleteObj });
             res.status(200).send(responce);
 
@@ -509,7 +502,7 @@ module.exports = {
                 responce = JSON.stringify({ code: '400', message: "Something went wrong while adding agent booking", data: '' });
                 res.status(400).send(responce);
             } else {
-                updateBooking = await Booking.update({ agentPaid: advance }, { where:{orderId: receiptId} });
+                updateBooking = await Booking.updateOne({orderId: receiptId},{$set:{agentPaid: advance }});
                 responce = JSON.stringify({ code: '200', message: "success", data: '' });
                 res.status(200).send(responce);
             }
@@ -528,7 +521,7 @@ module.exports = {
             let rawResponce = req.body.rawResponce;
             let bookingAmount = 0;//req.body.bookingAmount;
             //console.log("Body==" + JSON.stringify(req.body));
-            agentBookingData = await AgentBooking.findOne({ where: { paymentId: razorpayOrderId } });
+            agentBookingData = await AgentBooking.findOne({paymentId: razorpayOrderId });
             if (agentBookingData == null) {
                 responce = JSON.stringify({ code: '400', message: e.message || "Some error occurred.", data: '' });
                 res.status(400).send(responce);
@@ -536,12 +529,12 @@ module.exports = {
                 bookingAmount = agentBookingData['amount'];
                 agentId = agentBookingData['agentId'];
                 bookingId = agentBookingData['bookingId'];
-                updateAgent = await AgentBooking.update({
+                updateAgent = await AgentBooking.updateOne({ paymentId: razorpayOrderId },{$set:{
                     status: "completed",
                     rawResponce: rawResponce
-                }, { where: { paymentId: razorpayOrderId } });
+                } });
 
-                updateBooking = await Booking.update({ agentId: agentId, status: 'confirm' }, { where: { orderId: bookingId } });
+                updateBooking = await Booking.updateOne({ orderId: bookingId },{$set:{agentId: agentId, status: 'confirm' }});
                 let sendSms = sentAgentTripConfirmation(bookingId, 'agent');
                 responce = JSON.stringify({ code: '200', message: "payment completed successfully", data: '' });
                 res.status(200).send(responce);
@@ -585,18 +578,18 @@ module.exports = {
             let imageUrl = req.body.imageUrl;
             let updateAgen="";
             if(type=='rcImage'){
-                updateAgent=await AgentDetial.update({rcLink:imageUrl,rcVerified:'N'},{where:{agentId:agentId}});
+                updateAgent=await AgentDetial.updateOne({agentId:agentId},{$set:{rcLink:imageUrl,rcVerified:'N'}});
             }
             if(type=='licenseImage'){
-                updateAgent=await AgentDetial.update({licenseLink:imageUrl,licenseVerified:'N'},{where:{agentId:agentId}});
+                updateAgent=await AgentDetial.updateOne({agentId:agentId},{$set:{licenseLink:imageUrl,licenseVerified:'N'}});
             }
             if(type=='adharImage'){
-                updateAgent=await AgentDetial.update({adharLink:imageUrl,adharVerified:'N'},{where:{agentId:agentId}});
+                updateAgent=await AgentDetial.updateOne({agentId:agentId},{$set:{adharLink:imageUrl,adharVerified:'N'}});
             }
             if(type=='comapnyUpdate'){
                 companyName=req.body.companyName;
                 officeAddress=req.body.officeAddress;
-                updateAgent=await AgentDetial.update({companyName:companyName,officeAddress:officeAddress,registrationCopy:imageUrl,companyVerified:'N'},{where:{agentId:agentId}});
+                updateAgent=await AgentDetial.updateOne({agentId:agentId},{$set:{companyName:companyName,officeAddress:officeAddress,registrationCopy:imageUrl,companyVerified:'N'}});
             }
             responce = JSON.stringify({ code: '200', message: "agent successfully", data: '' });
             res.status(200).send(responce);

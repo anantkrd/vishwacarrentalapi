@@ -174,24 +174,27 @@ module.exports = {
 
                 let sedanPrice = 0;
                 let luxuryPrice = 0;
-                let compactPrice = 0;             
-                let surgePickpuResult = await Surge.findOne({ where: {[Op.or]:{ city: { [Op.like]: '%' + pickupCityName + '%' },location: { [Op.like]: '%' + pickupDistrict + '%' } }} ,order: [['city', 'DESC']]});
+                let compactPrice = 0;           
+                let surgePickpuResult = await Surge.find({isDeleted: 'N', city: {$regex:'.*'+pickupCityName+'.*'}} ).sort({city:-1}); 
+                console.log("surgePickpuResult:"+JSON.stringify(surgePickpuResult)); 
+                //let surgePickpuResult = await Surge.findOne({ where: {[Op.or]:{ city: { [Op.like]: '%' + pickupCityName + '%' },location: { [Op.like]: '%' + pickupDistrict + '%' } }} ,order: [['city', 'DESC']]});
                
                 let destinationcityName = destinationCity.split(",")[0];
+                let surgedestinationResult = await Surge.find({isDeleted: 'N', city: {$regex:'.*'+destinationcityName+'.*'}} ).sort({city:-1});
+                console.log("surgedestinationResult:"+JSON.stringify(surgedestinationResult));
+                //let surgedestinationResult = await Surge.findOne({ where: {[Op.or]:{ city: { [Op.like]: '%' + destinationcityName + '%' },location: { [Op.like]: '%' + dropDistrict + '%' } }} ,order: [['city', 'DESC']]});
                 
-                let surgedestinationResult = await Surge.findOne({ where: {[Op.or]:{ city: { [Op.like]: '%' + destinationcityName + '%' },location: { [Op.like]: '%' + dropDistrict + '%' } }} ,order: [['city', 'DESC']]});
-                
-                if (surgePickpuResult === null) {
-                    let surgePickpuResultOther = await Surge.findOne({ where: {city:'Other'}});
-                    if(surgePickpuResultOther==null){
+                if (surgePickpuResult === null || surgePickpuResult.length<=0) {
+                    let surgePickpuResultOther = await Surge.findOne({city:'Other'});
+                    if(surgePickpuResultOther==null || surgePickpuResultOther.length<=0){
                         surgePickpuResult = { "city": "Pune", "surge": '{"Compact":1,"Sedan":1,"Luxury":1,"SUVErtiga":1,"Innova":1,"InnovaCrysta":1,"other":1,"local":20}' };
                     }else{
                         surgePickpuResult=surgePickpuResultOther;
                     }                    
                 }
-                if (surgedestinationResult === null) {
-                    let surgedestinationResultOther = await Surge.findOne({ where: {city:'Other'}});
-                    if(surgedestinationResultOther===null){
+                if (surgedestinationResult === null || surgedestinationResult.length<=0) {
+                    let surgedestinationResultOther = await Surge.findOne({city:'Other'});
+                    if(surgedestinationResultOther===null || surgedestinationResultOther.length<=0){
                         surgedestinationResult = { "city": "Pune", "surge": '{"Compact":1,"Sedan":1,"Luxury":1,"SUVErtiga":1,"Innova":1,"InnovaCrysta":1,"other":1,"local":20}' };
                     }else{
                         surgedestinationResult=surgedestinationResultOther;
@@ -199,7 +202,7 @@ module.exports = {
                 }
 
                 //let results=await getCabs(req);
-                cabObj = await Cabs.findAll({ where: { isDeleted: 'N' } });
+                cabObj = await Cabs.find({isDeleted: 'N' });
                 distanceValue = distancekm;
                 dataObj = [];
                 let logPrice = '';
@@ -212,7 +215,7 @@ module.exports = {
                         
                         let originalRate = rate;
                         returnTripRate = cabData['returnTripRate'];
-                        id = cabData['id'];
+                        id = cabData['_id'];
                         
                         cabType = cabData['cabType'];
                         let speacialRate=0;
@@ -220,10 +223,10 @@ module.exports = {
                         let speacialExtraRate=0;
                         const weekDay = moment(pickdateTime).day();
                         const pickdateTimeFormate = moment(pickdateTime).format("YYYY-MM-DD");
-                        let specialPricesResult=await SpecialPrices.findOne({where:{cabType:cabType,type:'dateRange',isDeleted:'N',startDate:{[Op.gte]:pickdateTimeFormate},startDate:{[Op.lte]:pickdateTimeFormate}},order: [['id', 'DESC']]});
+                        let specialPricesResult=await SpecialPrices.findOne({cabType:cabType,type:'dateRange',isDeleted:'N',startDate:{$gt:pickdateTimeFormate},startDate:{$lte:pickdateTimeFormate}}).sort({createdAt:-1});
                         if(specialPricesResult===null){
                             if(weekDay==0 || weekDay==6){
-                                let specialPricesWeekDayResult=await SpecialPrices.findOne({where:{cabType:cabType,type:'weekday',isDeleted:'N'},order: [['id', 'DESC']]});
+                                let specialPricesWeekDayResult=await SpecialPrices.findOne({cabType:cabType,type:'weekday',isDeleted:'N'}).sort({createdAt:-1});
                                 if(specialPricesWeekDayResult!=null){
                                     speacialRate=specialPricesWeekDayResult['rate'];
                                     speacialReturnRate=specialPricesWeekDayResult['returnTripRate'];
@@ -290,7 +293,7 @@ module.exports = {
                                                 
                         surgePrice = 0;
                         if (isReturnTrip == 'N') {
-                            if (cabTypecheck != "") {
+                            if (cabTypecheck != "" && surgePickpuResult.length>0) {
                                 let surgeDataPickup = surgePickpuResult['surge'];
                                 let surgeDataPickupObj = JSON.parse(surgeDataPickup);
                                 
@@ -453,13 +456,13 @@ module.exports = {
             let razorpaySignature = req.body.razorpaySignature;
             let rawResponce = req.body.rawResponce;
             let bookingAmount = 0;//req.body.bookingAmount;
-            let bookingPaymentObj=await BookingPayment.findOne({where:{paymentId:razorpayOrderId}});
+            let bookingPaymentObj=await BookingPayment.findOne({paymentId:razorpayOrderId});
             let rawResponcedata=JSON.stringify(rawResponce);
             if(bookingPaymentObj!==null){
                 bookingAmount=bookingPaymentObj['amount'];
                 orderId=bookingPaymentObj['orderId'];
-                updateBookingPay=await BookingPayment.update({status:'completed',rawResponce:rawResponcedata},{where:{paymentId:razorpayOrderId}});
-                updateBooking=await Booking.update({paid:bookingAmount,status:'waiting'},{where:{payment_orderId:razorpayOrderId}});
+                updateBookingPay=await BookingPayment.updateOne({paymentId:razorpayOrderId},{$set:{status:'completed',rawResponce:rawResponcedata}});
+                updateBooking=await Booking.updateOne({payment_orderId:razorpayOrderId},{$set:{paid:bookingAmount,status:'waiting'}});
                 let sendSms=sentBookingSmsToCustomer(razorpayOrderId);
                 responce = JSON.stringify({ code: '200', message: "Payment completed successfully", data: '' });
                 res.status(200).send(responce);

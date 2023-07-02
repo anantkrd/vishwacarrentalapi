@@ -1,41 +1,38 @@
-const{Sequelize,DataTypes,Model}=require('sequelize');
-const sequelize=require('../config/database');
 
-class AgentBooking extends Model{
 
-}
+//import mongoose from "mongoose";
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
+const ObjectId = Schema.ObjectId;
 
-AgentBooking.init({
-    id:{
-        type:DataTypes.INTEGER,
-        autoIncrement:true,
-        primaryKey:true
+const agentSchema = new mongoose.Schema(
+  {
+    id:ObjectId,
+    agentId:{type: String, required: true},
+    bookingId: {
+      type: String,
+      trim: true,
+      required: true,
     },
-    agentId:DataTypes.INTEGER,
-    bookingId:DataTypes.STRING,
-    agentAmount:DataTypes.INTEGER,
-    advance:DataTypes.INTEGER,
-    tripAmount:DataTypes.INTEGER,
-    userPaid:DataTypes.INTEGER,
-    userPending:DataTypes.INTEGER,
-    payToAgent:DataTypes.INTEGER,
-    paymentId:DataTypes.TEXT,
-    payToAgentType:DataTypes.ENUM('debit','credit'),
-    status:DataTypes.ENUM('pending','canceled','completed'),
-    tripStatus:DataTypes.ENUM('pending','canceled','completed'),
-    isDriverAdded:DataTypes.ENUM('N','Y'),
-    isCarAdded:DataTypes.ENUM('Y','N'),
-    rawResponce:DataTypes.TEXT,
-    isDeleted:DataTypes.ENUM('Y','N'),
-    updatedTime:DataTypes.DATE,
-    createdTime:DataTypes.DATE
-},
-{
-    sequelize,
-    modelName:'AgentBooking',
-    tableName:'vcr_agent_booking',    
-    timestamps:true,
-    createdAt:false,
-    updatedAt:false
-})
-module.exports=AgentBooking;
+    agentAmount:{type: Number,default:0},
+    advance:{type: Number,default:0},
+    tripAmount:{type: Number,default:0},
+    userPaid:{type: Number,default:0},
+    userPending:{type: Number,default:0},
+    payToAgent:{type: Number,default:0},
+    paymentId:{type: String,default:''},
+    payToAgentType:{type: String,default:'credit'},
+    status:{type: String,default:'pending'},
+    tripStatus:{type: String,default:'pending'},
+    isDriverAdded:{type: String,default:'N'},
+    isCarAdded:{type: String,default:'N'},
+    rawResponce:{type: String,default:''},    
+    isDeleted: {
+      type: String,
+      default: "N",
+    }
+  },
+  { timestamps: true }
+);
+
+module.exports = mongoose.model('vcr_agent_booking', agentSchema);

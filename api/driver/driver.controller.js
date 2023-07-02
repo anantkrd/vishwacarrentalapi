@@ -24,9 +24,9 @@ module.exports = {
             let perPage = 10;
             const Op = Sequelize.Op;
 
-            bookingObj = await Booking.findAll({ where: { isDeleted: 'N', status: { [Op.or]: ['confirm', 'started'] }, driverId: userId }, offset: start, limit: perPage, order: [['id', 'desc']] });
+            bookingObj = await Booking.find({isDeleted: 'N', status: { $or: ['confirm', 'started'] }, driverId: userId }).sort({createdAt:-1}).skip(start).limit(perPage);
             if (bookingObj !== null) {
-                let rowCount = await Booking.count({ where: { isDeleted: 'N', status: { [Op.or]: ['confirm', 'started'] }, driverId: userId } });
+                let rowCount = await Booking.find({isDeleted: 'N', status: { $or: ['confirm', 'started'] }, driverId: userId }).count();
                 totalPage = rowCount / perPage;
                 totalPage = Math.ceil(totalPage);
                 responce = JSON.stringify({ code: '200', message: '', data: bookingObj, rowCount: rowCount, totalPage: totalPage });
@@ -50,9 +50,9 @@ module.exports = {
             let perPage = 10;
             const Op = Sequelize.Op;
 
-            bookingObj = await Booking.findAll({ where: { isDeleted: 'N', driverId: userId }, offset: start, limit: perPage, order: [['id', 'desc']] });
+            bookingObj = await Booking.find({isDeleted: 'N', driverId: userId }).sort({createdAt:-1}).skip(start).limit(perPage);
             if (bookingObj !== null) {
-                let rowCount = await Booking.count({ where: { isDeleted: 'N', status: { [Op.or]: ['confirm', 'started'] }, driverId: userId } });
+                let rowCount = await Booking.find({ isDeleted: 'N',driverId: userId }).count();
                 totalPage = rowCount / perPage;
                 totalPage = Math.ceil(totalPage);
                 responce = JSON.stringify({ code: '200', message: '', data: bookingObj, rowCount: rowCount, totalPage: totalPage });
@@ -75,7 +75,7 @@ module.exports = {
             startPin = req.query.startPin;
             let dateNow = moment().format('YYYY-MM-DD hh:mm:ss');
             //sqlcheck="update `prayag_booking` set startKm=?,journyStartTime=?,status='started',journyStatus='start' WHERE orderId=?";   
-            updateBooking = await Booking.update({ startKm: startkm, journyStartTime: dateNow, status: 'started', journyStatus: 'start' }, { where: { orderId: bookingId } });
+            updateBooking = await Booking.updateOne({ orderId: bookingId },{$set:{startKm: startkm, journyStartTime: dateNow, status: 'started', journyStatus: 'start' } });
             if (updateBooking !== null) {
                 responce = JSON.stringify({ code: '200', message: 'Trip started', data: updateBooking });
                 res.status(200).send(responce);
@@ -95,7 +95,7 @@ module.exports = {
             userId = req.query.userId;
             bookingId = req.query.bookingId;
             endkm = req.query.endkm;
-            bookingObj = await Booking.findOne({ where: { isDeleted: 'N', orderId: bookingId } });
+            bookingObj = await Booking.findOne({isDeleted: 'N', orderId: bookingId });
             if (bookingObj === null) {
                 responce = JSON.stringify({ code: '400', message: "Booking not found", data: '' });
                 res.status(400).send(responce);
@@ -111,14 +111,14 @@ module.exports = {
                     extraKm = journyDistance - distance;
                 }
                 extraAmount = extraRate * extraKm;
-                updateBooking = await Booking.update({
+                updateBooking = await Booking.updateOne({ orderId: bookingId } ,{$set:{
                     endKm: extraKm,
                     journyEndTime: dateNow,
                     journyStatus: 'completed',
                     extraAmount: extraAmount,
                     extraRate: extraRate,
                     journyDistance: journyDistance,
-                }, { where: { orderId: bookingId } });
+                }});
                 if (updateBooking !== null) {
                     sms = await module.exports.tripCompletedsms(bookingId);
                 } else {
@@ -137,7 +137,7 @@ module.exports = {
             userId = req.query.userId;
             bookingId = req.query.bookingId;
             let dateNow = moment().format('YYYY-MM-DD hh:mm:ss');
-            checkBooking = await Booking.findOne({ where: { isDeleted: 'N', journyStatus: 'completed', status: 'started', orderId: bookingId } });
+            checkBooking = await Booking.findOne({ isDeleted: 'N', journyStatus: 'completed', status: 'started', orderId: bookingId });
             if (checkBooking == null) {
                 responce = JSON.stringify({ code: '400', message: "Booking Not Found", data: '' });
                 res.status(400).send(responce);
@@ -146,7 +146,7 @@ module.exports = {
                 let pending = checkBooking['pending'] + results[0]['extraAmount'];
                 let finalAmount = checkBooking['finalAmount'] + extraAmount;
                 let cashAmount = pending;
-                updateBooking = Booking.update({ status: 'completed', pending: '0', finalAmount: finalAmount, paid: finalAmount, extraAmount: extraAmount, cashAmount: cashAmount }, { where: { orderId: bookingId } });
+                updateBooking = Booking.updateOne({ orderId: bookingId}, {$set:{status: 'completed', pending: '0', finalAmount: finalAmount, paid: finalAmount, extraAmount: extraAmount, cashAmount: cashAmount } });
             }
             responce = JSON.stringify({ code: '200', message: "Trip Completed successfully", data: '' });
             res.status(200).send(responce);

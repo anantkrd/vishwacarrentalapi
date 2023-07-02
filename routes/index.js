@@ -4,7 +4,7 @@ var router = express.Router();
 router.get('/', async function (req, res, next) {
   console.log("Testing");
   
-  res.redirect('https://vishwacarrental.com');
+  //res.redirect('https://vishwacarrental.com');
   //res.render('index', { title: 'Express' });
 });
 

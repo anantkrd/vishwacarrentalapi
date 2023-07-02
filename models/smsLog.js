@@ -1,35 +1,29 @@
 
-const{Sequelize,DataTypes,Model}=require('sequelize');
-const sequelize=require('../config/database');
 
-class SmsLog extends Model{
 
-}
+//import mongoose from "mongoose";
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
+const ObjectId = Schema.ObjectId;
 
-SmsLog.init({
-    id:{
-        type:DataTypes.INTEGER,
-        autoIncrement:true,
-        primaryKey:true
-    },
-    mobileNo:DataTypes.STRING,
-    msg:DataTypes.TEXT,
-    isSent:DataTypes.ENUM('Y','N'),
-    type:DataTypes.ENUM('OTP','Booking','Payment'),
-    userType:DataTypes.ENUM('Customer','Partner','Driver','Admin'),
-    status:DataTypes.STRING,
-    reData:DataTypes.TEXT,
-    isDeleted:DataTypes.ENUM('Y','N'),
-    updatedOn:DataTypes.DATE,
-    createdOn:DataTypes.DATE
-},
-{
-    sequelize,
-    modelName:'SmsLog',
-    tableName:'vcr_sms_log',    
-    timestamps:true,
-    createdAt:false,
-    updatedAt:false
-})
+const smsLogSchema = new mongoose.Schema(
+  {
+    id:ObjectId,
+    mobileNo:{type: String,default:''},
+    msg:{type: String,default:''},
+    isSent:{type: String,default:'Y'},
+    type:{type: String,default:'OTP'},
+    userType:{type: String,default:'Customer'},
+    status:{type: String,default:''},
+    reData:{type: String,default:''},
+    
+    isDeleted: {
+      type: String,
+      default: "N",
+    }
+  },
+  { timestamps: true }
+);
 
-module.exports=SmsLog;
+module.exports = mongoose.model('vcr_sms_log', smsLogSchema);
+

@@ -1,44 +1,32 @@
-const {Sequelize,DataTypes, Model}=require('sequelize');
-const sequelize=require('../config/database');
 
-class Cabs extends Model{
 
-}
-Cabs.init({
-    id:{
-        type:DataTypes.INTEGER,
-        primaryKey:true,
-        autoIncrement:true
-    },
-    cabType:DataTypes.STRING,
-    
-    image:DataTypes.STRING,
-    images:DataTypes.TEXT,
-    ac:DataTypes.CHAR,
-    bags:DataTypes.INTEGER,
-    capacity:DataTypes.INTEGER,
-    cars:DataTypes.STRING,
-    note:DataTypes.STRING,
-    rate:DataTypes.INTEGER,
-    returnTripRate:DataTypes.INTEGER,
-    discount:DataTypes.INTEGER,
-    extraRate:DataTypes.INTEGER,   
-    PerDayKmReturn:DataTypes.INTEGER,
-    PerDayKmSingle:DataTypes.INTEGER, 
-    isDeleted: DataTypes.ENUM('N','Y'),
-    updatedTime: {
-        type: DataTypes.DATE
-      },
-    createdTime: {
-        type: DataTypes.DATE
-      }
-},{
-    // Other model options go here
-    sequelize, // We need to pass the connection instance
-    modelName: 'Cabs', // We need to choose the model name
-    tableName:'vcr_cabs',
-    timestamps:true,
-    createdAt:false,
-    updatedAt:false
-})
-module.exports=Cabs;
+//import mongoose from "mongoose";
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
+const ObjectId = Schema.ObjectId;
+
+const cabsSchema = new mongoose.Schema(
+  {
+    id:ObjectId,
+    cabType:{type: String,unique:true},
+    image:{type: String,default:''},
+    bags:{type: Number,default:0},
+    capacity:{type: Number,default:0},
+    ac:{type: String,default:'N'},
+    cars:{type: String,default:''},
+    note:{type: String,default:''},
+    rate:{type: Number,default:0},
+    returnTripRate:{type: Number,default:0},
+    discount:{type: Number,default:0},
+    extraRate:{type: Number,default:0},
+    PerDayKmReturn:{type: Number,default:0},
+    PerDayKmSingle:{type: Number,default:0},    
+    isDeleted: {
+      type: String,
+      default: "N",
+    }
+  },
+  { timestamps: true }
+);
+
+module.exports = mongoose.model('vcr_cabs', cabsSchema);

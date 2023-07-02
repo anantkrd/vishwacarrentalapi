@@ -2,7 +2,7 @@ const { json } = require('body-parser');
 const { create, getUserByMobile, sendOTP, verifyOtp, getBookings, getBookingByUser, getBookingById, getBookingSearchLog, updateAgentAmount
     , getUserByID, getAgentByID, sendSms, verifyPassword, cancelBooking } = require('./user.service');
 const { getCabs } = require('../common/cabs');
-const pool = require('../../config/database');
+//const pool = require('../../config/database');
 const jwt = require('jsonwebtoken');
 const moment = require('moment');
 const User = require('../../models/user');
@@ -17,7 +17,8 @@ module.exports = {
     getUser: async (req, res) => {
         try {
             let userId = req.query.userId;
-            const userData = await User.findOne({attributes: { exclude: ['userPassword'] } , where: { id: userId }} );
+            const userData = await User.findOne({ userId: userId },{userPassword:0});
+            //const userData = await User.findOne({attributes: { exclude: ['userPassword'] } , where: { id: userId }} );
             if (userData === null) {                
                 responce = JSON.stringify({ code: '404', message: 'User Not Found', data: '' });
                 res.status(404).send(responce)
@@ -34,11 +35,7 @@ module.exports = {
     getUserByMobile: async (req, res) => {
         
         let mobileNo = req.query.mobileNo;
-        await User.findOne({attributes: { exclude: ['userPassword'] },
-            where: {
-                mobileNo: mobileNo
-            }
-        })
+        await User.findOne({ mobileNo: mobileNo},{userPassword:0})
             .then(data => {
                 if (data !== null) {
                     responce = JSON.stringify({ code: '200', message: '', data: data });
@@ -55,7 +52,46 @@ module.exports = {
     },    
     createUser: async (req, res) => {
         try {
+                        
             
+
+            let firstName= req.body.fname;
+            let lastName= req.body.lname;
+            let mobileNo= req.body.mobileNo;
+            let email= req.body.email;
+            let userPassword= req.body.mobileNo
+            let userType= req.body.type;
+            let status= 'active';
+            findUserObj=await User.findOne().sort('-createdAt');
+            userId=1;
+            if(findUserObj==null){
+                userId=1;
+            }else{
+                userId=findUserObj.userId+1;
+            }
+            let passwordEnc= SHA256(userPassword).toString();
+            param={
+                userId:userId,
+                firstName: req.query.fname,
+                lastName: req.query.lname,
+                mobileNo: req.query.mobileNo,
+                email: req.query.email,
+                userPassword: req.query.mobileNo,
+                userType: req.query.type,
+                status: 'active'
+            }
+            
+            let userObj=await User.create(param);
+            
+            if(userObj){                
+                responce = JSON.stringify({ code: '200', message: "success", data: userObj});
+                res.status(200).send(responce);
+            }else{
+                responce = JSON.stringify({ code: '404', message: "Invalid User", data: '' });
+                res.status(500).send(responce);
+            }
+
+            /*
             const checkUser = await User.findOne({ where: { mobileNo: req.query.mobileNo } });
             if (checkUser === null) {
                 const userCollection = await User.create({
@@ -72,7 +108,7 @@ module.exports = {
             } else {
                 responce = JSON.stringify({ code: '401', message: 'User already exist with this mobile no.', data: '' });
                 res.status(404).send(responce);
-            }
+            }*/
 
         } catch (e) {
             console.log(e)
@@ -83,9 +119,19 @@ module.exports = {
     createPartner: async (req, res) => {
         try {
            
-            const checkUser = await User.findOne({ where: { mobileNo: req.body.mobileNo } });
+            const checkUser = await User.findOne({mobileNo: req.body.mobileNo },{userPassword:0}).sort({createdAt:-1});
+            //console.log("checkUser:"+JSON.stringify(checkUser));
+            userId=1;
+            const checkUserCount = await User.findOne().sort({createdAt:-1});
+            if(checkUserCount==null){
+                userId=1;
+            }else{
+                userId=checkUserCount.userId+1;
+            }
+            //console.log("userId:"+userId);
             if (checkUser === null) {
                 const userCollection = await User.create({
+                    userId:userId,
                     firstName: req.body.fname,
                     lastName: req.body.lname,
                     mobileNo: req.body.mobileNo,
@@ -94,8 +140,9 @@ module.exports = {
                     userType: req.body.type,
                     status: 'active'
                 })
+                //console.log("userCollection:"+JSON.stringify(userCollection));
                 if(userCollection!==null){
-                    let userId=userCollection.id;
+                    let userId=userCollection._id;
                     const agentDetial=await AgentDetials.create({
                         agentId:userId,
                         accountStatus:"pending"
@@ -116,7 +163,7 @@ module.exports = {
     },
     getAgentByID: async (req, res) => {
         try {
-            const agentData = await User.findOne({ attributes: { exclude: ['userPassword'] },where: { id: req.query.userId, userType: 'agent' } });
+            const agentData = await User.findOne({ _id: req.query.userId, userType: 'agent' });
             if (agentData === null) {
                 responce = JSON.stringify({ code: '404', message: 'Agent not found', data: '' });
                 res.status(404).send(responce);
@@ -132,7 +179,7 @@ module.exports = {
     sendOTP: async (req, res) => {
         try {
             let mobileNo = req.query.mobileNo
-            const checkUser = await User.findOne({ where: { mobileNo: mobileNo } });
+            const checkUser = await User.findOne({ mobileNo: mobileNo },{userPassword:0});
             if (checkUser === null) {
                 responce = JSON.stringify({ code: '404', message: 'User not found', data: '' });
                 res.status(404).send(responce)
@@ -166,14 +213,14 @@ module.exports = {
         try {
             let mobileNo = req.query.mobileNo;
             let otp = req.query.otp;
-            const checkAttepmt = await Otp.findOne({ where: { mobileNo: mobileNo, isExpired: 'N', verified: 'N' }, order: [['id', 'desc']] });
+            const checkAttepmt = await Otp.findOne({mobileNo: mobileNo, isExpired: 'N', verified: 'N'});
 
             if (checkAttepmt === null || checkAttepmt.attempt < 5) {
                 updateSmsAttemptCount(mobileNo);
                 const verifyOtp = await Otp.findOne({ where: { mobileNo: mobileNo, otp: otp } });
                 if (verifyOtp !== null) {
-                    const userData = await User.findOne({ attributes: { exclude: ['userPassword'] },where: { mobileNo: mobileNo } });
-                    const token = jwt.sign({ id: verifyOtp['id'] }, process.env.secrete);
+                    const userData = await User.findOne({  mobileNo: mobileNo },{userPassword:0});
+                    const token = jwt.sign({ _id: verifyOtp['id'] }, process.env.secrete);
                     //userData[0]['token']=token;                    
                     responce = JSON.stringify({ code: '200', message: 'Verified', data: userData });
                     res.status(200).send(responce)
@@ -197,8 +244,8 @@ module.exports = {
 
             let mobileNo = req.query.mobileNo;
             let password = req.query.userPassword;
-            var userData = await User.findOne({ attributes: { exclude: ['userPassword'] }, where: { mobileNo: mobileNo, userPassword: password, isDeleted: 'N' } });
-            if (userData === null) {
+            var userData = await User.findOne({mobileNo: mobileNo, userPassword: password, isDeleted: 'N'},{userPassword:0});
+            if (userData === null || userData.length<=0) {
                 responce = JSON.stringify({ code: '404', message: 'User not found', data: '' });
                 res.status(404).send(responce)
             } else {
@@ -210,10 +257,10 @@ module.exports = {
                 }
                 accountStatus='';
                 if(userData.userType=='agent'){
-                    agentdata=await AgentDetials.findOne({where:{agentId:userData.id}});
+                    agentdata=await AgentDetials.findOne({agentId:userData._id});
                     accountStatus=agentdata.accountStatus;
                 }
-                const token = await jwt.sign({ id: userData['id'] }, process.env.secrete);
+                const token = await jwt.sign({ _id: userData['userId'] }, process.env.secrete);
 
                 responce = JSON.stringify({ code: '200', message: 'user found', data: userData, token: token,agentStatus:accountStatus });
 
@@ -229,7 +276,7 @@ module.exports = {
     getBookingById: async (req, res) => {
         try {
             bookingId = req.query.bookingId;
-            const bookingData = await Booking.findOne({ where: { orderId: bookingId, isDeleted: 'N' } });
+            const bookingData = await Booking.findOne({orderId: bookingId, isDeleted: 'N' });
             if (bookingData === null) {
                 responce = JSON.stringify({ code: '404', message: 'Booking details not found', data: '' });
                 res.status(404).send(responce)
@@ -271,7 +318,7 @@ module.exports = {
                     canCancel = 'N';
                 }
                 let cabId = bookingData['cabId'];
-                cabsData = await Cabs.findOne({ where: { id: cabId } });
+                cabsData = await Cabs.findOne({_id: cabId });
                 let cabType = cabsData['cabType'];
                 let ac = cabsData['ac'];
                 let bags = cabsData['bags'];
@@ -325,7 +372,7 @@ module.exports = {
                 data['gadiNo'] = bookingData['gadiNo'];
                 data['status'] = bookingStatus;
                 data['tripStatus'] = status;
-                data['createdTime'] = bookingData['createdTime'];
+                data['createdTime'] = bookingData['createdAt'];
                 data['cabType'] = cabType;
                 data['ac'] = ac;
                 data['bags'] = bags;
@@ -348,7 +395,7 @@ module.exports = {
             let start = ((pageId - 1) * 10);
             let perPage = 10;
             let dataObj = [];
-            let BookingDataObj = await Booking.findAll({ where: { isDeleted: 'N' }, offset: start, limit: perPage })
+            let BookingDataObj = await Booking.findAll({isDeleted: 'N' }).sort({createdAt:-1}).skip(start).limit(perPage);
             if (BookingDataObj === null) {
                 responce = JSON.stringify({ code: '404', message: 'Booking details not found', data: '' });
                 res.status(404).send(responce);
@@ -393,7 +440,7 @@ module.exports = {
                         canCancel = 'N';
                     }
                     let cabId = bookingData['cabId'];
-                    cabsData = await Cabs.findOne({ where: { id: cabId } });
+                    cabsData = await Cabs.findOne({ where: { _id: cabId } });
                     let cabType = cabsData['cabType'];
                     let ac = cabsData['ac'];
                     let bags = cabsData['bags'];
@@ -447,7 +494,7 @@ module.exports = {
                     data['gadiNo'] = bookingData['gadiNo'];
                     data['status'] = bookingStatus;
                     data['tripStatus'] = status;
-                    data['createdTime'] = bookingData['createdTime'];
+                    data['createdTime'] = bookingData['createdAt'];
                     data['cabType'] = cabType;
                     data['ac'] = ac;
                     data['bags'] = bags;
@@ -458,7 +505,7 @@ module.exports = {
                     dataObj.push(data);
                 }
                 //});      
-                let rowCount = await Booking.count({ where: { isDeleted: 'N' } });
+                let rowCount = await Booking.find({isDeleted: 'N' }).count();
                 totalPage = rowCount / perPage;
                 totalPage = Math.ceil(totalPage);
                 responce = JSON.stringify({ code: '200', message: '', data: dataObj, rowCount: rowCount, totalPage: totalPage });
@@ -477,7 +524,7 @@ module.exports = {
             let start = ((pageId - 1) * 10);
             let perPage = 10;
             let dataObj = [];
-            let BookingDataObj = await Booking.findAll({ where: { isDeleted: 'N', userId: userId }, offset: start, limit: perPage, order: [['id', 'desc']] })
+            let BookingDataObj = await Booking.find({isDeleted: 'N', userId: userId }).sort({createdAt:-1}).skip(start).limit(perPage);
             if (BookingDataObj === null) {
                 responce = JSON.stringify({ code: '404', message: 'Booking details not found', data: '' });
                 res.status(404).send(responce);
@@ -522,7 +569,7 @@ module.exports = {
                         canCancel = 'N';
                     }
                     let cabId = bookingData['cabId'];
-                    cabsData = await Cabs.findOne({ where: { id: cabId } });
+                    cabsData = await Cabs.findOne({id: cabId});
                     let cabType = cabsData['cabType'];
                     let ac = cabsData['ac'];
                     let bags = cabsData['bags'];
@@ -576,7 +623,7 @@ module.exports = {
                     data['gadiNo'] = bookingData['gadiNo'];
                     data['status'] = bookingStatus;
                     data['tripStatus'] = status;
-                    data['createdTime'] = bookingData['createdTime'];
+                    data['createdTime'] = bookingData['createdAt'];
                     data['cabType'] = cabType;
                     data['ac'] = ac;
                     data['bags'] = bags;
@@ -587,7 +634,7 @@ module.exports = {
                     dataObj.push(data);
                 }
                 //});      
-                let rowCount = await Booking.count({ where: { isDeleted: 'N', userId: userId } });
+                let rowCount = await Booking.find({isDeleted: 'N', userId: userId }).count();
                 totalPage = rowCount / perPage;
                 totalPage = Math.ceil(totalPage);
                 responce = JSON.stringify({ code: '200', message: '', data: dataObj, rowCount: rowCount, totalPage: totalPage });
@@ -606,7 +653,7 @@ module.exports = {
             let start = ((pageId - 1) * 10);
             let perPage = 10;
             let dataObj = [];
-            let BookingLogDataObj = await SearchLog.findAll({ where: { isDeleted: 'N' }, offset: start, limit: perPage, order: [['id', 'desc']] })
+            let BookingLogDataObj = await SearchLog.find({isDeleted: 'N' }).sort({createdAt:-1}).skip(start).limit(perPage);
             if (BookingLogDataObj === null) {
                 responce = JSON.stringify({ code: '404', message: 'No Booking Log found', data: '' });
                 res.status(404).send(responce);
@@ -631,12 +678,12 @@ module.exports = {
                     data['distance'] = bookingData['distance'];
                     data['journyDistance'] = bookingData['journyDistance'];
                     data['note'] = bookingData['note'];
-                    data['updatedTime'] = bookingData['updatedTime'];
-                    data['createdTime'] = bookingData['createdTime'];
+                    data['updatedTime'] = bookingData['updatedAt'];
+                    data['createdTime'] = bookingData['createdAt'];
                     dataObj.push(data);
                 }
                 //});      
-                let rowCount = await SearchLog.count({ where: { isDeleted: 'N' } });
+                let rowCount = await SearchLog.find({isDeleted: 'N' }).count();
                 totalPage = rowCount / perPage;
                 totalPage = Math.ceil(totalPage);
                 responce = JSON.stringify({ code: '200', message: '', data: dataObj, rowCount: rowCount, totalPage: totalPage });
@@ -652,13 +699,13 @@ module.exports = {
         try {
             let bookingId = req.query.bookingId;
             let userId = req.query.userId;
-            const bookingData = await Booking.findOne({ where: { orderId: bookingId, isDeleted: 'N' } });
+            const bookingData = await Booking.findOne({orderId: bookingId, isDeleted: 'N' });
             if (bookingData === null) {
                 responce = JSON.stringify({ code: '404', message: 'No Booking Found', data: '' });
                 res.status(404).send(responce)
             } else {
                 let status = bookingData['status'];
-                id = bookingData['id'];
+                id = bookingData['_id'];
                 bookingUserId = bookingData['userId'];
                 finalAmount = bookingData['finalAmount'];
                 paid = bookingData['paid'];
@@ -691,11 +738,7 @@ module.exports = {
                         }
                     }
                     reason = 'Booking canceled by customer';
-                    await Booking.update({ status: "canceled" }, {
-                        where: {
-                            id: id
-                        }
-                    });
+                    await Booking.updateOne({_id: id},{$set:{status: "canceled" }});
                     const userCollection = await CanceledBooking.create({
                         bookingId: id,
                         orderId: bookingId,
@@ -723,26 +766,22 @@ module.exports = {
 }
 updateSmsAttemptCount = async (mobileNo) => {
     try {
-        await Otp.update({ attempt: attempt + 1 }, {
-            where: {
-                mobileNo: mobileNo,
-                isExpired: 'N',
-                verified: 'N'
-            }
-        });
+        await Otp.updateOne({
+            mobileNo: mobileNo,
+            isExpired: 'N',
+            verified: 'N'
+        },{ $set:{attempt: attempt + 1 }});
     } catch (e) {
         console.log(e);
     }
 }
 updateSmsExpire = async (mobileNo) => {
     try {
-        await Otp.update({ isExpired: 'Y' }, {
-            where: {
-                mobileNo: mobileNo,
-                isExpired: 'N',
-                verified: 'N'
-            }
-        });
+        await Otp.updateOne({
+            mobileNo: mobileNo,
+            isExpired: 'N',
+            verified: 'N'
+        },{$set:{isExpired: 'Y' }});
     } catch (e) {
         console.log(e);
     }

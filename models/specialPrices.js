@@ -1,33 +1,27 @@
-const {Sequelize,DataTypes, Model}=require('sequelize');
-const sequelize=require('../config/database');
 
-class SpecialPrices extends Model{
+//import mongoose from "mongoose";
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
+const ObjectId = Schema.ObjectId;
+
+const specialPriceSchema = new mongoose.Schema(
+  {
+    id:ObjectId,
+    cabType:{type: String,default:''},
+    startDate:{type: Date},
+    endDate:{type: Date},
+    weekDay:{type: Number,default:0},
+    rate:{type: Number,default:0},
+    returnTripRate:{type: Number,default:0},
+    extraRate:{type: Number,default:0},    
+    type:{type: String,default:'dateRange'},
     
-}
-SpecialPrices.init({
-    id:{
-        type:DataTypes.INTEGER,
-        primaryKey:true,
-        autoIncrement:true
-    },
-    cabType:DataTypes.STRING,
-    startDate:DataTypes.DATE,
-    endDate:DataTypes.DATE,
-    weekDay:DataTypes.INTEGER,
-    rate:DataTypes.INTEGER,
-    returnTripRate:DataTypes.INTEGER,
-    extraRate:DataTypes.INTEGER,
-    type:DataTypes.ENUM('dateRange','weekday'),
-    isDeleted: DataTypes.ENUM('N','Y')
-},{
-    // Other model options go here
-    sequelize, // We need to pass the connection instance
-    modelName: 'SpecialPrices', // We need to choose the model name
-    tableName:'vcr_special_prices',
-    timestamps:true,
-    createdAt:true,
-    updatedAt:true
-})
+    isDeleted: {
+      type: String,
+      default: "N",
+    }
+  },
+  { timestamps: true }
+);
 
-//CabTypes.sequelize.sync();
-module.exports=SpecialPrices;
+module.exports = mongoose.model('vcr_special_prices', specialPriceSchema);

@@ -1,30 +1,22 @@
 
-const{Sequelize,DataTypes,Model}=require('sequelize');
-const sequelize=require('../config/database');
 
-class Surge extends Model{
+//import mongoose from "mongoose";
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
+const ObjectId = Schema.ObjectId;
 
-}
+const surgeSchema = new mongoose.Schema(
+  {
+    id:ObjectId,
+    city:{type: String,unique:true,required: true},
+    location:{type: String,default:''},
+    surge:{type: String,default:''},
+    isDeleted: {
+      type: String,
+      default: "N",
+    }
+  },
+  { timestamps: true }
+);
 
-Surge.init({
-    id:{
-        type:DataTypes.INTEGER,
-        autoIncrement:true,
-        primaryKey:true
-    },
-    city:DataTypes.STRING,
-    location:DataTypes.STRING,
-    surge:DataTypes.STRING,    
-    isDeleted:DataTypes.ENUM('Y','N'),
-    updatedTime:DataTypes.DATE,
-    createdTime:DataTypes.DATE
-},
-{
-    sequelize,
-    modelName:'Surge',
-    tableName:'vcr_surge',    
-    timestamps:true,
-    createdAt:false,
-    updatedAt:false
-})
-module.exports=Surge;
+module.exports = mongoose.model('vcr_surge', surgeSchema);

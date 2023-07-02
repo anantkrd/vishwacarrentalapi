@@ -14,7 +14,7 @@ var request = require('request');
 module.exports = {
     sentAgentTripConfirmation: async (orderId, type = 'partner') => {
         try {
-            bookingData = await Booking.findOne({ where: { orderId: orderId, isDeleted: 'N' } });
+            bookingData = await Booking.findOne( { orderId: orderId, isDeleted: 'N'});
             if (bookingData == null) {
                 console.log("agent not found");
                 //responce=JSON.stringify({code:'400',message:"something went wrong",data:''});
@@ -54,7 +54,7 @@ module.exports = {
                 orderId = bookingData['orderId'];
                 if (type == 'agent') {
 
-                    agentData = await User.findOne({ where: { id: agentId } });
+                    agentData = await User.findOne({ userId: agentId });
                     if (agentData == null) {
                         console.log("agent not fount");
                     }
@@ -89,7 +89,7 @@ module.exports = {
     },
     tripCompletedsms: async (orderId, type = 'customer') => {
         
-        bookingObj = await Booking.findOne({ where: { orderId: orderId } });
+        bookingObj = await Booking.findOne({orderId: orderId});
         if (bookingObj == null) {
             console.log("Something went wrong while sending sms");
         } else {
@@ -141,7 +141,7 @@ module.exports = {
     },
     sentBookingSmsToCustomer:async(orderId,type='Customer')=>{
         try{
-            bookingObj = await Booking.findOne({ where: { payment_orderId: orderId } });
+            bookingObj = await Booking.findOne({payment_orderId: orderId});
             if (bookingObj == null) {
                 console.log("Something went wrong while sending sms");
             } else {

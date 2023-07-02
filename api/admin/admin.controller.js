@@ -12,7 +12,7 @@ const AgentCars=require('../../models/agentCars');
 const AgentDetials=require('../../models/agentDetials');
 const CabTypes=require('../../models/cabTypes');
 const SpecailPrices=require('../../models/specialPrices');
-const { Sequelize, DataTypes, Model, where } = require('sequelize');
+//const { Sequelize, DataTypes, Model, where } = require('sequelize');
 const Surge = require('../../models/surge');
 module.exports = {
 
@@ -22,8 +22,10 @@ module.exports = {
             let start = ((pageId - 1) * 10);
             let perPage = 10;
             let dataObj = [];
-            const Op = Sequelize.Op;
-            let BookingDataObj = await Booking.findAll({ where: { isDeleted: 'N',status: { [Op.or]: ['waiting'] } }, offset: start, limit: perPage, order: [['id', 'desc']] })
+            //const Op = Sequelize.Op;
+            let BookingDataObj = await Booking.find({ isDeleted: 'N',status:'waiting' });
+            console.log("BookingDataObj=="+JSON.stringify(BookingDataObj));
+            //let BookingDataObj = await Booking.find({ where: { isDeleted: 'N',status: { [Op.or]: ['waiting'] } }, offset: start, limit: perPage, order: [['id', 'desc']] })
             if (BookingDataObj === null) {
                 responce = JSON.stringify({ code: '404', message: 'Booking details not found', data: '' });
                 res.status(404).send(responce);
@@ -68,7 +70,7 @@ module.exports = {
                         canCancel = 'N';
                     }
                     let cabId = bookingData['cabId'];
-                    cabsData = await Cabs.findOne({ where: { id: cabId } });
+                    cabsData = await Cabs.findOne({ where: { _id: cabId } });
                     let cabType = cabsData['cabType'];
                     let ac = cabsData['ac'];
                     let bags = cabsData['bags'];
@@ -125,7 +127,7 @@ module.exports = {
                     data['gadiNo'] = bookingData['gadiNo'];
                     data['status'] = bookingStatus;
                     data['tripStatus'] = status;
-                    data['createdTime'] = bookingData['createdTime'];
+                    data['createdTime'] = bookingData['createdAt'];
                     data['cabType'] = cabType;
                     data['ac'] = ac;
                     data['bags'] = bags;
@@ -136,7 +138,7 @@ module.exports = {
                     dataObj.push(data);
                 }
                 //});      
-                let rowCount = await Booking.count({ where: { isDeleted: 'N',status: { [Op.or]: ['pending', 'waiting'] } } });
+                let rowCount = await Booking.count({ where: { isDeleted: 'N',status: { $or: ['pending', 'waiting'] } } });
                 totalPage = rowCount / perPage;
                 totalPage = Math.ceil(totalPage);
                 responce = JSON.stringify({ code: '200', message: '', data: dataObj, rowCount: rowCount, totalPage: totalPage });
@@ -154,7 +156,8 @@ module.exports = {
             let start = ((pageId - 1) * 10);
             let perPage = 10;
             let dataObj = [];
-            let BookingDataObj = await Booking.findAll({ where: { isDeleted: 'N' }, offset: start, limit: perPage, order: [['id', 'desc']] })
+            let BookingDataObj = await Booking.find({ isDeleted: 'N'}).sort({createdAt:-1}).skip(start).limit(perPage);
+            //let BookingDataObj = await Booking.findAll({ where: { isDeleted: 'N' }, offset: start, limit: perPage, order: [['id', 'desc']] })
             if (BookingDataObj === null) {
                 responce = JSON.stringify({ code: '404', message: 'Booking details not found', data: '' });
                 res.status(404).send(responce);
@@ -199,7 +202,7 @@ module.exports = {
                         canCancel = 'N';
                     }
                     let cabId = bookingData['cabId'];
-                    cabsData = await Cabs.findOne({ where: { id: cabId } });
+                    cabsData = await Cabs.findOne({ where: { _id: cabId } });
                     let cabType = cabsData['cabType'];
                     let ac = cabsData['ac'];
                     let bags = cabsData['bags'];
@@ -256,7 +259,7 @@ module.exports = {
                     data['gadiNo'] = bookingData['gadiNo'];
                     data['status'] = bookingStatus;
                     data['tripStatus'] = status;
-                    data['createdTime'] = bookingData['createdTime'];
+                    data['createdTime'] = bookingData['createdAt'];
                     data['cabType'] = cabType;
                     data['ac'] = ac;
                     data['bags'] = bags;
@@ -281,12 +284,13 @@ module.exports = {
     },
     getCompletedBookings: async (req, res) => {
         try {
-            const Op = Sequelize.Op;
+            //const Op = Sequelize.Op;
             let pageId = req.query.pageId;
             let start = ((pageId - 1) * 10);
             let perPage = 10;
             let dataObj = [];
-            let BookingDataObj = await Booking.findAll({ where: { isDeleted: 'N', status: 'completed', driverId: { [Op.or]: 0 }, carId: { [Op.gt]: 0 } }, offset: start, limit: perPage, order: [['id', 'desc']] })
+            let BookingDataObj = await Booking.find({ isDeleted: 'N', status: 'completed', carId: { $gt: 0 },driverId: { $gt: 0 }}).sort({createdAt:-1}).skip(start).limit(perPage);
+            //let BookingDataObj1 = await Booking.findAll({ where: { isDeleted: 'N', status: 'completed', driverId: { [Op.or]: 0 }, carId: { [Op.gt]: 0 } }, offset: start, limit: perPage, order: [['id', 'desc']] })
             if (BookingDataObj === null) {
                 responce = JSON.stringify({ code: '404', message: 'Booking details not found', data: '' });
                 res.status(404).send(responce);
@@ -331,7 +335,7 @@ module.exports = {
                         canCancel = 'N';
                     }
                     let cabId = bookingData['cabId'];
-                    cabsData = await Cabs.findOne({ where: { id: cabId } });
+                    cabsData = await Cabs.findOne({ where: { _id: cabId } });
                     let cabType = cabsData['cabType'];
                     let ac = cabsData['ac'];
                     let bags = cabsData['bags'];
@@ -385,7 +389,7 @@ module.exports = {
                     data['gadiNo'] = bookingData['gadiNo'];
                     data['status'] = bookingStatus;
                     data['tripStatus'] = status;
-                    data['createdTime'] = bookingData['createdTime'];
+                    data['createdTime'] = bookingData['createdAt'];
                     data['cabType'] = cabType;
                     data['ac'] = ac;
                     data['bags'] = bags;
@@ -396,7 +400,7 @@ module.exports = {
                     dataObj.push(data);
                 }
                 //});      
-                let rowCount = await Booking.count({ where: { isDeleted: 'N', status: 'completed', driverId: { [Op.gt]: 0 }, carId: { [Op.gt]: 0 } } });
+                let rowCount = await Booking.find({isDeleted: 'N', status: 'completed', driverId: { $gt: 0 }, carId: { $gt: 0 } }).count();
                 totalPage = rowCount / perPage;
                 totalPage = Math.ceil(totalPage);
                 responce = JSON.stringify({ code: '200', message: '', data: dataObj, rowCount: rowCount, totalPage: totalPage });
@@ -410,13 +414,14 @@ module.exports = {
     },
     getReadyBookings: async (req, res) => {
         try {
-            const Op = Sequelize.Op;
+            //const Op = Sequelize.Op;
             //driverId>0  and carId>0
             let pageId = req.query.pageId;
             let start = ((pageId - 1) * 10);
             let perPage = 10;
             let dataObj = [];
-            let BookingDataObj = await Booking.findAll({ where: { isDeleted: 'N', status: 'confirm', driverId: { [Op.gt]: 0 }, carId: { [Op.gt]: 0 } }, offset: start, limit: perPage, order: [['id', 'desc']] })
+            let BookingDataObj = await Booking.find({ isDeleted: 'N', status: 'confirm', carId: { $gt: 0 },driverId: { $gt: 0 }}).sort({createdAt:-1}).skip(start).limit(perPage);
+            //let BookingDataObj = await Booking.findAll({ where: { isDeleted: 'N', status: 'confirm', driverId: { [Op.gt]: 0 }, carId: { [Op.gt]: 0 } }, offset: start, limit: perPage, order: [['id', 'desc']] })
             if (BookingDataObj === null) {
                 responce = JSON.stringify({ code: '404', message: 'Booking details not found', data: '' });
                 res.status(404).send(responce);
@@ -461,7 +466,7 @@ module.exports = {
                         canCancel = 'N';
                     }
                     let cabId = bookingData['cabId'];
-                    cabsData = await Cabs.findOne({ where: { id: cabId } });
+                    cabsData = await Cabs.findOne({ where: { _id: cabId } });
                     let cabType = cabsData['cabType'];
                     let ac = cabsData['ac'];
                     let bags = cabsData['bags'];
@@ -515,7 +520,7 @@ module.exports = {
                     data['gadiNo'] = bookingData['gadiNo'];
                     data['status'] = bookingStatus;
                     data['tripStatus'] = status;
-                    data['createdTime'] = bookingData['createdTime'];
+                    data['createdTime'] = bookingData['createdAt'];
                     data['cabType'] = cabType;
                     data['ac'] = ac;
                     data['bags'] = bags;
@@ -526,7 +531,7 @@ module.exports = {
                     dataObj.push(data);
                 }
                 //});      
-                let rowCount = await Booking.count({ where: { isDeleted: 'N', status: 'confirm', driverId: { [Op.gt]: 0 }, carId: { [Op.gt]: 0 } } });
+                let rowCount = await Booking.count({ where: { isDeleted: 'N', status: 'confirm', driverId: { $gt: 0 }, carId: { $gt: 0 } } });
                 totalPage = rowCount / perPage;
                 totalPage = Math.ceil(totalPage);
                 responce = JSON.stringify({ code: '200', message: '', data: dataObj, rowCount: rowCount, totalPage: totalPage });
@@ -540,13 +545,14 @@ module.exports = {
     },
     getConfirmBookings: async (req, res) => {
         try {
-            const Op = Sequelize.Op;
+            //const Op = Sequelize.Op;
             //driverId>0  and carId>0
             let pageId = req.query.pageId;
             let start = ((pageId - 1) * 5);
             let perPage = 5;
             let dataObj = [];
-            let BookingDataObj = await Booking.findAll({ where: { isDeleted: 'N', status: 'confirm', agentId: { [Op.gt]: 0 }, driverId: 0, carId: 0 }, offset: start, limit: perPage, order: [['id', 'desc']] })
+            let BookingDataObj = await Booking.find({ isDeleted: 'N', status: 'confirm',driverId:0,carId:0, agentId: { $gt: 0 }}).sort({createdAt:-1}).skip(start).limit(perPage);
+            //let BookingDataObj = await Booking.findAll({ where: { isDeleted: 'N', status: 'confirm', agentId: { [Op.gt]: 0 }, driverId: 0, carId: 0 }, offset: start, limit: perPage, order: [['id', 'desc']] })
             if (BookingDataObj === null) {
                 responce = JSON.stringify({ code: '404', message: 'Booking details not found', data: '' });
                 res.status(404).send(responce);
@@ -591,7 +597,7 @@ module.exports = {
                         canCancel = 'N';
                     }
                     let cabId = bookingData['cabId'];
-                    cabsData = await Cabs.findOne({ where: { id: cabId } });
+                    cabsData = await Cabs.findOne({ where: { _id: cabId } });
                     let cabType = cabsData['cabType'];
                     let ac = cabsData['ac'];
                     let bags = cabsData['bags'];
@@ -645,7 +651,7 @@ module.exports = {
                     data['gadiNo'] = bookingData['gadiNo'];
                     data['status'] = bookingStatus;
                     data['tripStatus'] = status;
-                    data['createdTime'] = bookingData['createdTime'];
+                    data['createdTime'] = bookingData['createdAt'];
                     data['cabType'] = cabType;
                     data['ac'] = ac;
                     data['bags'] = bags;
@@ -656,7 +662,7 @@ module.exports = {
                     dataObj.push(data);
                 }
                 //});      
-                let rowCount = await Booking.count({ where: { isDeleted: 'N', status: 'confirm', agentId: { [Op.gt]: 0 }, driverId: 0, carId: 0 } });
+                let rowCount = await Booking.count({ where: { isDeleted: 'N', status: 'confirm', agentId: { $gt: 0 }, driverId: 0, carId: 0 } });
                 totalPage = rowCount / perPage;
                 totalPage = Math.ceil(totalPage);
                 responce = JSON.stringify({ code: '200', message: '', data: dataObj, rowCount: rowCount, totalPage: totalPage });
@@ -670,14 +676,14 @@ module.exports = {
     },
     getWaitingForAgentBookings: async (req, res) => {
         try {
-            const Op = Sequelize.Op;
+            //const Op = Sequelize.Op;
             //driverId>0  and carId>0
             let pageId = req.query.pageId;
             let start = ((pageId - 1) * 10);
             let perPage = 10;
             let dataObj = [];
-
-            let BookingDataObj = await Booking.findAll({ where: { isDeleted: 'N', status: 'waiting', agentPrice: { [Op.gt]: 0 }, agentId: 0 }, offset: start, limit: perPage, order: [['id', 'desc']] })
+            let BookingDataObj = await Booking.find({ isDeleted: 'N', status: 'waiting',agentId:0, agentPrice: { $gt: 0 }}).sort({createdAt:-1}).skip(start).limit(perPage);
+            //let BookingDataObj = await Booking.findAll({ where: { isDeleted: 'N', status: 'waiting', agentPrice: { [Op.gt]: 0 }, agentId: 0 }, offset: start, limit: perPage, order: [['id', 'desc']] })
             if (BookingDataObj === null) {
                 responce = JSON.stringify({ code: '404', message: 'Booking details not found', data: '' });
                 res.status(404).send(responce);
@@ -722,7 +728,7 @@ module.exports = {
                         canCancel = 'N';
                     }
                     let cabId = bookingData['cabId'];
-                    cabsData = await Cabs.findOne({ where: { id: cabId } });
+                    cabsData = await Cabs.findOne({ where: { _id: cabId } });
                     let cabType = cabsData['cabType'];
                     let ac = cabsData['ac'];
                     let bags = cabsData['bags'];
@@ -776,7 +782,7 @@ module.exports = {
                     data['gadiNo'] = bookingData['gadiNo'];
                     data['status'] = bookingStatus;
                     data['tripStatus'] = status;
-                    data['createdTime'] = bookingData['createdTime'];
+                    data['createdTime'] = bookingData['createdAt'];
                     data['cabType'] = cabType;
                     data['ac'] = ac;
                     data['bags'] = bags;
@@ -787,7 +793,7 @@ module.exports = {
                     dataObj.push(data);
                 }
                 //});      
-                let rowCount = await Booking.count({ where: { isDeleted: 'N', status: 'waiting', agentPrice: { [Op.gt]: 0 }, agentId: 0 } });
+                let rowCount = await Booking.count({ where: { isDeleted: 'N', status: 'waiting', agentPrice: { $gt: 0 }, agentId: 0 } });
                 totalPage = rowCount / perPage;
                 totalPage = Math.ceil(totalPage);
                 responce = JSON.stringify({ code: '200', message: '', data: dataObj, rowCount: rowCount, totalPage: totalPage });
@@ -803,7 +809,7 @@ module.exports = {
         try {
             amount = req.query.amount;
             bookingId = req.query.bookingId;
-            updateBooking = await Booking.update({ agentPrice: amount }, { where: { orderId: bookingId } });
+            updateBooking = await Booking.updateOne( { orderId: bookingId },{ $set:{agentPrice: amount} });
             responce = JSON.stringify({ code: '200', message: 'Amount updated', data: updateBooking });
             res.status(200).send(responce);
         } catch (e) {
@@ -821,9 +827,12 @@ module.exports = {
             //let rowCount = await AgentDetials.count({ where: { isDeleted: 'N' }});
             totalPage = rowCount / perPage;
             totalPage = Math.ceil(totalPage);
-            let agentData = await User.findAll({include: {model:AgentDetials}, attributes: {exclude: ['userPassword']}, where: { isDeleted: 'N', userType: 'agent' }, offset: start, limit: perPage, order: [['id', 'desc']]  });
+            let agentData = await User.find({ isDeleted: 'N', userType: 'agent'}).sort({createdAt:-1}).skip(start).limit(perPage);
+            
+            //let agentData = await User.find({include: {model:AgentDetials}, attributes: {exclude: ['userPassword']}, where: { isDeleted: 'N', userType: 'agent' }, offset: start, limit: perPage, order: [['id', 'desc']]  });
             //let agentData = await AgentDetials.findAll({include: {model:User,attributes: {exclude: ['userPassword']}}, where: { isDeleted: 'N' }, offset: start, limit: perPage, order: [['id', 'desc']]  });
             if (agentData !== null) {
+                
                 responce = JSON.stringify({ code: '200', message: 'agents', data: agentData, rowCount: rowCount, totalPage: totalPage });
                 res.status(200).send(responce);
             } else {
@@ -839,9 +848,12 @@ module.exports = {
     getAgentById: async (req, res) => {
         try {
             agentId = req.query.agentId;
-            let agentData = await User.findOne({include: {model:AgentDetials}, where: { isDeleted: 'N', id: agentId, userType: 'agent' } });
-            if (agentData !== null) {
-                responce = JSON.stringify({ code: '200', message: 'agent details', data: agentData });
+            //let agentData = await User.findOne({include: {model:AgentDetials}, where: { isDeleted: 'N', id: agentId, userType: 'agent' } });
+            let userData = await User.findOne({isDeleted: 'N', _id: agentId, userType: 'agent' } );
+            if (userData !== null) {
+                agentId=userData._id;
+                const agentData = await AgentDetials.findOne({ agentId: agentId });
+                responce = JSON.stringify({ code: '200', message: 'agent details', data: userData,agentData:agentData });
                 res.status(200).send(responce);
             } else {
                 responce = JSON.stringify({ code: '404', message: 'No agent found', data: '' });
@@ -856,7 +868,7 @@ module.exports = {
     getAgentByMobileNo: async (req, res) => {
         try {
             mobileNo = req.query.mobileNo;
-            let agentData = await User.findOne({ where: { isDeleted: 'N', id: mobileNo, userType: 'agent' } });
+            let agentData = await User.findOne({ isDeleted: 'N', mobileNo: mobileNo, userType: 'agent'  });
             if (agentData !== null) {
                 responce = JSON.stringify({ code: '200', message: 'agent details', data: agentData });
                 res.status(200).send(responce);
@@ -874,7 +886,7 @@ module.exports = {
         try {
             agentId = req.query.agentId;
             bookingId = req.query.bookingId;
-            checckBooking = await Booking.findOne({ where: { orderId: bookingId } });
+            checckBooking = await Booking.findOne({ orderId: bookingId });
             if (checckBooking === null) {
                 responce = JSON.stringify({ code: '404', message: 'Bookign not found', data: '' });
                 res.status(404).send(responce);
@@ -915,25 +927,24 @@ module.exports = {
     updateCab: async (req, res) => {
         try {
             
-            updateCab= await Cabs.update({
-            cabType:req.body.cabType,
-            image:req.body.cabImage,
-            ac: req.body.ac,
-            bags: req.body.bags,
-            capacity: req.body.capacity,
-            cars: req.body.cars,
-            note: '',
-            rate: req.body.rate,
-            returnTripRate: req.body.returTripRate,
-            discount: req.body.discount,
-            extraRate: req.body.extraRate,
-            PerDayKmReturn: req.body.perDayKmReturn,
-            PerDayKmSingle: req.body.perDayKmSingle
-            }, {
-                where: {
-                    id: req.body.cabId
-                }
-            });
+            
+            updateCab= await Cabs.updateOne(
+                {"_id": req.body.cabId}, 
+                {$set: {
+                    cabType:req.body.cabType,
+                    image:req.body.cabImage,
+                    ac: req.body.ac,
+                    bags: req.body.bags,
+                    capacity: req.body.capacity,
+                    cars: req.body.cars,
+                    note: '',
+                    rate: req.body.rate,
+                    returnTripRate: req.body.returTripRate,
+                    discount: req.body.discount,
+                    extraRate: req.body.extraRate,
+                    PerDayKmReturn: req.body.perDayKmReturn,
+                    PerDayKmSingle: req.body.perDayKmSingle
+                    }})
             responce = JSON.stringify({ code: '200', message: "Cab updated successfully", data: updateCab });
             res.status(200).send(responce);
         } catch (e) {
@@ -944,9 +955,14 @@ module.exports = {
     },
     addCab: async (req, res) => {
         try {
-            
+            console.log("req.body.cabType:="+req.body.cabType);
+            if(req.body.cabType=="" || req.body.cabType==null)
+            {
+                console.log("Invalid data: cab type not defined")
+            }
+            cabType=req.body.cabType;
             cabObj = await Cabs.create({
-                cabType:req.body.cabType,
+                cabType:cabType,
                 image:req.body.cabImage,
                 ac: req.body.ac,
                 bags: req.body.bags,
@@ -959,7 +975,8 @@ module.exports = {
                 extraRate: req.body.extraRate,
                 PerDayKmReturn: req.body.perDayKmReturn,
                 PerDayKmSingle: req.body.perDayKmSingle
-            },{ fields: ["cabType","ac", "bags","capacity","cars","note","rate","returnTripRate","discount","extraRate","PerDayKmReturn","PerDayKmSingle","image"] });
+            });
+            console.log("add Cab:"+cabObj);
             if (cabObj === null) {
                 responce = JSON.stringify({ code: '404', message: "something went wrong", data: '' });
                 res.status(404).send(responce);
@@ -979,10 +996,11 @@ module.exports = {
             let start = ((pageId - 1) * 10);
             let perPage = 10;
             console.log("==========================Cabs===============")
-            cabObj = await Cabs.findAll({ where: { isDeleted: 'N' }, order: [['id', 'desc']] });
+            let cabObj = await Cabs.find({ isDeleted: 'N'}).sort({createdAt:-1});
+            //cabObj = await Cabs.findAll({ where: { isDeleted: 'N' }, order: [['id', 'desc']] });
             console.log("==========================responce==============="+JSON.stringify(cabObj));
-            if (cabObj === null) {
-                responce = JSON.stringify({ code: '404', message: "something went wrong", data: '' });
+            if (cabObj === null || cabObj.length<=0) {
+                responce = JSON.stringify({ code: '404', message: "No record found", data: '' });
                 res.status(404).send(responce);
             } else {
                 let rowCount = 10;//await Surge.count({ where: { isDeleted: 'N' } });
@@ -1003,8 +1021,9 @@ module.exports = {
             let pageId = req.query.pageId;
             let start = ((pageId - 1) * 10);
             let perPage = 10;
-            cabObj = await CabTypes.findAll({ where: { isDeleted: 'N' }, order: [['id', 'desc']] });
-            if (cabObj === null) {
+            let cabObj = await CabTypes.find({ isDeleted: 'N'}).sort({createdAt:-1});
+            //cabObj = await CabTypes.findAll({ where: { isDeleted: 'N' }, order: [['id', 'desc']] });
+            if (cabObj === null || cabObj.length<=0) {
                 responce = JSON.stringify({ code: '404', message: "something went wrong", data: '' });
                 res.status(404).send(responce);
             } else {
@@ -1026,7 +1045,7 @@ module.exports = {
             let cabId = req.query.cabId;
             let start = ((pageId - 1) * 10);
             let perPage = 10;
-            cabObj = await Cabs.findOne({ where: { isDeleted: 'N', id: cabId } });
+            cabObj = await Cabs.findOne({isDeleted: 'N', _id: cabId});
             if (cabObj === null) {
                 responce = JSON.stringify({ code: '404', message: "something went wrong", data: '' });
                 res.status(404).send(responce);
@@ -1044,7 +1063,7 @@ module.exports = {
         try{
             let userId = req.query.userId;
             let cabId = req.query.cabId;
-            deleteObj=await Cabs.update({isDeleted:'Y'},{where:{id:cabId}});
+            deleteObj=await Cabs.updateOne({_id:cabId},{$set:{isDeleted:'Y'}});
             responce = JSON.stringify({ code: '200', message: "Cab deleted successfully", data: deleteObj });
             res.status(200).send(responce);
 
@@ -1066,12 +1085,12 @@ module.exports = {
                 surgeObj = await Surge.create({
                     location: req.body.cityName,
                     surge: surgedata
-                },{ fields: ["location","surge"] });
+                });
             } else {
                 surgeObj = await Surge.create({
                     city: req.body.cityName,
                     surge: surgedata
-                },{ fields: ["city","surge"] });
+                });
             }
             if (surgeObj === null) {
                 responce = JSON.stringify({ code: '404', message: "something went wrong", data: '' });
@@ -1091,14 +1110,11 @@ module.exports = {
             //surgedata='{"Sedan":'+req.body.sedanSurge+',"SUVErtiga":'+req.body.ertigaSurga+',"Innova":'+req.body.innovaSurge+',"InnovaCrysta":'+req.body.innovaCrystaSurge+',"other":'+req.body.surge+'}';
             let surgedata=req.body.surgedata;
             surgedata=JSON.stringify(surgedata);
-            updateObj=await Surge.update({
+            updateObj=await Surge.updateOne({_id: req.body.surgeId },{$set:{
                 city: req.body.cityName,
                 surge: surgedata
-            }, {
-                where: {
-                    id: req.body.surgeId
-                }
-            });
+            }}
+            );
 
             responce = JSON.stringify({ code: '200', message: "Cab updated successfully", data: updateObj});
             res.status(200).send(responce);
@@ -1113,8 +1129,8 @@ module.exports = {
             let pageId = req.query.pageId;
             let start = ((pageId - 1) * 10);
             let perPage = 10;
-
-            surgeObj = await Surge.findAll({ where: { isDeleted: 'N' }, offset: start, limit: perPage, order: [['id', 'desc']] });
+            
+            surgeObj = await Surge.find({isDeleted: 'N'}).sort({createdAt:-1}).skip(start).limit(perPage);
 
             if (surgeObj === null) {
                 responce = JSON.stringify({ code: '404', message: "No record found", data: '' });
@@ -1136,7 +1152,7 @@ module.exports = {
         try {
             let surgeId = req.query.surgeId;
             
-            surgeObj = await Surge.findOne({ where: { isDeleted: 'N', id: surgeId } });
+            surgeObj = await Surge.findOne({isDeleted: 'N', _id: surgeId });
 
             if (surgeObj === null) {
                 responce = JSON.stringify({ code: '404', message: "something went wrong", data: '' });
@@ -1155,7 +1171,7 @@ module.exports = {
         try{
             let userId = req.query.userId;
             let surgeId = req.query.surgeId;
-            deleteObj=await Surge.destroy({where:{id:surgeId}});
+            deleteObj=await Surge.updateOne({_id:surgeId},{$set:{isDeleted:'Y'}});
             responce = JSON.stringify({ code: '200', message: "Cab deleted successfully", data: deleteObj });
             res.status(200).send(responce);
 
@@ -1170,7 +1186,9 @@ module.exports = {
             let pageId = req.query.pageId;
             let start = ((pageId - 1) * 10);
             let perPage = 10;
-            let agentData = await AgentCars.findAll({include: {model:User,attributes: {exclude: ['userPassword']}}, where: { isDeleted: 'N'},offset: start, limit: perPage, order: [['id', 'desc']] });
+            
+            let agentData = await AgentCars.find({isDeleted: 'N'}).sort({createdAt:-1}).skip(start).limit(perPage);
+            //let agentData = await AgentCars.findAll({include: {model:User,attributes: {exclude: ['userPassword']}}, where: { isDeleted: 'N'},offset: start, limit: perPage, order: [['id', 'desc']] });
             if (agentData !== null) {
                 let rowCount = await AgentCars.count({ where: { isDeleted: 'N'}});
                 totalPage = rowCount / perPage;
@@ -1193,8 +1211,8 @@ module.exports = {
             let pageId = req.query.pageId;
             let start = ((pageId - 1) * 10);
             let perPage = 10;
-            let agentData = await User.findAll({ where: { isDeleted: 'N', userType: 'driver' }, offset: start, limit: perPage, order: [['id', 'desc']]  });
-            let rowCount = await User.count({ where: { isDeleted: 'N', userType: 'driver' } });
+            let agentData = await User.find({ isDeleted: 'N', userType: 'driver' }).sort({createdAt:-1}).skip(start).limit(perPage);
+            let rowCount = await User.find({isDeleted: 'N', userType: 'driver' }).count();
             totalPage = rowCount / perPage;
             totalPage = Math.ceil(totalPage);
             if (agentData !== null) {
@@ -1237,7 +1255,7 @@ module.exports = {
             driverId=req.body.driverId;
             let status=req.body.status;
             if(status=='approved'){
-                userObj=await User.update({status:'active'},{where:{id:driverId}});
+                userObj=await User.updateOne({_id:driverId},{$set:{status:'active'}});
                 if(userObj==null){
                     responce = JSON.stringify({ code: '404', message: 'Driver Not found', data: '' });
                     res.status(404).send(responce);
@@ -1245,7 +1263,7 @@ module.exports = {
                 responce = JSON.stringify({ code: '200', message: 'Driver Approved', data: '' });
                 res.status(200).send(responce);
             }else if(status=='block'){
-                userObj=await User.update({status:'blocked'},{where:{id:driverId}});
+                userObj=await User.updateOne({id:driverId},{$set:{status:'blocked'}});
                 if(userObj==null){
                     responce = JSON.stringify({ code: '404', message: 'Driver Not found', data: '' });
                     res.status(404).send(responce);
@@ -1253,7 +1271,7 @@ module.exports = {
                 responce = JSON.stringify({ code: '200', message: 'Driver Blocked', data: '' });
                 res.status(200).send(responce);
             }else if(status=='delete'){
-                userObj=await User.update({status:'inactive',isDeleted:'Y'},{where:{id:driverId}});
+                userObj=await User.updateOne({id:driverId},{$set:{status:'inactive',isDeleted:'Y'}});
                 if(userObj==null){
                     responce = JSON.stringify({ code: '404', message: 'Driver Not found', data: '' });
                     res.status(404).send(responce);
@@ -1275,8 +1293,8 @@ module.exports = {
             userId=req.body.userId;
             carId=req.body.carId;
             let status=req.body.status;
-            if(status=='approved'){
-                userObj=await AgentCars.update({status:'active'},{where:{id:carId}});
+            if(status=='approved'){ 
+                userObj=await AgentCars.updateOne({id:carId},{$set:{status:'active'}});
                 if(userObj==null){
                     responce = JSON.stringify({ code: '404', message: 'Car Not found', data: '' });
                     res.status(404).send(responce);
@@ -1284,7 +1302,7 @@ module.exports = {
                 responce = JSON.stringify({ code: '200', message: 'Car Approved', data: '' });
                 res.status(200).send(responce);
             }else if(status=='invalid'){
-                userObj=await AgentCars.update({status:'pending'},{where:{id:carId}});
+                userObj=await AgentCars.updateOne({id:carId},{$set:{status:'pending'}});
                 if(userObj==null){
                     responce = JSON.stringify({ code: '404', message: 'Car Not found', data: '' });
                     res.status(404).send(responce);
@@ -1292,7 +1310,7 @@ module.exports = {
                 responce = JSON.stringify({ code: '200', message: 'Car Blocked', data: '' });
                 res.status(200).send(responce);
             }else if(status=='delete'){
-                userObj=await AgentCars.update({isDeleted:'Y'},{where:{id:carId}});
+                userObj=await AgentCars.updateOne({id:carId},{$set:{isDeleted:'Y'}});
                 if(userObj==null){
                     responce = JSON.stringify({ code: '404', message: 'Car Not found', data: '' });
                     res.status(404).send(responce);
@@ -1317,25 +1335,25 @@ module.exports = {
             let type=req.body.type;
             if(status=='approve'){
                 if(type=='company'){
-                    agentObj=await AgentDetials.update({companyVerified:'Y'},{where:{agentId:agentId}});
+                    agentObj=await AgentDetials.updateOne({agentId:agentId},{$set:{companyVerified:'Y'}});
                     if(agentObj==null){
                         responce = JSON.stringify({ code: '404', message: 'something went wrong plese try after sometime', data: '' });
                         res.status(404).send(responce);
                     }
                 }else if(type=='addhar'){
-                    agentObj=await AgentDetials.update({adharVerified:'Y'},{where:{agentId:agentId}});
+                    agentObj=await AgentDetials.updateOne({agentId:agentId},{$set:{adharVerified:'Y'}});
                     if(agentObj==null){
                         responce = JSON.stringify({ code: '404', message: 'something went wrong plese try after sometime', data: '' });
                         res.status(404).send(responce);
                     }
                 }else if(type=='license'){
-                    agentObj=await AgentDetials.update({licenseVerified:'Y'},{where:{agentId:agentId}});
+                    agentObj=await AgentDetials.updateOne({agentId:agentId},{$set:{licenseVerified:'Y'}});
                     if(agentObj==null){
                         responce = JSON.stringify({ code: '404', message: 'something went wrong plese try after sometime', data: '' });
                         res.status(404).send(responce);
                     }
                 }else if(type=='rc'){
-                    agentObj=await AgentDetials.update({rcVerified:'Y'},{where:{agentId:agentId}});
+                    agentObj=await AgentDetials.updateOne({agentId:agentId},{$set:{rcVerified:'Y'}});
                     if(agentObj==null){
                         responce = JSON.stringify({ code: '404', message: 'something went wrong plese try after sometime', data: '' });
                         res.status(404).send(responce);
@@ -1346,25 +1364,25 @@ module.exports = {
             }else if(status=='invalid'){
                 
                 if(type=='company'){
-                    agentObj=await AgentDetials.update({companyVerified:'N',accountStatus:'pending'},{where:{agentId:agentId}});
+                    agentObj=await AgentDetials.updateOne({agentId:agentId},{$set:{companyVerified:'N',accountStatus:'pending'}});
                     if(agentObj==null){
                         responce = JSON.stringify({ code: '404', message: 'something went wrong plese try after sometime', data: '' });
                         res.status(404).send(responce);
                     }
                 }else if(type=='addhar'){
-                    agentObj=await AgentDetials.update({adharVerified:'N',accountStatus:'pending'},{where:{agentId:agentId}});
+                    agentObj=await AgentDetials.updateOne({agentId:agentId},{$set:{adharVerified:'N',accountStatus:'pending'}});
                     if(agentObj==null){
                         responce = JSON.stringify({ code: '404', message: 'something went wrong plese try after sometime', data: '' });
                         res.status(404).send(responce);
                     }
                 }else if(type=='license'){
-                    agentObj=await AgentDetials.update({licenseVerified:'N',accountStatus:'pending'},{where:{agentId:agentId}});
+                    agentObj=await AgentDetials.updateOne({agentId:agentId},{$set:{licenseVerified:'N',accountStatus:'pending'}});
                     if(agentObj==null){
                         responce = JSON.stringify({ code: '404', message: 'something went wrong plese try after sometime', data: '' });
                         res.status(404).send(responce);
                     }
                 }else if(type=='rc'){
-                    agentObj=await AgentDetials.update({rcVerified:'N',accountStatus:'pending'},{where:{agentId:agentId}});
+                    agentObj=await AgentDetials.updateOne({agentId:agentId},{$set:{rcVerified:'N',accountStatus:'pending'}});
                     if(agentObj==null){
                         responce = JSON.stringify({ code: '404', message: 'something went wrong plese try after sometime', data: '' });
                         res.status(404).send(responce);
@@ -1373,7 +1391,7 @@ module.exports = {
                 responce = JSON.stringify({ code: '200', message: 'Status updated', data: '' });
                 res.status(200).send(responce);
             }else if(status=='delete'){
-                userObj=await AgentCars.update({isDeleted:'Y'},{where:{id:carId}});
+                userObj=await AgentCars.updateOne({id:carId},{$set:{isDeleted:'Y'}});
                 if(userObj==null){
                     responce = JSON.stringify({ code: '404', message: 'Car Not found', data: '' });
                     res.status(404).send(responce);
@@ -1396,19 +1414,19 @@ module.exports = {
             agentId=req.body.agentId;
             let status=req.body.status;
             if(status=='approve'){
-                agentObj=await AgentDetials.update({accountStatus:'active'},{where:{agentId:agentId}});
+                agentObj=await AgentDetials.updateOne({agentId:agentId},{$set:{accountStatus:'active'}});
                 if(agentObj==null){
                     responce = JSON.stringify({ code: '404', message: 'something went wrong plese try after sometime', data: '' });
                     res.status(404).send(responce);
                 }
             }else if(status=='deactivate'){
-                agentObj=await AgentDetials.update({accountStatus:'pending'},{where:{agentId:agentId}});
+                agentObj=await AgentDetials.updateOne({agentId:agentId},{$set:{accountStatus:'pending'}});
                 if(agentObj==null){
                     responce = JSON.stringify({ code: '404', message: 'something went wrong plese try after sometime', data: '' });
                     res.status(404).send(responce);
                 }
             }else if(status=='delete'){
-                agentObj=await User.update({isDeleted:'Y'},{where:{id:agentId}});
+                agentObj=await User.updateOne({id:agentId},{$set:{isDeleted:'Y'}});
                 if(agentObj==null){
                     responce = JSON.stringify({ code: '404', message: 'something went wrong plese try after sometime', data: '' });
                     res.status(404).send(responce);
@@ -1430,13 +1448,13 @@ module.exports = {
         try {
             let id = req.query.bookingId;
             let userId = req.query.userId;
-            const bookingData = await Booking.findOne({ where: { id: id, isDeleted: 'N' } });
+            const bookingData = await Booking.findOne({_id: id, isDeleted: 'N' });
             if (bookingData === null) {
                 responce = JSON.stringify({ code: '404', message: 'No Booking Found', data: '' });
                 res.status(404).send(responce)
             } else {
                 let status = bookingData['status'];
-                id = bookingData['id'];
+                id = bookingData['_id'];
                 bookingUserId = bookingData['userId'];
                 finalAmount = bookingData['finalAmount'];
                 paid = bookingData['paid'];
@@ -1444,7 +1462,7 @@ module.exports = {
                 
                 let bokkingStatus = '';
                 let canCancel = 'N';
-                userData=await User.findOne({where:{id:userId,userType:'admin'}});
+                userData=await User.findOne({_id:userId,userType:'admin'});
                 if (userData !=null ) {
                     if (status == 'waiting') {
                         bokkingStatus = "Waiting for Approval";
@@ -1471,11 +1489,7 @@ module.exports = {
                         }
                     }
                     reason = 'Booking canceled by Admin';
-                    await Booking.update({ status: "canceled" }, {
-                        where: {
-                            id: id
-                        }
-                    });
+                    await Booking.updateOne({ _id: id},{ $set:{status: "canceled" }});
                     const userCollection = await CanceledBooking.create({
                         bookingId: id,
                         orderId: bookingId,
@@ -1528,7 +1542,8 @@ module.exports = {
     },
     updateSpecialPrice: async (req, res) => {
         try {
-            updateObj=await SpecailPrices.update({
+            updateObj=await SpecailPrices.updateOne({_id: req.body.priceId},
+            {$set:{
                 cabType:req.body.cabType,
                 startDate: req.body.startDate,
                 endDate: req.body.endDate,
@@ -1538,11 +1553,7 @@ module.exports = {
                 extraRate: req.body.extraRate,
                 type: req.body.type,
                 isDeleted:'N'
-            }, {
-                where: {
-                    id: req.body.priceId
-                }
-            });
+            }});
 
             responce = JSON.stringify({ code: '200', message: "Cab updated successfully", data: updateObj});
             res.status(200).send(responce);
@@ -1558,13 +1569,13 @@ module.exports = {
             let start = ((pageId - 1) * 10);
             let perPage = 10;
 
-            surgeObj = await SpecailPrices.findAll({ where: { isDeleted: 'N' }, offset: start, limit: perPage, order: [['id', 'desc']] });
+            surgeObj = await SpecailPrices.findAll( { isDeleted: 'N' }).sort({createdAt:-1}).skip(start).limit(perPage);;
 
             if (surgeObj === null) {
                 responce = JSON.stringify({ code: '404', message: "No record found", data: '' });
                 res.status(404).send(responce);
             } else {
-                let rowCount = await SpecailPrices.count({ where: { isDeleted: 'N' } });
+                let rowCount = await SpecailPrices.find({ isDeleted: 'N' }).count();
                 totalPage = rowCount / perPage;
                 totalPage = Math.ceil(totalPage);
                 responce = JSON.stringify({ code: '200', message: "successfully", data: surgeObj, totalPage: totalPage, rowCount: rowCount });
@@ -1579,7 +1590,7 @@ module.exports = {
     getSpecialPriceById: async (req, res) => {
         try {
             let priceId = req.query.priceId;            
-            surgeObj = await SpecailPrices.findOne({ where: { isDeleted: 'N', id: priceId } });
+            surgeObj = await SpecailPrices.findOne({ isDeleted: 'N', _id: priceId });
 
             if (surgeObj === null) {
                 responce = JSON.stringify({ code: '404', message: "something went wrong", data: '' });
@@ -1598,7 +1609,7 @@ module.exports = {
         try{
             let userId = req.query.userId;
             let priceId = req.query.priceId;
-            deleteObj=await SpecailPrices.destroy({where:{id:priceId}});
+            deleteObj=await SpecailPrices.updateOne({id:priceId},{$set:{isDeleted:'N'}});
             responce = JSON.stringify({ code: '200', message: "special Price deleted successfully", data: deleteObj });
             res.status(200).send(responce);
 
