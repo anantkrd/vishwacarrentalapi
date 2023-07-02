@@ -66,17 +66,38 @@ app.use(function(err, req, res, next) {
 });
 
 let port=8080;//process.env.API_PORT;
+/*
 const httpServer = http.createServer(app);
-//mongodb+srv://vishwacarrental:<password>@cluster0.mzxxv66.mongodb.net/?retryWrites=true&w=majority
+
+
 mongoose.connect('mongodb+srv://vishwacarrental:L19pRrBYoa12UYv0@cluster0.mzxxv66.mongodb.net/vishwacarrental?retryWrites=true&w=majority')
   .then((result) =>{
     console.log('Connected!');
-    /*app.listen(port, () => {
-      console.log(`Example app listening on port ${port}`)
-    });*/
     httpServer.listen(port, () => {
       console.log(`Example app listening at https://localhost:${port}`)
         console.log('HTTP Server running on port '+port);
     });
+  } );
+*/
+  /***FOR LIVE WITH HTTPS */
+  var privateKey  = fs.readFileSync('/etc/letsencrypt/live/vishwacarrental.com/privkey.pem', 'utf8');
+  var certificate = fs.readFileSync('/etc/letsencrypt/live/vishwacarrental.com/fullchain.pem', 'utf8');
+  //console.log("certificate:"+certificate);
+  var credentials = {key: privateKey, cert: certificate};
+  const httpServer = http.createServer(app);
+  const httpsServer = https.createServer(credentials, app);
+
+//mongodb+srv://vishwacarrental:<password>@cluster0.mzxxv66.mongodb.net/?retryWrites=true&w=majority
+mongoose.connect('mongodb+srv://vishwacarrental:L19pRrBYoa12UYv0@cluster0.mzxxv66.mongodb.net/vishwacarrental?retryWrites=true&w=majority')
+  .then((result) =>{
+    console.log('Connected!');
+    
+    httpServer.listen(4434, () => {
+      console.log('HTTP Server running on port 4434');
+  });
+  
+  httpsServer.listen(port, () => {
+      console.log('HTTPS Server running on port'+port);
+  });
   } );
 //app.use('/', indexRouter);
