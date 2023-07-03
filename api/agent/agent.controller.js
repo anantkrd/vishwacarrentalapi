@@ -14,7 +14,7 @@ const AgentBooking = require('../../models/agentBooking');
 const Surge = require('../../models/surge');
 const AgentCars = require('../../models/agentCars');
 const AgentDetial=require('../../models/agentDetials');
-//const { Sequelize, DataTypes, Model, where } = require('sequelize');
+
 const Razorpay = require("razorpay");
 module.exports = {
     getAgent: async (req, res) => {
@@ -111,8 +111,8 @@ module.exports = {
     getCar: async (req, res) => {
         try {
             carNo = req.query.carNo;
-            agentId = req.query.agentId;
-            let agentData = await AgentCars.find( { isDeleted: 'N', agentId: agentId, carNo: carNo });
+            //agentId = req.query.agentId;
+            let agentData = await AgentCars.find( { isDeleted: 'N', carNo: carNo });
             if (agentData !== null) {
                 responce = JSON.stringify({ code: '200', message: 'cars', data: agentData });
                 res.status(200).send(responce);
@@ -171,7 +171,7 @@ module.exports = {
     getDriverByMobile: async (req, res) => {
         try {
             mobileNo = req.query.mobileNo;
-            let agentData = await User.findOne({isDeleted: 'N', mobileNo: mobileNo, userType: 'driver'});
+            let agentData = await User.find({isDeleted: 'N', mobileNo: mobileNo, userType: 'driver'});
             if (agentData !== null) {
                 responce = JSON.stringify({ code: '200', message: 'Drives', data: agentData });
                 res.status(200).send(responce);
@@ -323,7 +323,7 @@ module.exports = {
                 responce = JSON.stringify({ code: '500', message: 'Something went wrong', data: '' });
                 res.status(500).send(responce);
             } else {
-                if (assignDrive.carId > 0) {
+                if (assignDrive.carId !="") {
                     assignDriverObj = await Booking.updateOne({ orderId: bookingId },{
                         $set:{
                         driverName: driverName,
@@ -364,7 +364,14 @@ module.exports = {
                 responce = JSON.stringify({ code: '400', message: "mobile no is already register", data: '' });
                 res.status(400).send(responce);
             } else {
+                const checkUserCount = await User.findOne().sort({createdAt:-1});
+                if(checkUserCount==null){
+                    driverId=1;
+                }else{
+                    driverId=checkUserCount.userId+1;
+                }
                 createUserObj = await User.create({
+                    userId:driverId,
                     firstName: firstName,
                     lastName: lastName,
                     mobileNo: mobileNo,
@@ -479,7 +486,7 @@ module.exports = {
                 key_secret: process.env.paymentSecreat,
             });
             const options = {
-                amount: amount, // amount in smallest currency unit
+                amount: amount*100, // amount in smallest currency unit
                 currency: "INR",
                 receipt: receiptId,
             };
@@ -503,7 +510,7 @@ module.exports = {
                 res.status(400).send(responce);
             } else {
                 updateBooking = await Booking.updateOne({orderId: receiptId},{$set:{agentPaid: advance }});
-                responce = JSON.stringify({ code: '200', message: "success", data: '' });
+                responce = JSON.stringify({ code: '200', message: "success", data: order });
                 res.status(200).send(responce);
             }
         } catch (e) {
@@ -518,25 +525,28 @@ module.exports = {
             let razorpayPaymentId = req.body.razorpayPaymentId;
             let razorpayOrderId = req.body.razorpayOrderId;
             let razorpaySignature = req.body.razorpaySignature;
-            let rawResponce = req.body.rawResponce;
+            let rawResponce = JSON.stringify(req.body.rawResponce);
             let bookingAmount = 0;//req.body.bookingAmount;
-            //console.log("Body==" + JSON.stringify(req.body));
+            //console.log("razorpayOrderId==" + JSON.stringify(req.body));
             agentBookingData = await AgentBooking.findOne({paymentId: razorpayOrderId });
             if (agentBookingData == null) {
-                responce = JSON.stringify({ code: '400', message: e.message || "Some error occurred.", data: '' });
+                responce = JSON.stringify({ code: '400', message: "Some error occurred.", data: '' });
                 res.status(400).send(responce);
             } else {
-                bookingAmount = agentBookingData['amount'];
-                agentId = agentBookingData['agentId'];
-                bookingId = agentBookingData['bookingId'];
+                //console.log("agentBookingData:"+JSON.stringify(agentBookingData));
+                let bookingAmount = agentBookingData['advance'];
+                let agentId = agentBookingData.agentId;
+                let bookingId = agentBookingData['bookingId'];
+                //console.log("agentId=="+agentId);
+                
                 updateAgent = await AgentBooking.updateOne({ paymentId: razorpayOrderId },{$set:{
                     status: "completed",
                     rawResponce: rawResponce
                 } });
-
+                //console.log("agentId=****="+agentId);
                 updateBooking = await Booking.updateOne({ orderId: bookingId },{$set:{agentId: agentId, status: 'confirm' }});
                 let sendSms = sentAgentTripConfirmation(bookingId, 'agent');
-                responce = JSON.stringify({ code: '200', message: "payment completed successfully", data: '' });
+                responce = JSON.stringify({ code: '200', message: "payment completed successfully", data: '',bookingId:bookingId });
                 res.status(200).send(responce);
             }
         } catch (e) {

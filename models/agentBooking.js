@@ -8,7 +8,7 @@ const ObjectId = Schema.ObjectId;
 const agentSchema = new mongoose.Schema(
   {
     id:ObjectId,
-    agentId:{type: String, required: true},
+    agentId:{type: String,trim: true, required: true},
     bookingId: {
       type: String,
       trim: true,

@@ -165,6 +165,8 @@ module.exports = {
                 distancekm = 0;
                 distancekm = Math.round(distanceObj / 1000);
                 surgekm = Math.round(distancekm / 100);
+                console.log("distancekm:"+distancekm);
+                console.log("surgekm:"+surgekm);
                 let tripType = "india";
                 if (distancekm <= 80) {
                     tripType = "local";
@@ -175,12 +177,12 @@ module.exports = {
                 let sedanPrice = 0;
                 let luxuryPrice = 0;
                 let compactPrice = 0;           
-                let surgePickpuResult = await Surge.find({isDeleted: 'N', city: {$regex:'.*'+pickupCityName+'.*'}} ).sort({city:-1}); 
+                let surgePickpuResult = await Surge.findOne({isDeleted: 'N', city: {$regex:'.*'+pickupCityName+'.*'}} ).sort({city:-1}); 
                 console.log("surgePickpuResult:"+JSON.stringify(surgePickpuResult)); 
                 //let surgePickpuResult = await Surge.findOne({ where: {[Op.or]:{ city: { [Op.like]: '%' + pickupCityName + '%' },location: { [Op.like]: '%' + pickupDistrict + '%' } }} ,order: [['city', 'DESC']]});
                
                 let destinationcityName = destinationCity.split(",")[0];
-                let surgedestinationResult = await Surge.find({isDeleted: 'N', city: {$regex:'.*'+destinationcityName+'.*'}} ).sort({city:-1});
+                let surgedestinationResult = await Surge.findOne({isDeleted: 'N', city: {$regex:'.*'+destinationcityName+'.*'}} ).sort({city:-1});
                 console.log("surgedestinationResult:"+JSON.stringify(surgedestinationResult));
                 //let surgedestinationResult = await Surge.findOne({ where: {[Op.or]:{ city: { [Op.like]: '%' + destinationcityName + '%' },location: { [Op.like]: '%' + dropDistrict + '%' } }} ,order: [['city', 'DESC']]});
                 
@@ -292,27 +294,36 @@ module.exports = {
                         let cabTypecheck = cabType.toLowerCase();
                                                 
                         surgePrice = 0;
+                        console.log("cabTypecheck=="+cabTypecheck+"==isReturnTrip=="+isReturnTrip+"=surgePickpuResult=="+surgePickpuResult+"===surgedestinationResult=="+surgedestinationResult)
                         if (isReturnTrip == 'N') {
-                            if (cabTypecheck != "" && surgePickpuResult.length>0) {
-                                let surgeDataPickup = surgePickpuResult['surge'];
-                                let surgeDataPickupObj = JSON.parse(surgeDataPickup);
-                                
-                                let surgeDataDrop = surgedestinationResult['surge'];
-                                let surgeDataDropObj = JSON.parse(surgeDataDrop);
+                            let pickSurge=0;
+                            let dropSurge=0;
+                            if (cabTypecheck != "" ) {
+                                if(surgePickpuResult!=null){
+                                    let surgeDataPickup = JSON.parse(surgePickpuResult['surge']);
+                                    
+                                    pickSurge=surgeDataPickup[cabType];
+                                }
+                                if(surgedestinationResult!=null){
+                                    let surgeDataDrop = JSON.parse(surgedestinationResult['surge']);
+                                    
+                                    dropSurge=surgeDataDrop[cabType];
+                                }
                                 
                                 if (tripType == 'local' && distanceValue <= 80) {
                                     surgePrice = surgeDataPickupObj['local'];
                                     //surgePrice=surgePrice+(surgekm*surgeDataDropObj['local']);
                                 } else {
-                                    if(surgeDataPickupObj[cabType]>0){
-                                        surgePrice = surgekm * surgeDataPickupObj[cabType];
+                                    if(pickSurge>0){
+                                        surgePrice = surgekm * pickSurge;
+                                       // console.log("surgeDataPickupObj[cabType]=="+surgeDataPickupObj[cabType]);
                                     }
-                                    if(surgeDataDropObj[cabType]>0){
-                                        surgePrice = surgePrice + (surgekm * surgeDataDropObj[cabType]);
-                                    }
-                                    
+                                    if(dropSurge>0){
+                                        surgePrice = surgePrice + (surgekm * dropSurge);
+                                        //console.log("surgeDataDropObj[cabType]=="+surgeDataDropObj[cabType]);
+                                    }                                    
                                 }
-                                //console.log(cabType+"***********surgePrice:"+surgePrice);
+                                console.log(cabType+"***********surgePrice:"+surgePrice);
                                 finalRate = finalRate + surgePrice;
                                 sedanPrice = finalRate;
                             } else {
@@ -339,6 +350,10 @@ module.exports = {
                         dataObj1['id'] = id;
                         dataObj1['bookingId'] = bookingId;
                         dataObj1['userId'] = userId;
+                        dataObj1['surgePrice'] = surgePrice;
+                        dataObj1['discount'] = discount;
+                        dataObj1['finalRate'] = finalRate;
+                        
 
                         dataObj1['pickupCityName'] = pickupCityName;
                         dataObj1['pickupDistrict'] = pickupDistrict;

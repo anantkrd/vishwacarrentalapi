@@ -12,7 +12,7 @@ const AgentCars=require('../../models/agentCars');
 const AgentDetials=require('../../models/agentDetials');
 const CabTypes=require('../../models/cabTypes');
 const SpecailPrices=require('../../models/specialPrices');
-//const { Sequelize, DataTypes, Model, where } = require('sequelize');
+
 const Surge = require('../../models/surge');
 module.exports = {
 
