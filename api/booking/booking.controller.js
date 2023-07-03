@@ -19,9 +19,9 @@ module.exports = {
     bookCab: async (req, res) => {
         try {
             
-            let userId = 0;
+            let userId = '';
             let error = '';
-
+            console.log("req.body.userId"+req.body.userId)
             let fname = req.body.fname;
             let lname = req.body.lname;
             let mobileNo = req.body.mobileNo;
@@ -52,7 +52,7 @@ module.exports = {
             let journyTime = req.body.journyTime;
             let extraRate = req.body.extraRate;
             userId = req.body.userId;
-            
+            console.log("After assign: "+userId);
             if(pickupDistrict=='' || pickupDistrict==null){
                 pickupDistrict=pickupState;
             }
@@ -62,7 +62,8 @@ module.exports = {
             let payment_orderId = req.body.payment_orderId;
             let responce;
             
-            if(userId<1 || userId==null|| userId==undefined){
+            if(userId!='' || userId==null|| userId==undefined){
+                console.log("In IF");
                 const checkUser = await User.findOne({ where: { mobileNo: req.body.mobileNo } });
                 if (checkUser === null) {
                     const userCollection = await User.create({
@@ -74,9 +75,9 @@ module.exports = {
                         userType: 'user',
                         status: 'Active'
                     })
-                    userId = userCollection.id;
+                    userId = userCollection._id;
                 } else {
-                    userId = checkUser.id;
+                    userId = userId;
                 }
             }
             
@@ -84,7 +85,7 @@ module.exports = {
             if(returnDate=="0000-00-00 00:00:00"){
                 returnDate=null;
             }
-            
+            console.log(userName+"userId:============"+userId);
             bookingData = await Booking.create({
                 userId: userId, userName: userName, email: email, orderId: orderId, cabId: cabId, pickup: pickup, destination: destination, pickupDate: pickupDate, returnDate: returnDate, isReturn: isReturn, pickupLat: pickupLat, pickupLong: pickupLong,
                 destinationLat: destinationLat, destinationLong: destinationLong, distance: distance, rate: rate, amount: amount, discount: discount, finalAmount: finalAmount, status: 'pending', journyTime: journyTime,

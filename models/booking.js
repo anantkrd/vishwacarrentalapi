@@ -8,7 +8,7 @@ const ObjectId = Schema.ObjectId;
 const bookingSchema = new mongoose.Schema(
   {
     id:ObjectId,
-    userId:{type: String, required: true},    
+    userId:{type: String, required: true,default:'',unique:false},    
     userName:{type: String,default:''},
     status:{type: String,default:'pending'},
     userMobileNo:{type: String,default:''},
