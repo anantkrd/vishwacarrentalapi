@@ -1569,7 +1569,7 @@ module.exports = {
             let start = ((pageId - 1) * 10);
             let perPage = 10;
 
-            surgeObj = await SpecailPrices.findAll( { isDeleted: 'N' }).sort({createdAt:-1}).skip(start).limit(perPage);;
+            surgeObj = await SpecailPrices.find( { isDeleted: 'N' }).sort({createdAt:-1}).skip(start).limit(perPage);;
 
             if (surgeObj === null) {
                 responce = JSON.stringify({ code: '404', message: "No record found", data: '' });
