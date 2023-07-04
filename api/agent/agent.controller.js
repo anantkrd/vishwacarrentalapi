@@ -20,7 +20,7 @@ module.exports = {
     getAgent: async (req, res) => {
         try {
             let userId = req.query.userId;
-            const userData = await User.findOne({ _id: userId } );
+            const userData = await User.findOne({ _id: userId },{userPassword:0} );
             if (userData === null) {                
                 responce = JSON.stringify({ code: '404', message: 'User Not Found', data: '' });
                 res.status(404).send(responce)
@@ -171,7 +171,7 @@ module.exports = {
     getDriverByMobile: async (req, res) => {
         try {
             mobileNo = req.query.mobileNo;
-            let agentData = await User.find({isDeleted: 'N', mobileNo: mobileNo, userType: 'driver'});
+            let agentData = await User.find({isDeleted: 'N', mobileNo: mobileNo, userType: 'driver'},{userPassword:0});
             if (agentData !== null) {
                 responce = JSON.stringify({ code: '200', message: 'Drives', data: agentData });
                 res.status(200).send(responce);
@@ -188,7 +188,7 @@ module.exports = {
     getDriverById:async(req,res)=>{
         try {
             driverId = req.query.driverId;
-            let agentData = await User.findOne({isDeleted: 'N', _id: driverId, userType: 'driver' });
+            let agentData = await User.findOne({isDeleted: 'N', _id: driverId, userType: 'driver' },{userPassword:0});
             if (agentData !== null) {
                 responce = JSON.stringify({ code: '200', message: 'Drives', data: agentData });
                 res.status(200).send(responce);
@@ -205,7 +205,7 @@ module.exports = {
     getDrivers: async (req, res) => {
         try {
             userId = req.query.userId;
-            let agentData = await User.find({ isDeleted: 'N', parentId: userId, userType: 'driver' });
+            let agentData = await User.find({ isDeleted: 'N', parentId: userId, userType: 'driver' },{userPassword:0});
             if (agentData !== null) {
                 responce = JSON.stringify({ code: '200', message: 'Drives', data: agentData });
                 res.status(200).send(responce);
@@ -359,7 +359,7 @@ module.exports = {
             licenseNo = req.body.licenseNo;
             licenseUrl = req.body.licenseUrl;
 
-            checkDriver = await User.findOne({mobileNo: mobileNo });
+            checkDriver = await User.findOne({mobileNo: mobileNo },{userPassword:0});
             if (checkDriver !== null) {
                 responce = JSON.stringify({ code: '400', message: "mobile no is already register", data: '' });
                 res.status(400).send(responce);
@@ -410,7 +410,7 @@ module.exports = {
             driverId = req.body.driverId;
             //const Op = Sequelize.Op;
             // { [Op.or]: ['pending', 'waiting'] } }
-            checkDriver = await User.findOne({mobileNo: mobileNo,_id:{$ne:driverId} });
+            checkDriver = await User.findOne({mobileNo: mobileNo,_id:{$ne:driverId} },{userPassword:0});
             if (checkDriver !== null) {
                 responce = JSON.stringify({ code: '400', message: "mobile no is already register", data: '' });
                 res.status(400).send(responce);

@@ -163,7 +163,7 @@ module.exports = {
     },
     getAgentByID: async (req, res) => {
         try {
-            const agentData = await User.findOne({ _id: req.query.userId, userType: 'agent' });
+            const agentData = await User.findOne({ _id: req.query.userId, userType: 'agent' },{userPassword:0});
             if (agentData === null) {
                 responce = JSON.stringify({ code: '404', message: 'Agent not found', data: '' });
                 res.status(404).send(responce);

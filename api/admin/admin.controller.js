@@ -827,13 +827,41 @@ module.exports = {
             //let rowCount = await AgentDetials.count({ where: { isDeleted: 'N' }});
             totalPage = rowCount / perPage;
             totalPage = Math.ceil(totalPage);
-            let agentData = await User.find({ isDeleted: 'N', userType: 'agent'}).sort({createdAt:-1}).skip(start).limit(perPage);
-            
-            //let agentData = await User.find({include: {model:AgentDetials}, attributes: {exclude: ['userPassword']}, where: { isDeleted: 'N', userType: 'agent' }, offset: start, limit: perPage, order: [['id', 'desc']]  });
-            //let agentData = await AgentDetials.findAll({include: {model:User,attributes: {exclude: ['userPassword']}}, where: { isDeleted: 'N' }, offset: start, limit: perPage, order: [['id', 'desc']]  });
-            if (agentData !== null) {
+            let agentData = await User.find({ isDeleted: 'N', userType: 'agent',$lookup:
+            {
+               from: "vcr_agent_detials",
+               localField: "_id",
+               foreignField: "agentId",
+               as: "AgentDetials"
+            }},{userPassword:0}).sort({createdAt:-1}).skip(start).limit(perPage);
+            agentDataAll=[];
+            for (const agent of agentData) {
+                let data = {};
+                id=agent['_id'];
+                let agentDetials = await AgentDetials.findOne({agentId:id,isDeleted: 'N' });
+                //console.log("agentDetials=="+JSON.stringify(agentDetials))
+                let companyName='';
+                let accountStatus='';
+                if(agentDetials!=null){
+                    companyName=agentDetials['companyName'];
+                    accountStatus=agentDetials['accountStatus'];
+                    
+                }
+                data['_id']=agent['_id'];
+                data['firstName']=agent['firstName'];
+                data['lastName']=agent['lastName'];
+                data['mobileNo']=agent['mobileNo'];
+                data['userType']=agent['userType'];
+                data['idProof']=agent['idProof'];
+                data['idNumber']=agent['idNumber'];
+                data['profileImage']=agent['profileImage'];
+                data['companyName']=companyName;
+                data['accountStatus']=accountStatus;
+                agentDataAll.push(data)
+            }
+            if (agentDataAll !== null && agentDataAll.length>0) {
                 
-                responce = JSON.stringify({ code: '200', message: 'agents', data: agentData, rowCount: rowCount, totalPage: totalPage });
+                responce = JSON.stringify({ code: '200', message: 'agents new data', data: agentDataAll, rowCount: rowCount, totalPage: totalPage });
                 res.status(200).send(responce);
             } else {
                 responce = JSON.stringify({ code: '404', message: 'No agent found', data: '' });
@@ -848,8 +876,8 @@ module.exports = {
     getAgentById: async (req, res) => {
         try {
             agentId = req.query.agentId;
-            //let agentData = await User.findOne({include: {model:AgentDetials}, where: { isDeleted: 'N', id: agentId, userType: 'agent' } });
-            let userData = await User.findOne({isDeleted: 'N', _id: agentId, userType: 'agent' } );
+            
+            let userData = await User.findOne({isDeleted: 'N', _id: agentId, userType: 'agent' } ,{userPassword:0});
             if (userData !== null) {
                 agentId=userData._id;
                 const agentData = await AgentDetials.findOne({ agentId: agentId });
@@ -868,7 +896,7 @@ module.exports = {
     getAgentByMobileNo: async (req, res) => {
         try {
             mobileNo = req.query.mobileNo;
-            let agentData = await User.findOne({ isDeleted: 'N', mobileNo: mobileNo, userType: 'agent'  });
+            let agentData = await User.findOne({ isDeleted: 'N', mobileNo: mobileNo, userType: 'agent'  },{userPassword:0});
             if (agentData !== null) {
                 responce = JSON.stringify({ code: '200', message: 'agent details', data: agentData });
                 res.status(200).send(responce);
@@ -1211,7 +1239,7 @@ module.exports = {
             let pageId = req.query.pageId;
             let start = ((pageId - 1) * 10);
             let perPage = 10;
-            let agentData = await User.find({ isDeleted: 'N', userType: 'driver' }).sort({createdAt:-1}).skip(start).limit(perPage);
+            let agentData = await User.find({ isDeleted: 'N', userType: 'driver' },{userPassword:0}).sort({createdAt:-1}).skip(start).limit(perPage);
             let rowCount = await User.find({isDeleted: 'N', userType: 'driver' }).count();
             totalPage = rowCount / perPage;
             totalPage = Math.ceil(totalPage);
@@ -1221,7 +1249,7 @@ module.exports = {
                 for( const agent of agentData){
                     let data = {};
                     parentId=agent.parentId;
-                    parrentData=await User.findOne({where:{id:parentId}});
+                    parrentData=await User.findOne({id:parentId},{userPassword:0});
                     vendoreName='';
                     if(parrentData!==null){
                         vendoreName=parrentData.firstName+" "+ parrentData.lastName;
@@ -1462,7 +1490,7 @@ module.exports = {
                 
                 let bokkingStatus = '';
                 let canCancel = 'N';
-                userData=await User.findOne({_id:userId,userType:'admin'});
+                userData=await User.findOne({_id:userId,userType:'admin'},{userPassword:0});
                 if (userData !=null ) {
                     if (status == 'waiting') {
                         bokkingStatus = "Waiting for Approval";

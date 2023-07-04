@@ -64,7 +64,7 @@ module.exports = {
             
             if(userId!='' || userId==null|| userId==undefined){
                 console.log("In IF");
-                const checkUser = await User.findOne({ where: { mobileNo: req.body.mobileNo } });
+                const checkUser = await User.findOne({ mobileNo: req.body.mobileNo },{userPassword:0});
                 if (checkUser === null) {
                     const userCollection = await User.create({
                         firstName: req.body.fname,
