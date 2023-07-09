@@ -21,7 +21,7 @@ module.exports = {
             
             let userId = '';
             let error = '';
-            console.log("req.body.userId"+req.body.userId)
+            
             let fname = req.body.fname;
             let lname = req.body.lname;
             let mobileNo = req.body.mobileNo;
@@ -52,7 +52,7 @@ module.exports = {
             let journyTime = req.body.journyTime;
             let extraRate = req.body.extraRate;
             userId = req.body.userId;
-            console.log("After assign: "+userId);
+            
             if(pickupDistrict=='' || pickupDistrict==null){
                 pickupDistrict=pickupState;
             }
@@ -85,7 +85,7 @@ module.exports = {
             if(returnDate=="0000-00-00 00:00:00"){
                 returnDate=null;
             }
-            console.log(userName+"userId:============"+userId);
+            
             bookingData = await Booking.create({
                 userId: userId, userName: userName, email: email, orderId: orderId, cabId: cabId, pickup: pickup, destination: destination, pickupDate: pickupDate, returnDate: returnDate, isReturn: isReturn, pickupLat: pickupLat, pickupLong: pickupLong,
                 destinationLat: destinationLat, destinationLong: destinationLong, distance: distance, rate: rate, amount: amount, discount: discount, finalAmount: finalAmount, status: 'pending', journyTime: journyTime,
@@ -153,7 +153,7 @@ module.exports = {
             if (tripBookingBEforHours < 10) {
                 earlyBookingCharges = Math.round((6 / tripBookingBEforHours) * 100) / 100;
             }
-            //console.log(tripBookingBEforHours + "==earlyBookingCharges==" + earlyBookingCharges);
+            
             let distancekm = 0;
                    
             distance.matrix(origins, destinations, async function (err, distances) {
@@ -166,8 +166,7 @@ module.exports = {
                 distancekm = 0;
                 distancekm = Math.round(distanceObj / 1000);
                 surgekm = Math.round(distancekm / 100);
-                console.log("distancekm:"+distancekm);
-                console.log("surgekm:"+surgekm);
+                
                 let tripType = "india";
                 if (distancekm <= 80) {
                     tripType = "local";
@@ -177,20 +176,22 @@ module.exports = {
 
                 let sedanPrice = 0;
                 let luxuryPrice = 0;
-                let compactPrice = 0;           
+                let compactPrice = 0;  
+                     
                 let surgePickpuResult = await Surge.findOne({isDeleted: 'N', city: {$regex:'.*'+pickupCityName+'.*'}} ).sort({city:-1}); 
-                console.log("surgePickpuResult:"+JSON.stringify(surgePickpuResult)); 
+                
                 //let surgePickpuResult = await Surge.findOne({ where: {[Op.or]:{ city: { [Op.like]: '%' + pickupCityName + '%' },location: { [Op.like]: '%' + pickupDistrict + '%' } }} ,order: [['city', 'DESC']]});
                
                 let destinationcityName = destinationCity.split(",")[0];
+                
                 let surgedestinationResult = await Surge.findOne({isDeleted: 'N', city: {$regex:'.*'+destinationcityName+'.*'}} ).sort({city:-1});
-                console.log("surgedestinationResult:"+JSON.stringify(surgedestinationResult));
+                
                 //let surgedestinationResult = await Surge.findOne({ where: {[Op.or]:{ city: { [Op.like]: '%' + destinationcityName + '%' },location: { [Op.like]: '%' + dropDistrict + '%' } }} ,order: [['city', 'DESC']]});
                 
                 if (surgePickpuResult === null || surgePickpuResult.length<=0) {
                     let surgePickpuResultOther = await Surge.findOne({city:'Other'});
                     if(surgePickpuResultOther==null || surgePickpuResultOther.length<=0){
-                        surgePickpuResult = { "city": "Pune", "surge": '{"Compact":1,"Sedan":1,"Luxury":1,"SUVErtiga":1,"Innova":1,"InnovaCrysta":1,"other":1,"local":20}' };
+                        surgePickpuResult = { "city": "Pune", "surge": '{"Hatchback":1,"Sedan":1,"Ertiga":1,"Innova":1,"Innova Crysta":1,"other":1,"local":20}' };
                     }else{
                         surgePickpuResult=surgePickpuResultOther;
                     }                    
@@ -198,7 +199,7 @@ module.exports = {
                 if (surgedestinationResult === null || surgedestinationResult.length<=0) {
                     let surgedestinationResultOther = await Surge.findOne({city:'Other'});
                     if(surgedestinationResultOther===null || surgedestinationResultOther.length<=0){
-                        surgedestinationResult = { "city": "Pune", "surge": '{"Compact":1,"Sedan":1,"Luxury":1,"SUVErtiga":1,"Innova":1,"InnovaCrysta":1,"other":1,"local":20}' };
+                        surgedestinationResult = { "city": "Pune", "surge": '{"Hatchback":1,"Sedan":1,"Ertiga":1,"Innova":1,"Innova Crysta":1,"other":1,"local":20}' };
                     }else{
                         surgedestinationResult=surgedestinationResultOther;
                     }                    
@@ -295,7 +296,7 @@ module.exports = {
                         let cabTypecheck = cabType.toLowerCase();
                                                 
                         surgePrice = 0;
-                        console.log("cabTypecheck=="+cabTypecheck+"==isReturnTrip=="+isReturnTrip+"=surgePickpuResult=="+surgePickpuResult+"===surgedestinationResult=="+surgedestinationResult)
+                        //console.log("cabTypecheck=="+cabTypecheck+"==isReturnTrip=="+isReturnTrip+"=surgePickpuResult=="+JSON.stringify(surgePickpuResult)+"===surgedestinationResult=="+JSON.stringify(surgedestinationResult));
                         if (isReturnTrip == 'N') {
                             let pickSurge=0;
                             let dropSurge=0;
@@ -313,18 +314,14 @@ module.exports = {
                                 
                                 if (tripType == 'local' && distanceValue <= 80) {
                                     surgePrice = surgeDataPickupObj['local'];
-                                    //surgePrice=surgePrice+(surgekm*surgeDataDropObj['local']);
                                 } else {
                                     if(pickSurge>0){
-                                        surgePrice = surgekm * pickSurge;
-                                       // console.log("surgeDataPickupObj[cabType]=="+surgeDataPickupObj[cabType]);
+                                        surgePrice = surgekm * pickSurge;                                       
                                     }
                                     if(dropSurge>0){
                                         surgePrice = surgePrice + (surgekm * dropSurge);
-                                        //console.log("surgeDataDropObj[cabType]=="+surgeDataDropObj[cabType]);
                                     }                                    
                                 }
-                                console.log(cabType+"***********surgePrice:"+surgePrice);
                                 finalRate = finalRate + surgePrice;
                                 sedanPrice = finalRate;
                             } else {
@@ -391,7 +388,6 @@ module.exports = {
                         dataObj.push(dataObj1);
                     }
                     //responce=JSON.stringify({code:'200',msg:'',data:dataObj});
-                    console.log("returnDateTime:"+returnDateTime)
                     if(returnDateTime=="0000-00-00 00:00:00"){
                         returnDateTime=null;
                     }
