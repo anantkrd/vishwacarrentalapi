@@ -364,11 +364,13 @@ module.exports = {
                 responce = JSON.stringify({ code: '400', message: "mobile no is already register", data: '' });
                 res.status(400).send(responce);
             } else {
-                const checkUserCount = await User.findOne().sort({createdAt:-1});
-                if(checkUserCount==null){
+                findUserObj=await User.findOne().sort('-createdAt');
+                console.log("findUserObj:"+JSON.stringify(findUserObj));
+                driverId=1;
+                if(findUserObj==null){
                     driverId=1;
                 }else{
-                    driverId=checkUserCount.userId+1;
+                    driverId=findUserObj.userId+1;
                 }
                 createUserObj = await User.create({
                     userId:driverId,
