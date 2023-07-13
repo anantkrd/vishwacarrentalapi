@@ -256,12 +256,12 @@ module.exports = {
             carType= req.body.carType;
             rcBook=req.body.rcBook;
             carId=req.body.carId;
-            checkCarObj=await AgentCars.findOne({id:carId, agentId:agentId});
+            checkCarObj=await AgentCars.findOne({_id:carId, agentId:agentId});
             if(checkCarObj==null){
                 responce = JSON.stringify({ code: '500', message: 'Not authorised for delete car', data: agentCarObj });
                 res.status(500).send(responce);
             }
-            agentCarObj = await AgentCars.updateOne({id:carId},{$set:{
+            agentCarObj = await AgentCars.updateOne({_id:carId},{$set:{
                 agentId: agentId,
                 carNo: carNo,
                 carModelName: carModelName,

@@ -1249,12 +1249,12 @@ module.exports = {
                 for( const agent of agentData){
                     let data = {};
                     parentId=agent.parentId;
-                    parrentData=await User.findOne({id:parentId},{userPassword:0});
+                    parrentData=await User.findOne({_id:parentId},{userPassword:0});
                     vendoreName='';
                     if(parrentData!==null){
                         vendoreName=parrentData.firstName+" "+ parrentData.lastName;
                     }
-                    data['id']=agent.id;
+                    data['id']=agent._id;
                     data['firstName']=agent.firstName;
                     data['lastName']=agent.lastName;
                     data['mobileNo']=agent.mobileNo;
@@ -1291,7 +1291,7 @@ module.exports = {
                 responce = JSON.stringify({ code: '200', message: 'Driver Approved', data: '' });
                 res.status(200).send(responce);
             }else if(status=='block'){
-                userObj=await User.updateOne({id:driverId},{$set:{status:'blocked'}});
+                userObj=await User.updateOne({_id:driverId},{$set:{status:'blocked'}});
                 if(userObj==null){
                     responce = JSON.stringify({ code: '404', message: 'Driver Not found', data: '' });
                     res.status(404).send(responce);
@@ -1299,7 +1299,7 @@ module.exports = {
                 responce = JSON.stringify({ code: '200', message: 'Driver Blocked', data: '' });
                 res.status(200).send(responce);
             }else if(status=='delete'){
-                userObj=await User.updateOne({id:driverId},{$set:{status:'inactive',isDeleted:'Y'}});
+                userObj=await User.updateOne({_id:driverId},{$set:{status:'inactive',isDeleted:'Y'}});
                 if(userObj==null){
                     responce = JSON.stringify({ code: '404', message: 'Driver Not found', data: '' });
                     res.status(404).send(responce);
@@ -1322,7 +1322,7 @@ module.exports = {
             carId=req.body.carId;
             let status=req.body.status;
             if(status=='approved'){ 
-                userObj=await AgentCars.updateOne({id:carId},{$set:{status:'active'}});
+                userObj=await AgentCars.updateOne({_id:carId},{$set:{status:'active'}});
                 if(userObj==null){
                     responce = JSON.stringify({ code: '404', message: 'Car Not found', data: '' });
                     res.status(404).send(responce);
@@ -1330,7 +1330,7 @@ module.exports = {
                 responce = JSON.stringify({ code: '200', message: 'Car Approved', data: '' });
                 res.status(200).send(responce);
             }else if(status=='invalid'){
-                userObj=await AgentCars.updateOne({id:carId},{$set:{status:'pending'}});
+                userObj=await AgentCars.updateOne({_id:carId},{$set:{status:'pending'}});
                 if(userObj==null){
                     responce = JSON.stringify({ code: '404', message: 'Car Not found', data: '' });
                     res.status(404).send(responce);
@@ -1338,7 +1338,7 @@ module.exports = {
                 responce = JSON.stringify({ code: '200', message: 'Car Blocked', data: '' });
                 res.status(200).send(responce);
             }else if(status=='delete'){
-                userObj=await AgentCars.updateOne({id:carId},{$set:{isDeleted:'Y'}});
+                userObj=await AgentCars.updateOne({_id:carId},{$set:{isDeleted:'Y'}});
                 if(userObj==null){
                     responce = JSON.stringify({ code: '404', message: 'Car Not found', data: '' });
                     res.status(404).send(responce);
@@ -1419,7 +1419,7 @@ module.exports = {
                 responce = JSON.stringify({ code: '200', message: 'Status updated', data: '' });
                 res.status(200).send(responce);
             }else if(status=='delete'){
-                userObj=await AgentCars.updateOne({id:carId},{$set:{isDeleted:'Y'}});
+                userObj=await AgentCars.updateOne({_id:carId},{$set:{isDeleted:'Y'}});
                 if(userObj==null){
                     responce = JSON.stringify({ code: '404', message: 'Car Not found', data: '' });
                     res.status(404).send(responce);
@@ -1454,7 +1454,7 @@ module.exports = {
                     res.status(404).send(responce);
                 }
             }else if(status=='delete'){
-                agentObj=await User.updateOne({id:agentId},{$set:{isDeleted:'Y'}});
+                agentObj=await User.updateOne({_id:agentId},{$set:{isDeleted:'Y'}});
                 if(agentObj==null){
                     responce = JSON.stringify({ code: '404', message: 'something went wrong plese try after sometime', data: '' });
                     res.status(404).send(responce);
@@ -1637,7 +1637,7 @@ module.exports = {
         try{
             let userId = req.query.userId;
             let priceId = req.query.priceId;
-            deleteObj=await SpecailPrices.updateOne({id:priceId},{$set:{isDeleted:'N'}});
+            deleteObj=await SpecailPrices.updateOne({_id:priceId},{$set:{isDeleted:'N'}});
             responce = JSON.stringify({ code: '200', message: "special Price deleted successfully", data: deleteObj });
             res.status(200).send(responce);
 

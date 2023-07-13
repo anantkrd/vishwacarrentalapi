@@ -569,7 +569,7 @@ module.exports = {
                         canCancel = 'N';
                     }
                     let cabId = bookingData['cabId'];
-                    cabsData = await Cabs.findOne({id: cabId});
+                    cabsData = await Cabs.findOne({_id: cabId});
                     let cabType = cabsData['cabType'];
                     let ac = cabsData['ac'];
                     let bags = cabsData['bags'];
