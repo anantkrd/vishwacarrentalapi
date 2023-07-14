@@ -440,9 +440,12 @@ module.exports = {
                 responce = JSON.stringify({ code: '501', message: "Sorry, something went wrong", data: '' });
                 res.status(500).send(responce);
             } else {
+                
+                let payId=order.id;
+                //console.log("payId:=="+payId)
                 let bookingPayData = await BookingPayment.create({
                     bookingId: receiptId,
-                    paymentId: order.id,
+                    paymentId: payId,
                     mobileNo: mobileNo,
                     amount: orgAmount,
                     rawResponce: '',
@@ -470,7 +473,7 @@ module.exports = {
             let bookingAmount = 0;//req.body.bookingAmount;
             let bookingPaymentObj=await BookingPayment.findOne({paymentId:razorpayOrderId});
             let rawResponcedata=JSON.stringify(rawResponce);
-            if(bookingPaymentObj!==null){
+            if(bookingPaymentObj!==null && razorpayOrderId!==""){
                 bookingAmount=bookingPaymentObj['amount'];
                 orderId=bookingPaymentObj['orderId'];
                 updateBookingPay=await BookingPayment.updateOne({paymentId:razorpayOrderId},{$set:{status:'completed',rawResponce:rawResponcedata}});

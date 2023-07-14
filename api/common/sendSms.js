@@ -142,7 +142,7 @@ module.exports = {
     sentBookingSmsToCustomer:async(orderId,type='Customer')=>{
         try{
             bookingObj = await Booking.findOne({payment_orderId: orderId});
-            if (bookingObj == null) {
+            if (bookingObj == null && (orderId!="" || orderId!==null)) {
                 console.log("Something went wrong while sending sms");
             } else {
                 userMobileNo=bookingObj['userMobileNo'];
@@ -203,7 +203,7 @@ module.exports = {
                 let status = response.statusCode;
                 reData = error;
                 if (!error && response.statusCode == 200) {
-                    console.log("==otp sent==" + JSON.stringify(response));
+                    console.log("==otp sent==");
                     reData = JSON.stringify(response.body);
                 }
                 insterSmsLog = await smsLog.create({

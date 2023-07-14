@@ -43,7 +43,7 @@ const bookingSchema = new mongoose.Schema(
     finalAmount:{type: Number,default:0},
     paid:{type: Number,default:0},
     pending:{type: Number,default:0},
-    pendpayment_orderIding:{type: String,default:''},
+    payment_orderId:{type: String,default:''},
     agentId:{type: String,default:''},
     agentPrice:{type: Number,default:0},
     driverName:{type: String,default:''},

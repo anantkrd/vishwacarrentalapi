@@ -24,7 +24,7 @@ module.exports = {
             let dataObj = [];
             //const Op = Sequelize.Op;
             let BookingDataObj = await Booking.find({ isDeleted: 'N',status:'waiting' });
-            console.log("BookingDataObj=="+JSON.stringify(BookingDataObj));
+            
             //let BookingDataObj = await Booking.find({ where: { isDeleted: 'N',status: { [Op.or]: ['waiting'] } }, offset: start, limit: perPage, order: [['id', 'desc']] })
             if (BookingDataObj === null) {
                 responce = JSON.stringify({ code: '404', message: 'Booking details not found', data: '' });
@@ -983,7 +983,7 @@ module.exports = {
     },
     addCab: async (req, res) => {
         try {
-            console.log("req.body.cabType:="+req.body.cabType);
+            //console.log("req.body.cabType:="+req.body.cabType);
             if(req.body.cabType=="" || req.body.cabType==null)
             {
                 console.log("Invalid data: cab type not defined")
@@ -1004,7 +1004,7 @@ module.exports = {
                 PerDayKmReturn: req.body.perDayKmReturn,
                 PerDayKmSingle: req.body.perDayKmSingle
             });
-            console.log("add Cab:"+cabObj);
+            
             if (cabObj === null) {
                 responce = JSON.stringify({ code: '404', message: "something went wrong", data: '' });
                 res.status(404).send(responce);
@@ -1026,7 +1026,6 @@ module.exports = {
             console.log("==========================Cabs===============")
             let cabObj = await Cabs.find({ isDeleted: 'N'}).sort({createdAt:-1});
             //cabObj = await Cabs.findAll({ where: { isDeleted: 'N' }, order: [['id', 'desc']] });
-            console.log("==========================responce==============="+JSON.stringify(cabObj));
             if (cabObj === null || cabObj.length<=0) {
                 responce = JSON.stringify({ code: '404', message: "No record found", data: '' });
                 res.status(404).send(responce);
@@ -1035,7 +1034,6 @@ module.exports = {
                
                 totalPage = 1;
                 responce = JSON.stringify({ code: '200', message: "success cabs", data: cabObj, rowCount: rowCount, totalPage: totalPage });
-                console.log("==========================responce==============="+JSON.stringify(cabObj));
                 res.status(200).send(responce);
             }
         } catch (e) {
@@ -1103,7 +1101,7 @@ module.exports = {
     },
     addSurge: async (req, res) => {
         try {
-            console.log(JSON.stringify(req.body));
+            
             //surgedata='{"Sedan":'+req.body.sedanSurge+',"SUVErtiga":'+req.body.ertigaSurga+',"Innova":'+req.body.innovaSurge+',"InnovaCrysta":'+req.body.innovaCrystaSurge+',"other":'+req.body.surge+'}';
             let surgedata=req.body.surgedata;
             surgedata=JSON.stringify(surgedata);
@@ -1543,7 +1541,6 @@ module.exports = {
     },
     addSpecialPrice: async (req, res) => {
         try {
-            console.log("Req========"+JSON.stringify(req.body));
             priceObj = await SpecailPrices.create({
                 cabType:req.body.cabType,
                 startDate: req.body.startDate,

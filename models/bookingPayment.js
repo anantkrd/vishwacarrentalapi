@@ -17,6 +17,7 @@ const bookingPaymentSchema = new mongoose.Schema(
     rawResponce:{type: String,default:''},
     carType:{type: String,default:''},
     rcBook:{type: String,default:''},
+    paymentId:{type: String,default:''},
     isDeleted: {
       type: String,
       default: "N",
