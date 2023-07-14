@@ -138,7 +138,7 @@ module.exports = {
                     dataObj.push(data);
                 }
                 //});      
-                let rowCount = await Booking.count({ where: { isDeleted: 'N',status: { $or: ['pending', 'waiting'] } } });
+                let rowCount = await Booking.count({ where: { isDeleted: 'N',status: { $or: ['waiting'] } } });
                 totalPage = rowCount / perPage;
                 totalPage = Math.ceil(totalPage);
                 responce = JSON.stringify({ code: '200', message: '', data: dataObj, rowCount: rowCount, totalPage: totalPage });
