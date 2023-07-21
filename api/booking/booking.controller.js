@@ -62,7 +62,7 @@ module.exports = {
             let payment_orderId = req.body.payment_orderId;
             let responce;
             
-            if(userId!='' || userId==null|| userId==undefined){
+            if(userId=='' || userId==null|| userId==undefined){
                 console.log("In IF");
                 const checkUser = await User.findOne({ mobileNo: req.body.mobileNo },{userPassword:0});
                 if (checkUser === null) {
