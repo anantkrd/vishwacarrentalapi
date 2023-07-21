@@ -217,7 +217,7 @@ module.exports = {
 
             if (checkAttepmt === null || checkAttepmt.attempt < 5) {
                 updateSmsAttemptCount(mobileNo);
-                const verifyOtp = await Otp.findOne({ where: { mobileNo: mobileNo, otp: otp } });
+                const verifyOtp = await Otp.findOne({ mobileNo: mobileNo, otp: otp });
                 if (verifyOtp !== null) {
                     const userData = await User.findOne({  mobileNo: mobileNo },{userPassword:0});
                     const token = jwt.sign({ _id: verifyOtp['id'] }, process.env.secrete);
@@ -440,7 +440,7 @@ module.exports = {
                         canCancel = 'N';
                     }
                     let cabId = bookingData['cabId'];
-                    cabsData = await Cabs.findOne({ where: { _id: cabId } });
+                    cabsData = await Cabs.findOne({_id: cabId });
                     let cabType = cabsData['cabType'];
                     let ac = cabsData['ac'];
                     let bags = cabsData['bags'];

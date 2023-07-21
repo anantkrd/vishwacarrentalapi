@@ -70,7 +70,7 @@ module.exports = {
                         canCancel = 'N';
                     }
                     let cabId = bookingData['cabId'];
-                    cabsData = await Cabs.findOne({ where: { _id: cabId } });
+                    cabsData = await Cabs.findOne({_id: cabId });
                     let cabType = cabsData['cabType'];
                     let ac = cabsData['ac'];
                     let bags = cabsData['bags'];
@@ -138,7 +138,7 @@ module.exports = {
                     dataObj.push(data);
                 }
                 //});      
-                let rowCount = await Booking.count({ where: { isDeleted: 'N',status: { $or: ['waiting'] } } });
+                let rowCount = await Booking.count({isDeleted: 'N',status: { $or: ['waiting'] } });
                 totalPage = rowCount / perPage;
                 totalPage = Math.ceil(totalPage);
                 responce = JSON.stringify({ code: '200', message: '', data: dataObj, rowCount: rowCount, totalPage: totalPage });
@@ -202,7 +202,7 @@ module.exports = {
                         canCancel = 'N';
                     }
                     let cabId = bookingData['cabId'];
-                    cabsData = await Cabs.findOne({ where: { _id: cabId } });
+                    cabsData = await Cabs.findOne({ _id: cabId });
                     let cabType = cabsData['cabType'];
                     let ac = cabsData['ac'];
                     let bags = cabsData['bags'];
@@ -270,7 +270,7 @@ module.exports = {
                     dataObj.push(data);
                 }
                 //});      
-                let rowCount = await Booking.count({ where: { isDeleted: 'N' } });
+                let rowCount = await Booking.count({isDeleted: 'N' });
                 totalPage = rowCount / perPage;
                 totalPage = Math.ceil(totalPage);
                 responce = JSON.stringify({ code: '200', message: '', data: dataObj, rowCount: rowCount, totalPage: totalPage });
@@ -335,7 +335,7 @@ module.exports = {
                         canCancel = 'N';
                     }
                     let cabId = bookingData['cabId'];
-                    cabsData = await Cabs.findOne({ where: { _id: cabId } });
+                    cabsData = await Cabs.findOne({_id: cabId });
                     let cabType = cabsData['cabType'];
                     let ac = cabsData['ac'];
                     let bags = cabsData['bags'];
@@ -466,7 +466,7 @@ module.exports = {
                         canCancel = 'N';
                     }
                     let cabId = bookingData['cabId'];
-                    cabsData = await Cabs.findOne({ where: { _id: cabId } });
+                    cabsData = await Cabs.findOne({_id: cabId });
                     let cabType = cabsData['cabType'];
                     let ac = cabsData['ac'];
                     let bags = cabsData['bags'];
@@ -531,7 +531,7 @@ module.exports = {
                     dataObj.push(data);
                 }
                 //});      
-                let rowCount = await Booking.count({ where: { isDeleted: 'N', status: 'confirm', driverId: { $gt: 0 }, carId: { $gt: 0 } } });
+                let rowCount = await Booking.count({isDeleted: 'N', status: 'confirm', driverId: { $gt: 0 }, carId: { $gt: 0 }});
                 totalPage = rowCount / perPage;
                 totalPage = Math.ceil(totalPage);
                 responce = JSON.stringify({ code: '200', message: '', data: dataObj, rowCount: rowCount, totalPage: totalPage });
@@ -597,7 +597,7 @@ module.exports = {
                         canCancel = 'N';
                     }
                     let cabId = bookingData['cabId'];
-                    cabsData = await Cabs.findOne({ where: { _id: cabId } });
+                    cabsData = await Cabs.findOne({_id: cabId });
                     let cabType = cabsData['cabType'];
                     let ac = cabsData['ac'];
                     let bags = cabsData['bags'];
@@ -662,7 +662,7 @@ module.exports = {
                     dataObj.push(data);
                 }
                 //});      
-                let rowCount = await Booking.count({ where: { isDeleted: 'N', status: 'confirm', agentId: { $gt: 0 }, driverId: 0, carId: 0 } });
+                let rowCount = await Booking.count({isDeleted: 'N', status: 'confirm',driverId:0,carId:0, agentId: { $gt: 0 } });
                 totalPage = rowCount / perPage;
                 totalPage = Math.ceil(totalPage);
                 responce = JSON.stringify({ code: '200', message: '', data: dataObj, rowCount: rowCount, totalPage: totalPage });
@@ -728,7 +728,7 @@ module.exports = {
                         canCancel = 'N';
                     }
                     let cabId = bookingData['cabId'];
-                    cabsData = await Cabs.findOne({ where: { _id: cabId } });
+                    cabsData = await Cabs.findOne({ _id: cabId });
                     let cabType = cabsData['cabType'];
                     let ac = cabsData['ac'];
                     let bags = cabsData['bags'];
@@ -793,7 +793,7 @@ module.exports = {
                     dataObj.push(data);
                 }
                 //});      
-                let rowCount = await Booking.count({ where: { isDeleted: 'N', status: 'waiting', agentPrice: { $gt: 0 }, agentId: 0 } });
+                let rowCount = await Booking.count({isDeleted: 'N', status: 'waiting',agentId:0, agentPrice: { $gt: 0 }, agentId: 0 });
                 totalPage = rowCount / perPage;
                 totalPage = Math.ceil(totalPage);
                 responce = JSON.stringify({ code: '200', message: '', data: dataObj, rowCount: rowCount, totalPage: totalPage });
@@ -823,7 +823,7 @@ module.exports = {
             pageId = req.query.pageId;
             let start = ((pageId - 1) * 10);
             let perPage = 10;
-            let rowCount = await User.count({ where: { isDeleted: 'N', userType: 'agent' }});
+            let rowCount = await User.count({isDeleted: 'N', userType: 'agent' });
             //let rowCount = await AgentDetials.count({ where: { isDeleted: 'N' }});
             totalPage = rowCount / perPage;
             totalPage = Math.ceil(totalPage);
@@ -940,7 +940,7 @@ module.exports = {
                     paymentId: paymentid,
                     status: 'completed'
                 });
-                updateBooking = await Booking.update({ agentId: agentId, agentPaid: '0', status: 'confirm' }, { where: { orderId: bookingId } });
+                updateBooking = await Booking.updateOne({orderId: bookingId },{ $set:{agentId: agentId, agentPaid: '0', status: 'confirm' }} );
                 responce = JSON.stringify({ code: '200', message: 'Bookign added', data: '' });
                 res.status(200).send(responce);
             }
@@ -1053,7 +1053,7 @@ module.exports = {
                 responce = JSON.stringify({ code: '404', message: "something went wrong", data: '' });
                 res.status(404).send(responce);
             } else {
-                let rowCount = await Surge.count({ where: { isDeleted: 'N' } });
+                let rowCount = await Surge.count({ isDeleted: 'N' });
                 totalPage = rowCount / perPage;
                 totalPage = Math.ceil(totalPage);
                 responce = JSON.stringify({ code: '200', message: "success type", data: cabObj, rowCount: rowCount, totalPage: totalPage });
@@ -1162,7 +1162,7 @@ module.exports = {
                 responce = JSON.stringify({ code: '404', message: "No record found", data: '' });
                 res.status(404).send(responce);
             } else {
-                let rowCount = await Surge.count({ where: { isDeleted: 'N' } });
+                let rowCount = await Surge.count({isDeleted: 'N' });
                 totalPage = rowCount / perPage;
                 totalPage = Math.ceil(totalPage);
                 responce = JSON.stringify({ code: '200', message: "successfully", data: surgeObj, totalPage: totalPage, rowCount: rowCount });
@@ -1216,7 +1216,7 @@ module.exports = {
             let agentData = await AgentCars.find({isDeleted: 'N'}).sort({createdAt:-1}).skip(start).limit(perPage);
             //let agentData = await AgentCars.findAll({include: {model:User,attributes: {exclude: ['userPassword']}}, where: { isDeleted: 'N'},offset: start, limit: perPage, order: [['id', 'desc']] });
             if (agentData !== null) {
-                let rowCount = await AgentCars.count({ where: { isDeleted: 'N'}});
+                let rowCount = await AgentCars.count({ isDeleted: 'N'});
                 totalPage = rowCount / perPage;
                 totalPage = Math.ceil(totalPage);
                 responce = JSON.stringify({ code: '200', message: 'cars', data: agentData,totalPage:totalPage,rowCount:rowCount });
