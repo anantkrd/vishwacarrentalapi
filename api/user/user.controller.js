@@ -13,6 +13,7 @@ const SearchLog = require('../../models/searchLog');
 const CanceledBooking = require('../../models/canceledBooking');
 const Razorpay = require("razorpay");
 const AgentDetials = require('../../models/agentDetials');
+const ObjectId = Schema.ObjectId;
 module.exports = {
     getUser: async (req, res) => {
         try {
@@ -70,8 +71,9 @@ module.exports = {
                 userId=findUserObj.userId+1;
             }
             let passwordEnc= SHA256(userPassword).toString();
+            //userId:userId,
             param={
-                userId:userId,
+                
                 firstName: req.query.fname,
                 lastName: req.query.lname,
                 mobileNo: req.query.mobileNo,

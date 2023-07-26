@@ -8,7 +8,7 @@ const ObjectId = Schema.ObjectId;
 const userSchema = new mongoose.Schema(
   {
     id:ObjectId,
-    userId:{type:Number,default:0,unique:true},
+    userId:ObjectId,
     firstName:{type: String,default:''},
     lastName:{type: String,default:''},
     mobileNo:{type: String,default:'',unique: true,},

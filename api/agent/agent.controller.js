@@ -373,7 +373,6 @@ module.exports = {
                     driverId=findUserObj.userId+1;
                 }
                 createUserObj = await User.create({
-                    userId:driverId,
                     firstName: firstName,
                     lastName: lastName,
                     mobileNo: mobileNo,
