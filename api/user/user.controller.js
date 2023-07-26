@@ -13,7 +13,7 @@ const SearchLog = require('../../models/searchLog');
 const CanceledBooking = require('../../models/canceledBooking');
 const Razorpay = require("razorpay");
 const AgentDetials = require('../../models/agentDetials');
-const ObjectId = Schema.ObjectId;
+
 module.exports = {
     getUser: async (req, res) => {
         try {
@@ -133,7 +133,6 @@ module.exports = {
             //console.log("userId:"+userId);
             if (checkUser === null) {
                 const userCollection = await User.create({
-                    userId:userId,
                     firstName: req.body.fname,
                     lastName: req.body.lname,
                     mobileNo: req.body.mobileNo,
