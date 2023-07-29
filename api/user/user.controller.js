@@ -72,7 +72,8 @@ module.exports = {
             }
             let passwordEnc= SHA256(userPassword).toString();
             //userId:userId,
-            param={                
+            param={     
+                userId:userId,   
                 firstName: req.query.fname,
                 lastName: req.query.lname,
                 mobileNo: req.query.mobileNo,
