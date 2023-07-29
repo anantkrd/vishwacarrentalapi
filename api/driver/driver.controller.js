@@ -24,9 +24,10 @@ module.exports = {
             let perPage = 10;
             
 
-            bookingObj = await Booking.find({isDeleted: 'N', status: { $or: ['confirm', 'started'] }, driverId: userId }).sort({createdAt:-1}).skip(start).limit(perPage);
+            //bookingObj = await Booking.find({isDeleted: 'N', status: { $or: ['confirm', 'started'] }, driverId: userId }).sort({createdAt:-1}).skip(start).limit(perPage);
+            bookingObj = await Booking.find({isDeleted: 'N', status: 'confirm', driverId: userId }).sort({createdAt:-1}).skip(start).limit(perPage);
             if (bookingObj !== null) {
-                let rowCount = await Booking.find({isDeleted: 'N', status: { $or: ['confirm', 'started'] }, driverId: userId }).count();
+                let rowCount = await Booking.find({isDeleted: 'N', status: 'confirm', driverId: userId }).count();
                 totalPage = rowCount / perPage;
                 totalPage = Math.ceil(totalPage);
                 responce = JSON.stringify({ code: '200', message: '', data: bookingObj, rowCount: rowCount, totalPage: totalPage });
