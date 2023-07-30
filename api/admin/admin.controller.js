@@ -1440,7 +1440,9 @@ module.exports = {
             agentId=req.body.agentId;
             let status=req.body.status;
             if(status=='approve'){
+                console.log("status:"+status);
                 agentObj=await AgentDetials.updateOne({agentId:agentId},{$set:{accountStatus:'active'}});
+                console.log("agentObj:"+JSON.stringify(agentObj));
                 if(agentObj==null){
                     responce = JSON.stringify({ code: '404', message: 'something went wrong plese try after sometime', data: '' });
                     res.status(404).send(responce);
