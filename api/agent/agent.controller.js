@@ -14,7 +14,7 @@ const AgentBooking = require('../../models/agentBooking');
 const Surge = require('../../models/surge');
 const AgentCars = require('../../models/agentCars');
 const AgentDetial=require('../../models/agentDetials');
-
+var SHA256 = require("crypto-js/sha256");
 const Razorpay = require("razorpay");
 module.exports = {
     getAgent: async (req, res) => {
@@ -372,12 +372,14 @@ module.exports = {
                 }else{
                     driverId=findUserObj.userId+1;
                 }
+                let userPass=mobileNo;
+                userPassDec=SHA256(userPass).toString();
                 createUserObj = await User.create({
                     firstName: firstName,
                     lastName: lastName,
                     mobileNo: mobileNo,
                     email: email,
-                    userPassword: mobileNo,
+                    userPassword: userPassDec,
                     parentId: userId,
                     idProof: licenseUrl,
                     idNumber: licenseNo,
@@ -421,7 +423,6 @@ module.exports = {
                     lastName: lastName,
                     mobileNo: mobileNo,
                     email: email,
-                    userPassword: mobileNo,
                     parentId: userId,
                     idProof: licenseUrl,
                     idNumber: licenseNo,

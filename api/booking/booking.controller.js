@@ -14,6 +14,9 @@ const BookingPayment = require('../../models/bookingPayment');
 const SpecialPrices = require('../../models/specialPrices');
 var distance = require('google-distance-matrix');
 const Razorpay = require("razorpay");
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
+var SHA256 = require("crypto-js/sha256");
 //const { Sequelize, DataTypes, Model } = require('sequelize');
 module.exports = {
     bookCab: async (req, res) => {
@@ -21,7 +24,7 @@ module.exports = {
             
             let userId = '';
             let error = '';
-            
+            let isValid='Y';
             let fname = req.body.fname;
             let lname = req.body.lname;
             let mobileNo = req.body.mobileNo;
@@ -65,19 +68,30 @@ module.exports = {
             if(userId=='' || userId==null|| userId==undefined){
                 console.log("In IF");
                 const checkUser = await User.findOne({ mobileNo: req.body.mobileNo },{userPassword:0});
+                console.log("checkUser:"+checkUser);
                 if (checkUser === null) {
-                    const userCollection = await User.create({
-                        firstName: req.body.fname,
-                        lastName: req.body.lname,
-                        mobileNo: req.body.mobileNo,
-                        email: req.body.email,
-                        userPassword: req.body.mobileNo,
-                        userType: 'user',
-                        status: 'Active'
-                    })
-                    userId = userCollection._id;
+                    const checkUserEmail = await User.findOne({ email: req.body.email },{userPassword:0});
+                    if(checkUserEmail===null){
+                        let ObjectId = Schema.ObjectId;
+                        let userPass=req.body.mobileNo;
+                        userPassDec=SHA256(userPass).toString();
+                        const userCollection = await User.create({                            
+                            firstName: req.body.fname,
+                            lastName: req.body.lname,
+                            mobileNo: req.body.mobileNo,
+                            email: req.body.email,
+                            userPassword: userPassDec,
+                            userType: 'user',
+                            status: 'Active'
+                        })
+                        userId = userCollection._id;
+                    }else{
+                        error="Email already exist with differant mobile no.";
+                        isValid='N';                        
+                        
+                    }
                 } else {
-                    userId = userId;
+                    userId = checkUser._id;
                 }
             }
             
@@ -85,20 +99,27 @@ module.exports = {
             if(returnDate=="0000-00-00 00:00:00"){
                 returnDate=null;
             }
-            
-            bookingData = await Booking.create({
-                userId: userId, userName: userName, email: email, orderId: orderId, cabId: cabId, pickup: pickup, destination: destination, pickupDate: pickupDate, returnDate: returnDate, isReturn: isReturn, pickupLat: pickupLat, pickupLong: pickupLong,
-                destinationLat: destinationLat, destinationLong: destinationLong, distance: distance, rate: rate, amount: amount, discount: discount, finalAmount: finalAmount, status: 'pending', journyTime: journyTime,
-                payment_orderId: payment_orderId, pickupCityName: pickupCityName, pickupDistrict: pickupDistrict, pickupState: pickupState,
-                dropCityName: dropCityName, dropDistrict: dropDistrict, dropState: dropState, userMobileNo: mobileNo, extraRate: extraRate
-            });
-            if (bookingData !== null) {
-                responce = JSON.stringify({ code: '200', message: "Booking Created successfully", data: bookingData });
+            bookingData=null;
+            if(isValid=='Y'){
+                bookingData = await Booking.create({
+                    userId: userId, userName: userName, email: email, orderId: orderId, cabId: cabId, pickup: pickup, destination: destination, pickupDate: pickupDate, returnDate: returnDate, isReturn: isReturn, pickupLat: pickupLat, pickupLong: pickupLong,
+                    destinationLat: destinationLat, destinationLong: destinationLong, distance: distance, rate: rate, amount: amount, discount: discount, finalAmount: finalAmount, status: 'pending', journyTime: journyTime,
+                    payment_orderId: payment_orderId, pickupCityName: pickupCityName, pickupDistrict: pickupDistrict, pickupState: pickupState,
+                    dropCityName: dropCityName, dropDistrict: dropDistrict, dropState: dropState, userMobileNo: mobileNo, extraRate: extraRate
+                });
+                if (bookingData !== null) {
+                    responce = JSON.stringify({ code: '200', message: "Booking Created successfully", data: bookingData });
+                    res.status(200).send(responce);
+                } else {
+                    responce = JSON.stringify({ code: '400', message: "Sorry, something went wrong", data: '' });
+                    res.status(200).send(responce);
+                }
+            }else{
+                responce = JSON.stringify({ code: '400', message: "Email already exist with differant mobile no.", data: '' });
                 res.status(200).send(responce);
-            } else {
-                responce = JSON.stringify({ code: '404', message: "Sorry, something went wrong", data: '' });
-                res.status(404).send(responce);
             }
+            
+            
         } catch (e) {
             console.log(e)
             responce = JSON.stringify({ code: '501', message: e.message || "Some error occurred while retrieving data.", data: '' });
@@ -141,12 +162,13 @@ module.exports = {
             if(dropDistrict=='' || dropDistrict==null){
                 dropDistrict=dropState;
             }
-            let timeNow = moment().format("YYYY-MM-DD H:mm:ss");
+            console.log("pickdateTime:"+pickdateTime)
+            let timeNow = moment().format("YYYY-MM-DD HH:mm:ss");
             timeNow = moment().add(5, 'hours');
             timeNow = moment(timeNow).add(30, 'minutes');
             
-            let formattedDate = moment(pickdateTime);//.format("YYYY-MM-DD H:mm:ss");
-            
+            let formattedDate = moment(pickdateTime).format("YYYY-MM-DD HH:mm:ss");
+            console.log("formattedDate:"+formattedDate);
             let tripBookingBEforHours = moment(formattedDate).diff(moment(timeNow), 'hours');
             
             let earlyBookingCharges = 0;

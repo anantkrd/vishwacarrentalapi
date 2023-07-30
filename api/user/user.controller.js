@@ -13,12 +13,13 @@ const SearchLog = require('../../models/searchLog');
 const CanceledBooking = require('../../models/canceledBooking');
 const Razorpay = require("razorpay");
 const AgentDetials = require('../../models/agentDetials');
+var SHA256 = require("crypto-js/sha256");
 
 module.exports = {
     getUser: async (req, res) => {
         try {
             let userId = req.query.userId;
-            const userData = await User.findOne({ userId: userId },{userPassword:0});
+            const userData = await User.findOne({ _id: userId },{userPassword:0});
             //const userData = await User.findOne({attributes: { exclude: ['userPassword'] } , where: { id: userId }} );
             if (userData === null) {                
                 responce = JSON.stringify({ code: '404', message: 'User Not Found', data: '' });
@@ -53,68 +54,40 @@ module.exports = {
     },    
     createUser: async (req, res) => {
         try {
-                        
-            
-
-            let firstName= req.body.fname;
-            let lastName= req.body.lname;
-            let mobileNo= req.body.mobileNo;
-            let email= req.body.email;
-            let userPassword= req.body.mobileNo
-            let userType= req.body.type;
-            let status= 'active';
-            findUserObj=await User.findOne().sort('-createdAt');
+           
+            const checkUser = await User.findOne({mobileNo: req.body.mobileNo },{userPassword:0}).sort({createdAt:-1});
+            //console.log("checkUser:"+JSON.stringify(checkUser));
             userId=1;
-            if(findUserObj==null){
+            const checkUserCount = await User.findOne().sort({createdAt:-1});
+            if(checkUserCount==null){
                 userId=1;
             }else{
-                userId=findUserObj.userId+1;
+                userId=checkUserCount.userId+1;
             }
-            let passwordEnc= SHA256(userPassword).toString();
-            //userId:userId,
-            param={     
-                userId:userId,   
-                firstName: req.query.fname,
-                lastName: req.query.lname,
-                mobileNo: req.query.mobileNo,
-                email: req.query.email,
-                userPassword: req.query.mobileNo,
-                userType: req.query.type,
-                status: 'active'
-            }
-            
-            let userObj=await User.create(param);
-            
-            if(userObj){                
-                responce = JSON.stringify({ code: '200', message: "success", data: userObj});
-                res.status(200).send(responce);
-            }else{
-                responce = JSON.stringify({ code: '404', message: "Invalid User", data: '' });
-                res.status(500).send(responce);
-            }
-
-            /*
-            const checkUser = await User.findOne({ where: { mobileNo: req.query.mobileNo } });
+            //console.log("userId:"+userId);
+            let userPass=req.body.userPassword;
+            userPassDec=SHA256(userPass).toString();
             if (checkUser === null) {
                 const userCollection = await User.create({
-                    firstName: req.query.fname,
-                    lastName: req.query.lname,
-                    mobileNo: req.query.mobileNo,
-                    email: req.query.email,
-                    userPassword: req.query.mobileNo,
-                    userType: req.query.type,
+                    firstName: req.body.fname,
+                    lastName: req.body.lname,
+                    mobileNo: req.body.mobileNo,
+                    email: req.body.email,
+                    userPassword: userPassDec,
+                    userType: req.body.type,
                     status: 'active'
                 })
-                responce = JSON.stringify({ code: '200', message: 'Account created successfully', data: '' });
+                
+                responce = JSON.stringify({ code: '200', message: 'Partner created successfully', data: '' });
                 res.status(200).send(responce)
             } else {
                 responce = JSON.stringify({ code: '401', message: 'User already exist with this mobile no.', data: '' });
-                res.status(404).send(responce);
-            }*/
+                res.status(401).send(responce);
+            }
 
         } catch (e) {
             console.log(e)
-            responce = JSON.stringify({ code: '501', message: e.message || "Some error occurred while retrieving tutorials.", data: '' });
+            responce = JSON.stringify({ code: '501', message: e.message || "Some error occurred.", data: '' });
             res.status(500).send(responce);
         }
     },
@@ -132,12 +105,14 @@ module.exports = {
             }
             //console.log("userId:"+userId);
             if (checkUser === null) {
+                let userPass=req.body.userPassword;
+                userPassDec=SHA256(userPass).toString();
                 const userCollection = await User.create({
                     firstName: req.body.fname,
                     lastName: req.body.lname,
                     mobileNo: req.body.mobileNo,
                     email: req.body.email,
-                    userPassword: req.body.userPassword,
+                    userPassword: userPassDec,
                     userType: req.body.type,
                     status: 'active'
                 })
@@ -245,12 +220,14 @@ module.exports = {
 
             let mobileNo = req.query.mobileNo;
             let password = req.query.userPassword;
-            var userData = await User.findOne({mobileNo: mobileNo, userPassword: password, isDeleted: 'N'},{userPassword:0});
+            userPassDec=SHA256(password).toString();
+            var userData = await User.findOne({mobileNo: mobileNo, userPassword: userPassDec, isDeleted: 'N'},{userPassword:0});
             if (userData === null || userData.length<=0) {
                 responce = JSON.stringify({ code: '404', message: 'User not found', data: '' });
                 res.status(404).send(responce)
             } else {
                 agentdata='';
+                const token = await jwt.sign({ _id: userData['userId'] }, process.env.secrete);
                 userStatus=userData.status;
                 if(userStatus=="pending"){
                     responce = JSON.stringify({ code: '404', message: 'Your account is not approved yet, Please contact admin to activate it', data: userData, token: token,agentData:agentdata });
@@ -261,7 +238,7 @@ module.exports = {
                     agentdata=await AgentDetials.findOne({agentId:userData._id});
                     accountStatus=agentdata.accountStatus;
                 }
-                const token = await jwt.sign({ _id: userData['userId'] }, process.env.secrete);
+                
 
                 responce = JSON.stringify({ code: '200', message: 'user found', data: userData, token: token,agentStatus:accountStatus });
 
@@ -759,6 +736,20 @@ module.exports = {
                     res.status(404).send(responce)
                 }
             }
+        } catch (e) {
+            console.log(e)
+            responce = JSON.stringify({ code: '501', message: e.message || "Some error occurred while retrieving tutorials.", data: '' });
+            res.status(500).send(responce);
+        }
+    },
+    updatePassword: async (req, res) => {
+        try {
+            let userPassword = req.body.userPassword;
+            let userId = req.body.userId;
+            userPassDec=SHA256(userPassword).toString();
+            await User.updateOne({_id: userId},{$set:{userPassword: userPassDec }});
+            responce = JSON.stringify({ code: '200', message: 'Password updated', data: '', rowCount: '', totalPage: '' });
+            res.status(200).send(responce);        
         } catch (e) {
             console.log(e)
             responce = JSON.stringify({ code: '501', message: e.message || "Some error occurred while retrieving tutorials.", data: '' });

@@ -13,6 +13,7 @@ router.get('/fetchUser',authenticate, userController.getUser);
 
 router.post('/create_user', userController.createUser);
 router.post('/register_agent', userController.createPartner);
+router.post('/register_user', userController.createUser);
 
 
 router.get('/get_user_byid', authenticate,userController.getUser);
@@ -26,6 +27,7 @@ router.get('/get_user_booking',authenticate, userController.getMyBookings);
 
 router.get('/get_search_log',authenticate, userController.getBookingSearchLog);
 router.get('/cancel_booking', authenticate,userController.cancelBooking);
+router.post('/update_password', authenticate,userController.updatePassword);
 
 
 module.exports = router;
