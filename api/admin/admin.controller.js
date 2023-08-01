@@ -12,6 +12,7 @@ const AgentCars=require('../../models/agentCars');
 const AgentDetials=require('../../models/agentDetials');
 const CabTypes=require('../../models/cabTypes');
 const SpecailPrices=require('../../models/specialPrices');
+const CabBookings=require('../../models/cabBookings');
 
 const Surge = require('../../models/surge');
 module.exports = {
@@ -1633,6 +1634,95 @@ module.exports = {
         }
     },    
     deleteSpecialPrice:async(req,res)=>{
+        try{
+            let userId = req.query.userId;
+            let priceId = req.query.priceId;
+            deleteObj=await SpecailPrices.updateOne({_id:priceId},{$set:{isDeleted:'N'}});
+            responce = JSON.stringify({ code: '200', message: "special Price deleted successfully", data: deleteObj });
+            res.status(200).send(responce);
+
+        }catch (e) {
+            console.log(e)
+            responce = JSON.stringify({ code: '501', message: e.message || "Some error occurred while retrive data", data: '' });
+            res.status(500).send(responce);
+        }
+    },
+        
+    addManualBooking:async(req,res)=>{
+        try{
+            
+            let userId = req.body.userId;
+            let firstName = req.body.firstName;
+            let lastName = req.body.lastName;
+            let mobileNo = req.body.mobileNo;
+            let email = req.body.email;
+            let pickUp = req.body.pickUp;
+            let destination = req.body.destination;
+            let passengers = req.body.passengers;
+            let language = req.body.language;
+            let totalAmount = req.body.totalAmount;
+            let advanceAmount = req.body.advanceAmount;
+            let paidAmount = req.body.paidAmount;
+            let bookingDate = req.body.bookingDate;
+
+            bookingData = await CabBookings.create({
+                userId: userId, firstName: firstName,lastName:lastName, mobileNo: mobileNo, email: email, pickUp: pickUp,  destination: destination, passengers: passengers, 
+                language: language, status: 'New', totalAmount: totalAmount,advanceAmount: advanceAmount, paidAmount: paidAmount, bookingDate: bookingDate
+            });
+            if (bookingData !== null) {
+                responce = JSON.stringify({ code: '200', message: "Booking Created successfully", data: bookingData });
+                res.status(200).send(responce);
+            } else {
+                responce = JSON.stringify({ code: '400', message: "Sorry, something went wrong", data: '' });
+                res.status(200).send(responce);
+            }
+        }catch (e) {
+            console.log(e)
+            responce = JSON.stringify({ code: '501', message: e.message || "Some error occurred while retrive data", data: '' });
+            res.status(500).send(responce);
+        }
+    },
+    
+    getCabBookings: async (req, res) => {
+        try {
+            let pageId = req.query.pageId;
+            let start = ((pageId - 1) * 10);
+            let perPage = 10;
+            console.log("==========================Cabs===============")
+            let cabObj = await CabBookings.find({ isDeleted: 'N'}).sort({bookingDate:-1}).skip(start).limit(perPage);
+            //cabObj = await Cabs.findAll({ where: { isDeleted: 'N' }, order: [['id', 'desc']] });
+            if (cabObj === null || cabObj.length<=0) {
+                responce = JSON.stringify({ code: '404', message: "No record found", data: '' });
+                res.status(404).send(responce);
+            } else {
+                let rowCount = await CabBookings.count({isDeleted: 'N' });
+                totalPage = rowCount / perPage;
+                totalPage = Math.ceil(totalPage);
+                responce = JSON.stringify({ code: '200', message: "success cabs", data: cabObj, rowCount: rowCount, totalPage: totalPage });
+                res.status(200).send(responce);
+            }
+        } catch (e) {
+            console.log(e)
+            responce = JSON.stringify({ code: '501', message: e.message || "Some error occurred while retrive data", data: '' });
+            res.status(500).send(responce);
+        }
+    },    
+    deleteManualBooking:async(req,res)=>{
+        try{
+            let userId = req.query.userId;
+            let priceId = req.query.priceId;
+            deleteObj=await SpecailPrices.updateOne({_id:priceId},{$set:{isDeleted:'N'}});
+            responce = JSON.stringify({ code: '200', message: "special Price deleted successfully", data: deleteObj });
+            res.status(200).send(responce);
+
+        }catch (e) {
+            console.log(e)
+            responce = JSON.stringify({ code: '501', message: e.message || "Some error occurred while retrive data", data: '' });
+            res.status(500).send(responce);
+        }
+    },
+        
+    updateManualBooking:async(req,res)=>{
         try{
             let userId = req.query.userId;
             let priceId = req.query.priceId;
