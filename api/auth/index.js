@@ -5,7 +5,7 @@ authenticate=(req,res,next)=>{
     let result;
     //console.log("in Auth==="+JSON.stringify(req.headers));
     const authorizationHeaader = req.headers.authorization;
-    console.log("authorizationHeaader***"+authorizationHeaader);
+    //console.log("authorizationHeaader***"+authorizationHeaader);
     if(authorizationHeaader){
         let token=authorizationHeaader.split(' ')[1];
         const options = {
@@ -13,7 +13,7 @@ authenticate=(req,res,next)=>{
           };
           try{
               result=jwt.verify(token,process.env.secrete);
-              console.log("verify Result="+result);
+              //console.log("verify Result="+result);
               req.decoded = result;
               next();
           }catch(err){

@@ -1664,10 +1664,11 @@ module.exports = {
             let advanceAmount = req.body.advanceAmount;
             let paidAmount = req.body.paidAmount;
             let bookingDate = req.body.bookingDate;
+            let cabType=req.body.cabType;
 
             bookingData = await CabBookings.create({
                 userId: userId, firstName: firstName,lastName:lastName, mobileNo: mobileNo, email: email, pickUp: pickUp,  destination: destination, passengers: passengers, 
-                language: language, status: 'New', totalAmount: totalAmount,advanceAmount: advanceAmount, paidAmount: paidAmount, bookingDate: bookingDate
+                language: language, status: 'New', totalAmount: totalAmount,advanceAmount: advanceAmount, paidAmount: paidAmount, bookingDate: bookingDate,Cab:cabType
             });
             if (bookingData !== null) {
                 responce = JSON.stringify({ code: '200', message: "Booking Created successfully", data: bookingData });
@@ -1688,8 +1689,8 @@ module.exports = {
             let pageId = req.query.pageId;
             let start = ((pageId - 1) * 10);
             let perPage = 10;
-            console.log("==========================Cabs===============")
-            let cabObj = await CabBookings.find({ isDeleted: 'N'}).sort({bookingDate:-1}).skip(start).limit(perPage);
+            console.log("==========================Bookings===============")
+            let cabObj = await CabBookings.find({ isDeleted: 'N'}).sort({bookingDate:1}).skip(start).limit(perPage);
             //cabObj = await Cabs.findAll({ where: { isDeleted: 'N' }, order: [['id', 'desc']] });
             if (cabObj === null || cabObj.length<=0) {
                 responce = JSON.stringify({ code: '404', message: "No record found", data: '' });

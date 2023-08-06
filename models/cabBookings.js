@@ -12,6 +12,7 @@ const cabBookings_Schema = new mongoose.Schema(
     lastName:{type: String,default:''},
     mobileNo:{type: String,default:''},
     email:{type: String,default:''},
+    Cab:{type: String,default:''},
     pickUp:{type: String,default:''},
     destination:{type: String,default:''},
     passengers:{type: String,default:''},

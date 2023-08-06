@@ -49,7 +49,7 @@ router.delete('/remove_specialprice',authenticate, adminController.deleteSpecial
 router.put('/update_specialprice',authenticate, adminController.updateSpecialPrice);
 
 router.post('/add_cabbooking',authenticate, adminController.addManualBooking);
-router.post('/get_cabbooking',authenticate, adminController.getCabBookings);
+router.get('/get_cabbooking',authenticate, adminController.getCabBookings);
 
 router.get('/get_cab', authenticate, async function (req, res, next) {
 
