@@ -122,7 +122,7 @@ module.exports = {
             
         } catch (e) {
             console.log(e)
-            responce = JSON.stringify({ code: '501', message: e.message || "Some error occurred while retrieving data.", data: '' });
+            responce = JSON.stringify({ code: '501', message: "Some error occurred while retrieving data.", data: '' });
             res.status(500).send(responce);
         }
     },
@@ -436,7 +436,7 @@ module.exports = {
             });
         } catch (e) {
             console.log(e)
-            responce = JSON.stringify({ code: '501', message: e.message || "Some error occurred while retrieving tutorials.", data: '' });
+            responce = JSON.stringify({ code: '501', message: "Some error occurred while retrieving tutorials.", data: '' });
             res.status(500).send(responce);
         }
     },
@@ -481,7 +481,7 @@ module.exports = {
 
         } catch (e) {
             console.log(e)
-            responce = JSON.stringify({ code: '501', message: e.message || "Some error occurred while payment", data: '' });
+            responce = JSON.stringify({ code: '501', message:  "Some error occurred while payment", data: '' });
             res.status(500).send(responce);
         }
     },
@@ -510,7 +510,7 @@ module.exports = {
            
         } catch (e) {
             console.log(e)
-            responce = JSON.stringify({ code: '501', message: e.message || "Some error occurred while retrieving data.", data: '' });
+            responce = JSON.stringify({ code: '501', message:  "Some error occurred while retrieving data.", data: '' });
             res.status(500).send(responce);
         }
     },
@@ -537,7 +537,7 @@ module.exports = {
             }
         } catch (e) {
             console.log(e)
-            responce = JSON.stringify({ code: '501', message: e.message || "Some error occurred while retrieving data.", data: '' });
+            responce = JSON.stringify({ code: '501', message: "Some error occurred while retrieving data.", data: '' });
             res.status(500).send(responce);
         }
     }

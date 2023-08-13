@@ -147,7 +147,7 @@ module.exports = {
             }
         } catch (e) {
             console.log(e)
-            responce = JSON.stringify({ code: '501', message: e.message || "Some error occurred while retrieving tutorials.", data: '' });
+            responce = JSON.stringify({ code: '501', message:  "Some error occurred while retrieving tutorials.", data: '' });
             res.status(500).send(responce);
         }
     },
@@ -279,7 +279,7 @@ module.exports = {
             }
         } catch (e) {
             console.log(e)
-            responce = JSON.stringify({ code: '501', message: e.message || "Some error occurred while retrieving tutorials.", data: '' });
+            responce = JSON.stringify({ code: '501', message:  "Some error occurred while retrieving tutorials.", data: '' });
             res.status(500).send(responce);
         }
     },
@@ -409,7 +409,7 @@ module.exports = {
             }
         } catch (e) {
             console.log(e)
-            responce = JSON.stringify({ code: '501', message: e.message || "Some error occurred while retrieving tutorials.", data: '' });
+            responce = JSON.stringify({ code: '501', message:  "Some error occurred while retrieving tutorials.", data: '' });
             res.status(500).send(responce);
         }
     },
@@ -540,7 +540,7 @@ module.exports = {
             }
         } catch (e) {
             console.log(e)
-            responce = JSON.stringify({ code: '501', message: e.message || "Some error occurred while retrieving tutorials.", data: '' });
+            responce = JSON.stringify({ code: '501', message:  "Some error occurred while retrieving tutorials.", data: '' });
             res.status(500).send(responce);
         }
     },
@@ -671,7 +671,7 @@ module.exports = {
             }
         } catch (e) {
             console.log(e)
-            responce = JSON.stringify({ code: '501', message: e.message || "Some error occurred while retrieving tutorials.", data: '' });
+            responce = JSON.stringify({ code: '501', message:  "Some error occurred while retrieving tutorials.", data: '' });
             res.status(500).send(responce);
         }
     },
@@ -802,7 +802,7 @@ module.exports = {
             }
         } catch (e) {
             console.log(e)
-            responce = JSON.stringify({ code: '501', message: e.message || "Some error occurred while retrieving tutorials.", data: '' });
+            responce = JSON.stringify({ code: '501', message:  "Some error occurred while retrieving tutorials.", data: '' });
             res.status(500).send(responce);
         }
     },
@@ -815,7 +815,7 @@ module.exports = {
             res.status(200).send(responce);
         } catch (e) {
             console.log(e)
-            responce = JSON.stringify({ code: '501', message: e.message || "Some error occurred while retrieving tutorials.", data: '' });
+            responce = JSON.stringify({ code: '501', message:  "Some error occurred while retrieving tutorials.", data: '' });
             res.status(500).send(responce);
         }
     },
@@ -870,7 +870,7 @@ module.exports = {
             }
         } catch (e) {
             console.log(e)
-            responce = JSON.stringify({ code: '501', message: e.message || "Some error occurred while retrieving tutorials.", data: '' });
+            responce = JSON.stringify({ code: '501', message: "Some error occurred while retrieving tutorials.", data: '' });
             res.status(500).send(responce);
         }
     },
@@ -890,7 +890,7 @@ module.exports = {
             }
         } catch (e) {
             console.log(e)
-            responce = JSON.stringify({ code: '501', message: e.message || "Some Internal server error", data: '' });
+            responce = JSON.stringify({ code: '501', message:  "Some Internal server error", data: '' });
             res.status(500).send(responce);
         }
     },
@@ -907,7 +907,7 @@ module.exports = {
             }
         } catch (e) {
             console.log(e)
-            responce = JSON.stringify({ code: '501', message: e.message || "Some Internal server error.", data: '' });
+            responce = JSON.stringify({ code: '501', message:  "Some Internal server error.", data: '' });
             res.status(500).send(responce);
         }
     },
@@ -949,7 +949,7 @@ module.exports = {
 
         } catch (e) {
             console.log(e)
-            responce = JSON.stringify({ code: '501', message: e.message || "Some Internal server error", data: '' });
+            responce = JSON.stringify({ code: '501', message:  "Some Internal server error", data: '' });
             res.status(500).send(responce);
         }
     },
@@ -978,7 +978,7 @@ module.exports = {
             res.status(200).send(responce);
         } catch (e) {
             console.log(e)
-            responce = JSON.stringify({ code: '501', message: e.message || "Some error occurred while retrive data", data: '' });
+            responce = JSON.stringify({ code: '501', message:"Some error occurred while retrive data", data: '' });
             res.status(500).send(responce);
         }
     },
@@ -1015,7 +1015,7 @@ module.exports = {
             }
         } catch (e) {
             console.log(e)
-            responce = JSON.stringify({ code: '501', message: e.message || "Some error occurred while retrive data", data: '' });
+            responce = JSON.stringify({ code: '501', message:  "Some error occurred while retrive data", data: '' });
             res.status(500).send(responce);
         }
     },
@@ -1039,7 +1039,7 @@ module.exports = {
             }
         } catch (e) {
             console.log(e)
-            responce = JSON.stringify({ code: '501', message: e.message || "Some error occurred while retrive data", data: '' });
+            responce = JSON.stringify({ code: '501', message:  "Some error occurred while retrive data", data: '' });
             res.status(500).send(responce);
         }
     },
@@ -1062,7 +1062,7 @@ module.exports = {
             }
         } catch (e) {
             console.log(e)
-            responce = JSON.stringify({ code: '501', message: e.message || "Some error occurred while retrive data", data: '' });
+            responce = JSON.stringify({ code: '501', message:  "Some error occurred while retrive data", data: '' });
             res.status(500).send(responce);
         }
     },
@@ -1082,7 +1082,7 @@ module.exports = {
             }
         } catch (e) {
             console.log(e)
-            responce = JSON.stringify({ code: '501', message: e.message || "Some error occurred while retrive data", data: '' });
+            responce = JSON.stringify({ code: '501', message:  "Some error occurred while retrive data", data: '' });
             res.status(500).send(responce);
         }
     },
@@ -1096,7 +1096,7 @@ module.exports = {
 
         }catch (e) {
             console.log(e)
-            responce = JSON.stringify({ code: '501', message: e.message || "Some error occurred while retrive data", data: '' });
+            responce = JSON.stringify({ code: '501', message:  "Some error occurred while retrive data", data: '' });
             res.status(500).send(responce);
         }
     },
@@ -1128,7 +1128,7 @@ module.exports = {
             }
         } catch (e) {
             console.log(e)
-            responce = JSON.stringify({ code: '501', message: e.message || "Internal server Error", data: '' });
+            responce = JSON.stringify({ code: '501', message:  "Internal server Error", data: '' });
             res.status(500).send(responce);
         }
     },
@@ -1147,7 +1147,7 @@ module.exports = {
             res.status(200).send(responce);
         } catch (e) {
             console.log(e)
-            responce = JSON.stringify({ code: '501', message: e.message || "Some error occurred while retrive data", data: '' });
+            responce = JSON.stringify({ code: '501', message: "Some error occurred while retrive data", data: '' });
             res.status(500).send(responce);
         }
     },
@@ -1171,7 +1171,7 @@ module.exports = {
             }
         } catch (e) {
             console.log(e)
-            responce = JSON.stringify({ code: '501', message: e.message || "Internal server Error", data: '' });
+            responce = JSON.stringify({ code: '501', message:  "Internal server Error", data: '' });
             res.status(500).send(responce);
         }
     },
@@ -1679,7 +1679,7 @@ module.exports = {
             }
         }catch (e) {
             console.log(e)
-            responce = JSON.stringify({ code: '501', message: e.message || "Some error occurred while retrive data", data: '' });
+            responce = JSON.stringify({ code: '501', message:  "Some error occurred while retrive data", data: '' });
             res.status(500).send(responce);
         }
     },
@@ -1704,7 +1704,7 @@ module.exports = {
             }
         } catch (e) {
             console.log(e)
-            responce = JSON.stringify({ code: '501', message: e.message || "Some error occurred while retrive data", data: '' });
+            responce = JSON.stringify({ code: '501', message: "Some error occurred while retrive data", data: '' });
             res.status(500).send(responce);
         }
     },    
@@ -1718,7 +1718,7 @@ module.exports = {
 
         }catch (e) {
             console.log(e)
-            responce = JSON.stringify({ code: '501', message: e.message || "Some error occurred while retrive data", data: '' });
+            responce = JSON.stringify({ code: '501', message:  "Some error occurred while retrive data", data: '' });
             res.status(500).send(responce);
         }
     },
@@ -1733,7 +1733,7 @@ module.exports = {
 
         }catch (e) {
             console.log(e)
-            responce = JSON.stringify({ code: '501', message: e.message || "Some error occurred while retrive data", data: '' });
+            responce = JSON.stringify({ code: '501', message:  "Some error occurred while retrive data", data: '' });
             res.status(500).send(responce);
         }
     },
