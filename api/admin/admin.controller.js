@@ -1637,7 +1637,7 @@ module.exports = {
         try{
             let userId = req.query.userId;
             let priceId = req.query.priceId;
-            deleteObj=await SpecailPrices.updateOne({_id:priceId},{$set:{isDeleted:'N'}});
+            deleteObj=await SpecailPrices.updateOne({_id:priceId},{$set:{isDeleted:'Y'}});
             responce = JSON.stringify({ code: '200', message: "special Price deleted successfully", data: deleteObj });
             res.status(200).send(responce);
 
@@ -1713,7 +1713,7 @@ module.exports = {
         try{
             let userId = req.query.userId;
             let bookingId = req.query.bookingId;
-            deleteObj=await CabBookings.updateOne({_id:bookingId},{$set:{isDeleted:'N'}});
+            deleteObj=await CabBookings.updateOne({_id:bookingId},{$set:{isDeleted:'Y'}});
             responce = JSON.stringify({ code: '200', message: "Deleted successfully", data: deleteObj });
             res.status(200).send(responce);
 
