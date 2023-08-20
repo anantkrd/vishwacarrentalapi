@@ -431,7 +431,7 @@ module.exports = {
                         note:logPrice
                     });
                     responce = JSON.stringify({ code: '200', message: "", data: dataObj });
-                    let sms=logSerchedSmsm(mobileNo,pickupCityName,destinationCity,pickdateTime);
+                    //let sms=logSerchedSmsm(mobileNo,pickupCityName,destinationCity,pickdateTime);
                     res.status(200).send(responce);
                 }
             });

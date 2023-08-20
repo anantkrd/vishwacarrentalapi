@@ -50,6 +50,7 @@ router.put('/update_specialprice',authenticate, adminController.updateSpecialPri
 
 router.post('/add_cabbooking',authenticate, adminController.addManualBooking);
 router.get('/get_cabbooking',authenticate, adminController.getCabBookings);
+router.delete('/cabBooking',authenticate, adminController.deleteCabBooking);
 
 router.get('/get_cab', authenticate, async function (req, res, next) {
 

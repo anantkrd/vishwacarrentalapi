@@ -1708,12 +1708,12 @@ module.exports = {
             res.status(500).send(responce);
         }
     },    
-    deleteManualBooking:async(req,res)=>{
+    deleteCabBooking:async(req,res)=>{
         try{
             let userId = req.query.userId;
-            let priceId = req.query.priceId;
-            deleteObj=await SpecailPrices.updateOne({_id:priceId},{$set:{isDeleted:'N'}});
-            responce = JSON.stringify({ code: '200', message: "special Price deleted successfully", data: deleteObj });
+            let bookingId = req.query.bookingId;
+            deleteObj=await CabBookings.updateOne({_id:bookingId},{$set:{isDeleted:'N'}});
+            responce = JSON.stringify({ code: '200', message: "Deleted successfully", data: deleteObj });
             res.status(200).send(responce);
 
         }catch (e) {
