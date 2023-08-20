@@ -1665,10 +1665,11 @@ module.exports = {
             let paidAmount = req.body.paidAmount;
             let bookingDate = req.body.bookingDate;
             let cabType=req.body.cabType;
-
+            let status=req.body.status;
+            console.log("status:"+status);
             bookingData = await CabBookings.create({
                 userId: userId, firstName: firstName,lastName:lastName, mobileNo: mobileNo, email: email, pickUp: pickUp,  destination: destination, passengers: passengers, 
-                language: language, status: 'New', totalAmount: totalAmount,advanceAmount: advanceAmount, paidAmount: paidAmount, bookingDate: bookingDate,Cab:cabType
+                language: language, status: status, totalAmount: totalAmount,advanceAmount: advanceAmount, paidAmount: paidAmount, bookingDate: bookingDate,Cab:cabType
             });
             if (bookingData !== null) {
                 responce = JSON.stringify({ code: '200', message: "Booking Created successfully", data: bookingData });
