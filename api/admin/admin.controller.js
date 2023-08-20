@@ -1713,6 +1713,7 @@ module.exports = {
         try{
             let userId = req.query.userId;
             let bookingId = req.query.bookingId;
+            console.log("bookingId:"+bookingId);
             deleteObj=await CabBookings.updateOne({_id:bookingId},{$set:{isDeleted:'Y'}});
             responce = JSON.stringify({ code: '200', message: "Deleted successfully", data: deleteObj });
             res.status(200).send(responce);
