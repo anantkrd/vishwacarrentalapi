@@ -191,6 +191,17 @@ module.exports = {
         }
         
     },
+    logSerchedSmsm:async(custMobile,pickupCityName,dropCityName,journeyDate)=>{
+        
+        try{
+            msgAdmin="TOURPR:Dear Admin, Customer "+custMobile+" Searched for Trip From "+pickupCityName+" To "+dropCityName+" On Date "+journeyDate;
+            await module.exports.sendSms('7710054367', 'Admin', msgAdmin, '1507169251132774580');
+            await module.exports.sendSms('7722055354', 'Admin', msgAdmin, '1507169251132774580');
+             
+        }catch(e){
+            console.log("ERror:"+e);
+        }
+    },
     sendSms: async (mobileNo, type, message, templateId = '001') => {
         try {
             var msg = message;

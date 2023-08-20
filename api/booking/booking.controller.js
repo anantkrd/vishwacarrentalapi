@@ -1,5 +1,5 @@
 const { json } = require('body-parser');
-const { sentBookingSmsToCustomer } = require('../common/sendSms');
+const { sentBookingSmsToCustomer,logSerchedSmsm } = require('../common/sendSms');
 const pool = require('../../config/database');
 const jwt = require('jsonwebtoken');
 const moment = require('moment');
@@ -431,6 +431,7 @@ module.exports = {
                         note:logPrice
                     });
                     responce = JSON.stringify({ code: '200', message: "", data: dataObj });
+                    let sms=logSerchedSmsm(mobileNo,pickupCityName,destinationCity,pickdateTime);
                     res.status(200).send(responce);
                 }
             });
