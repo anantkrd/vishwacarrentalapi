@@ -89,10 +89,10 @@ module.exports = {
                     data['pickupDate'] = bookingData['pickupDate'];
                     data['returnDate'] = bookingData['returnDate'];
                     if(bookingData['pickupDate']!=null && bookingData['pickupDate']!=undefined){
-                        data['pickupDate'] = moment(bookingData['pickupDate']).format("DD-MMM-YYYY hh:mm ");
+                        data['pickupDate'] = moment(bookingData['pickupDate']).format("DD-MMM-YYYY hh:mm a");
                     }
                     if(bookingData['returnDate']!=null && bookingData['returnDate']!=undefined){
-                        data['returnDate'] = moment(bookingData['returnDate']).format("DD-MMM-YYYY hh:mm ");
+                        data['returnDate'] = moment(bookingData['returnDate']).format("DD-MMM-YYYY hh:mm a");
                     }                   
                     
                     data['isReturn'] = bookingData['isReturn'];
@@ -228,10 +228,10 @@ module.exports = {
                     data['pickupDate'] = bookingData['pickupDate'];
                     data['returnDate'] = bookingData['returnDate'];
                     if(bookingData['pickupDate']!=null && bookingData['pickupDate']!=undefined){
-                        data['pickupDate'] = moment(bookingData['pickupDate']).format("DD-MMM-YYYY hh:mm ");
+                        data['pickupDate'] = moment(bookingData['pickupDate']).format("DD-MMM-YYYY hh:mm a");
                     }
                     if(bookingData['returnDate']!=null && bookingData['returnDate']!=undefined){
-                        data['returnDate'] = moment(bookingData['returnDate']).format("DD-MMM-YYYY hh:mm ");
+                        data['returnDate'] = moment(bookingData['returnDate']).format("DD-MMM-YYYY hh:mm a");
                     }   
                     data['isReturn'] = bookingData['isReturn'];
                     data['pickupLat'] = bookingData['pickupLat'];
@@ -366,6 +366,12 @@ module.exports = {
                     data['destination'] = bookingData['destination'];
                     data['pickupDate'] = bookingData['pickupDate'];
                     data['returnDate'] = bookingData['returnDate'];
+                    if(bookingData['pickupDate']!=null && bookingData['pickupDate']!=undefined){
+                        data['pickupDate'] = moment(bookingData['pickupDate']).format("DD-MMM-YYYY hh:mm a");
+                    }
+                    if(bookingData['returnDate']!=null && bookingData['returnDate']!=undefined){
+                        data['returnDate'] = moment(bookingData['returnDate']).format("DD-MMM-YYYY hh:mm a");
+                    }  
                     data['isReturn'] = bookingData['isReturn'];
                     data['pickupLat'] = bookingData['pickupLat'];
                     data['pickupLong'] = bookingData['pickupLong'];
@@ -497,6 +503,12 @@ module.exports = {
                     data['destination'] = bookingData['destination'];
                     data['pickupDate'] = bookingData['pickupDate'];
                     data['returnDate'] = bookingData['returnDate'];
+                    if(bookingData['pickupDate']!=null && bookingData['pickupDate']!=undefined){
+                        data['pickupDate'] = moment(bookingData['pickupDate']).format("DD-MMM-YYYY hh:mm a");
+                    }
+                    if(bookingData['returnDate']!=null && bookingData['returnDate']!=undefined){
+                        data['returnDate'] = moment(bookingData['returnDate']).format("DD-MMM-YYYY hh:mm a");
+                    }  
                     data['isReturn'] = bookingData['isReturn'];
                     data['pickupLat'] = bookingData['pickupLat'];
                     data['pickupLong'] = bookingData['pickupLong'];
@@ -628,6 +640,12 @@ module.exports = {
                     data['destination'] = bookingData['destination'];
                     data['pickupDate'] = bookingData['pickupDate'];
                     data['returnDate'] = bookingData['returnDate'];
+                    if(bookingData['pickupDate']!=null && bookingData['pickupDate']!=undefined){
+                        data['pickupDate'] = moment(bookingData['pickupDate']).format("DD-MMM-YYYY hh:mm a");
+                    }
+                    if(bookingData['returnDate']!=null && bookingData['returnDate']!=undefined){
+                        data['returnDate'] = moment(bookingData['returnDate']).format("DD-MMM-YYYY hh:mm a");
+                    }
                     data['isReturn'] = bookingData['isReturn'];
                     data['pickupLat'] = bookingData['pickupLat'];
                     data['pickupLong'] = bookingData['pickupLong'];
@@ -759,6 +777,12 @@ module.exports = {
                     data['destination'] = bookingData['destination'];
                     data['pickupDate'] = bookingData['pickupDate'];
                     data['returnDate'] = bookingData['returnDate'];
+                    if(bookingData['pickupDate']!=null && bookingData['pickupDate']!=undefined){
+                        data['pickupDate'] = moment(bookingData['pickupDate']).format("DD-MMM-YYYY hh:mm a");
+                    }
+                    if(bookingData['returnDate']!=null && bookingData['returnDate']!=undefined){
+                        data['returnDate'] = moment(bookingData['returnDate']).format("DD-MMM-YYYY hh:mm a");
+                    }  
                     data['isReturn'] = bookingData['isReturn'];
                     data['pickupLat'] = bookingData['pickupLat'];
                     data['pickupLong'] = bookingData['pickupLong'];
