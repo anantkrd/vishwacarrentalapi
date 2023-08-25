@@ -89,10 +89,10 @@ module.exports = {
                     data['pickupDate'] = bookingData['pickupDate'];
                     data['returnDate'] = bookingData['returnDate'];
                     if(bookingData['pickupDate']!=null && bookingData['pickupDate']!=undefined){
-                        data['pickupDate'] = moment(bookingData['pickupDate']).format("DD-MMM-YYYY hh:mm");
+                        data['pickupDate'] = moment(bookingData['pickupDate']).format("DD-MMM-YYYY hh:mm ");
                     }
                     if(bookingData['returnDate']!=null && bookingData['returnDate']!=undefined){
-                        data['returnDate'] = moment(bookingData['returnDate']).format("DD-MMM-YYYY hh:mm");
+                        data['returnDate'] = moment(bookingData['returnDate']).format("DD-MMM-YYYY hh:mm ");
                     }                   
                     
                     data['isReturn'] = bookingData['isReturn'];
@@ -225,8 +225,14 @@ module.exports = {
                     data['cabId'] = bookingData['cabId'];
                     data['pickup'] = bookingData['pickup'];
                     data['destination'] = bookingData['destination'];
-                    data['pickupDate'] = moment(bookingData['pickupDate']).format("YYYY-MM-DD H:mm");
-                    data['returnDate'] = moment(bookingData['returnDate']).format("YYYY-MM-DD H:mm");
+                    data['pickupDate'] = bookingData['pickupDate'];
+                    data['returnDate'] = bookingData['returnDate'];
+                    if(bookingData['pickupDate']!=null && bookingData['pickupDate']!=undefined){
+                        data['pickupDate'] = moment(bookingData['pickupDate']).format("DD-MMM-YYYY hh:mm ");
+                    }
+                    if(bookingData['returnDate']!=null && bookingData['returnDate']!=undefined){
+                        data['returnDate'] = moment(bookingData['returnDate']).format("DD-MMM-YYYY hh:mm ");
+                    }   
                     data['isReturn'] = bookingData['isReturn'];
                     data['pickupLat'] = bookingData['pickupLat'];
                     data['pickupLong'] = bookingData['pickupLong'];
