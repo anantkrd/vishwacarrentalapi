@@ -89,8 +89,8 @@ module.exports = {
                     //data['pickupDate'] = bookingData['pickupDate'];
                     //data['returnDate'] = bookingData['returnDate'];
                     
-                    data['pickupDate'] = moment(bookingData['pickupDate']).format("YYYY-MM-DD H:mm");
-                    data['returnDate'] = moment(bookingData['returnDate']).format("YYYY-MM-DD H:mm");
+                    data['pickupDate'] = moment(bookingData['pickupDate']).format("DD-MMM-YYYY hh:mm");
+                    data['returnDate'] = moment(bookingData['returnDate']).format("DD-MMM-YYYY hh:mm");
                     data['isReturn'] = bookingData['isReturn'];
                     data['pickupLat'] = bookingData['pickupLat'];
                     data['pickupLong'] = bookingData['pickupLong'];
