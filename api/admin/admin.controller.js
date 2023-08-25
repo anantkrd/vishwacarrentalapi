@@ -24,7 +24,7 @@ module.exports = {
             let perPage = 10;
             let dataObj = [];
             //const Op = Sequelize.Op;
-            let BookingDataObj = await Booking.find({ isDeleted: 'N',status:'waiting' });
+            let BookingDataObj = await Booking.find({ isDeleted: 'N',status:'waiting' }).sort({createdAt:-1}).skip(start).limit(perPage);;
             
             //let BookingDataObj = await Booking.find({ where: { isDeleted: 'N',status: { [Op.or]: ['waiting'] } }, offset: start, limit: perPage, order: [['id', 'desc']] })
             if (BookingDataObj === null) {
