@@ -1730,14 +1730,39 @@ module.exports = {
             console.log("==========================Bookings===============")
             let cabObj = await CabBookings.find({ isDeleted: 'N'}).sort({bookingDate:1}).skip(start).limit(perPage);
             //cabObj = await Cabs.findAll({ where: { isDeleted: 'N' }, order: [['id', 'desc']] });
+            cabObjData=[];
             if (cabObj === null || cabObj.length<=0) {
                 responce = JSON.stringify({ code: '404', message: "No record found", data: '' });
                 res.status(404).send(responce);
             } else {
+                for( const bookings of cabObj){
+                let data = {};
+                    data['_id']=bookings._id;
+                    data['firstName']=bookings.firstName;
+                    data['lastName']=bookings.lastName;
+                    data['mobileNo']=bookings.mobileNo;
+                    data['email']=bookings.email;
+                    data['Cab']=bookings.Cab;
+                    data['pickUp']=bookings.pickUp;
+                    data['destination']=bookings.destination;
+                    data['passengers']=bookings.passengers;
+                    data['language']=bookings.language;
+                    data['totalAmount']=bookings.totalAmount;
+                    data['advanceAmount']=bookings.advanceAmount;
+                    data['paidAmount']=bookings.paidAmount;
+                    data['bookingDate']=bookings.bookingDate;
+                    if(bookings['bookingDate']!=null && bookings['bookingDate']!=undefined){
+                        data['bookingDate'] = moment(bookings['bookingDate']).format("DD-MMM-YYYY hh:mm a");
+                    }
+                    data['status']=bookings.status;
+                    data['isDeleted']=bookings.isDeleted;
+                    data['createdAt']=bookings.createdAt;
+                    cabObjData.push(data);
+                }
                 let rowCount = await CabBookings.count({isDeleted: 'N' });
                 totalPage = rowCount / perPage;
                 totalPage = Math.ceil(totalPage);
-                responce = JSON.stringify({ code: '200', message: "success cabs", data: cabObj, rowCount: rowCount, totalPage: totalPage });
+                responce = JSON.stringify({ code: '200', message: "success cabs", data: cabObjData, rowCount: rowCount, totalPage: totalPage });
                 res.status(200).send(responce);
             }
         } catch (e) {
