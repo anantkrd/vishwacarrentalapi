@@ -14,7 +14,7 @@ const CanceledBooking = require('../../models/canceledBooking');
 const Razorpay = require("razorpay");
 const AgentDetials = require('../../models/agentDetials');
 const CallBackRequest=require('../../models/requestCallBack');
-models/requestCallBack.js
+
 var SHA256 = require("crypto-js/sha256");
 
 module.exports = {
