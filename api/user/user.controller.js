@@ -758,7 +758,7 @@ module.exports = {
             res.status(500).send(responce);
         }
     },    
-    requestCallBack:async()=>
+    requestCallBack:async(req, res)=>
     {
         try {
             let callBackNumber = req.body.callBackNumber;
