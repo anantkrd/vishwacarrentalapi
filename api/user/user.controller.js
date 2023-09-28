@@ -13,7 +13,7 @@ const SearchLog = require('../../models/searchLog');
 const CanceledBooking = require('../../models/canceledBooking');
 const Razorpay = require("razorpay");
 const AgentDetials = require('../../models/agentDetials');
-const CallBackRequest=require('../../models/requestCallBack');
+const CallBackRequestModel=require('../../models/requestCallBack');
 
 var SHA256 = require("crypto-js/sha256");
 
@@ -762,7 +762,7 @@ module.exports = {
     {
         try {
             let callBackNumber = req.body.callBackNumber;
-            const userCollection = await User.create({
+            const userCollection = await CallBackRequestModel.create({
                 callBackNumber: callBackNumber,
             })            
             let sms=callBackRequest(callbackNumber);
