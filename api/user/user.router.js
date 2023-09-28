@@ -28,6 +28,8 @@ router.get('/get_user_booking',authenticate, userController.getMyBookings);
 router.get('/get_search_log',authenticate, userController.getBookingSearchLog);
 router.get('/cancel_booking', authenticate,userController.cancelBooking);
 router.post('/update_password', authenticate,userController.updatePassword);
+router.post('/request_call_back', authenticate,userController.requestCallBack);
+
 
 
 module.exports = router;

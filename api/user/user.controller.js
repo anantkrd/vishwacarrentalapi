@@ -1,6 +1,6 @@
 const { json } = require('body-parser');
-const { create, getUserByMobile, sendOTP, verifyOtp, getBookings, getBookingByUser, getBookingById, getBookingSearchLog, updateAgentAmount
-    , getUserByID, getAgentByID, sendSms, verifyPassword, cancelBooking } = require('./user.service');
+
+const { callBackRequest } = require('../common/sendSms');
 const { getCabs } = require('../common/cabs');
 //const pool = require('../../config/database');
 const jwt = require('jsonwebtoken');
@@ -13,6 +13,8 @@ const SearchLog = require('../../models/searchLog');
 const CanceledBooking = require('../../models/canceledBooking');
 const Razorpay = require("razorpay");
 const AgentDetials = require('../../models/agentDetials');
+const CallBackRequest=require('../../models/requestCallBack');
+models/requestCallBack.js
 var SHA256 = require("crypto-js/sha256");
 
 module.exports = {
@@ -749,6 +751,22 @@ module.exports = {
             userPassDec=SHA256(userPassword).toString();
             await User.updateOne({_id: userId},{$set:{userPassword: userPassDec }});
             responce = JSON.stringify({ code: '200', message: 'Password updated', data: '', rowCount: '', totalPage: '' });
+            res.status(200).send(responce);        
+        } catch (e) {
+            console.log(e)
+            responce = JSON.stringify({ code: '501', message: e.message || "Some error occurred while retrieving tutorials.", data: '' });
+            res.status(500).send(responce);
+        }
+    },    
+    requestCallBack:async()=>
+    {
+        try {
+            let callBackNumber = req.body.callBackNumber;
+            const userCollection = await User.create({
+                callBackNumber: callBackNumber,
+            })            
+            let sms=callBackRequest(callbackNumber);
+            responce = JSON.stringify({ code: '200', message: 'CallBack Request placed', data: '' });
             res.status(200).send(responce);        
         } catch (e) {
             console.log(e)

@@ -60,25 +60,25 @@ module.exports = {
                     }
                     agentName = agentData['firstName'];
                     agentMobileno = agentData['mobileNo'];
-                    let msgAdmin = 'TOURPR:: Hi Admin, Agent ' + agentName + ' confirmed booking. Booking ID:' + orderId + '. Customer Name: ' + userName + ' (' + userMobileNo + '), Pickup : ' + pickupCityName + ' Drop : ' + dropCityName + ' starting on ' + pickupDate
-                        + ', Total Limit:' + distance + 'KM, Extra Km Charges:Rs ' + extraRate + ', Night driving charges(If Applicable):Rs 250, Total Amount: Rs ' + finalAmount + ', Advance Paid:Rs ' + paid + ', cash to collect Rs' + pending + ' + Extra,Toll,Parking,Other. For any queries call +917710054367. Team VishwaCarRental';
+                    let msgAdmin = 'Hi Admin, Agent ' + agentName + ' confirmed booking. Booking ID:' + orderId + '. Customer Name: ' + userName + ' (' + userMobileNo + '), Pickup : ' + pickupCityName + ' Drop : ' + dropCityName + ' starting on ' + pickupDate
+                        + ', Total Limit:' + distance + 'KM, Extra Km Charges:Rs ' + extraRate + ', Night driving charges(If Applicable):Rs 250, Total Amount: Rs ' + finalAmount + ', Advance Paid:Rs ' + paid + ', cash to collect Rs' + pending + ' + Extra,Toll,Parking,Other. For any queries call +917710054367. Vishwajeet Tours and Travels';
                     console.log("msgAdmin:" + msgAdmin);
                     let adminMobileVishwa=7710054367;
-                    await module.exports.sendSms(adminMobileVishwa, 'Admin', msgAdmin, '1507167043883852283');
-                    await module.exports.sendSms('7722055354', 'Admin', msgAdmin, '1507167043883852283');
+                    await module.exports.sendSms(adminMobileVishwa, 'Admin', msgAdmin, '1407169488798105377');
+                    await module.exports.sendSms('7722055354', 'Admin', msgAdmin, '1407169488798105377');
 
-                    let msgAgent = 'TOURPR: Dear ' + agentName + ' You have confirmed trip, Booking ID:' + orderId + '. Customer Name: ' + userName + ' (' + userMobileNo + '), Pickup : ,' + pickupCityName + ' Drop : ' + dropCityName + ', starting on ' + pickupDate
-                        + ' Total Limit:' + distance + 'KM, Extra Km Charges:Rs ' + extraRate + ' Night driving charges(If Applicable):Rs 250, Total Amount: Rs ' + finalAmount + ', Advance Paid:Rs ' + paid + ', cash to collect Rs' + pending + ' + Extra,Toll,Parking,Other,Please assign Vehical and driver. For any queries call +917710054367. Team VishwaCarRental';
+                    let msgAgent = 'Dear ' + agentName + ' You have confirmed trip, Booking ID:' + orderId + '. Customer Name: ' + userName + ' (' + userMobileNo + '), Pickup : ,' + pickupCityName + ' Drop : ' + dropCityName + ', starting on ' + pickupDate
+                        + ' Total Limit:' + distance + 'KM, Extra Km Charges:Rs ' + extraRate + ' Night driving charges(If Applicable):Rs 250, Total Amount: Rs ' + finalAmount + ', Advance Paid:Rs ' + paid + ', cash to collect Rs' + pending + ' + Extra,Toll,Parking,Other,Please assign Vehical and driver. For any queries call +917710054367. Vishwajeet Tours and Travels';
                     console.log("msgAgent:" + msgAgent);
-                    await module.exports.sendSms(agentMobileno, 'Partner', msgAgent, '1507167043927269761');
+                    await module.exports.sendSms(agentMobileno, 'Partner', msgAgent, '1407169488756864839');
                 } else {
-                    var msgDriver = 'TOURPR: Dear ' + driverName + ', Your upcoming trip. Booking ID:' + orderId + '. Customer Name: ' + userName + ' (' + userMobileNo + '), Pickup : ' + pickupCityName + ', Drop : ' + dropCityName + ', starting on ' + pickupDate
-                        + ', Total Limit:' + distance + 'KM, Extra Km Charges:Rs ' + extraRate + ', Night driving charges(If Applicable):Rs 250, Total Amount: Rs ' + finalAmount + ', Advance Paid:Rs ' + paid + ', cash to collect Rs' + pending + ' + Extra,Toll,Parking,Other. For any queries call +917710054367. Team VishwaCarRental';
+                    var msgDriver = 'Dear ' + driverName + ', Your upcoming trip. Booking ID:' + orderId + '. Customer Name: ' + userName + ' (' + userMobileNo + '), Pickup : ' + pickupCityName + ', Drop : ' + dropCityName + ', starting on ' + pickupDate
+                        + ', Total Limit:' + distance + 'KM, Extra Km Charges:Rs ' + extraRate + ', Night driving charges(If Applicable):Rs 250, Total Amount: Rs ' + finalAmount + ', Advance Paid:Rs ' + paid + ', cash to collect Rs' + pending + ' + Extra,Toll,Parking,Other. For any queries call +917710054367. Vishwajeet Tours and Travels';
                     console.log("msgDriver:" + msgDriver);
-                    await module.exports.sendSms(driverContact, 'Driver', msgDriver, '1507167043815196732');
-                    var msgCusotmer = 'TOURPR:: Hi ' + userName + ', Here is driver and car details Driver Name: ' + driverName + ', Contact No : ' + driverContact + ' GadiNo : ' + gadiNo + " Thank You";
+                    await module.exports.sendSms(driverContact, 'Driver', msgDriver, '1407169488778197493');
+                    var msgCusotmer = 'TOURPR:: Hi ' + userName + ', Here is driver and car details Driver Name: ' + driverName + ', Contact No : ' + driverContact + ' GadiNo : ' + gadiNo + " Thank You Vishwajeet Tours and Travels";
                     console.log("msgCusotmer:" + msgCusotmer);
-                    await module.exports.sendSms(userMobileNo, 'Customer', msgCusotmer, '1507167043796613416');
+                    await module.exports.sendSms(userMobileNo, 'Customer', msgCusotmer, '1407169488784331574');
                 }
                 console.log("smsm sent successfully");
             }
@@ -131,12 +131,12 @@ module.exports = {
                 extraKm = actualJourny - distance;
             }
             orderId = bookingObj['orderId'];
-            var msgDriver = 'TRVLPR: Dear ' + driverName + ', You have ended trip. Trip Booking ID:' + orderId + '. Customer Name: ' + userName + ' (' + userMobileNo + '),  Total journey:' + actualJourny + 'KM, Extra Km:' + extraKm + ' Extra charges:' + extraAmount + ', Night driving charges(If Applicable):Rs 250, Total Amount: Rs ' + finalAmount + ', Advance Paid:Rs ' + paid + ', cash to collect Rs' + pending + ' + Night charges, Toll, Parking, Other. For any queries call +917710054367. Team VishwaCarRental';
+            var msgDriver = 'Dear ' + driverName + ', You have ended trip. Trip Booking ID:' + orderId + '. Customer Name: ' + userName + ' (' + userMobileNo + '),  Total journey:' + actualJourny + 'KM, Extra Km:' + extraKm + ' Extra charges:' + extraAmount + ', Night driving charges(If Applicable):Rs 250, Total Amount: Rs ' + finalAmount + ', Advance Paid:Rs ' + paid + ', cash to collect Rs' + pending + ' + Night charges, Toll, Parking, Other. For any queries call +917710054367. Vishwajeet Tours and Travels';
             console.log("msgDriver:" + msgDriver);
-            await module.exports.sendSms(driverContact, 'Driver', msgDriver, '1507167044060915050');
-            var msgCusotmer = 'TOURPR:Dear ' + userName + ', Your trip has been ended.  Your trip details, Total journey:' + actualJourny + 'KM, Extra Km:' + extraKm + ' Extra charges:' + extraAmount + ', Your final payment amount Rs ' + finalAmount + ', Advance Paid:Rs ' + paid + ', Please pay Rs' + pending + ' + Night charges Rs.250,Toll,Parking (if Applicable) to ' + driverName + ' to completed trip Thank You Team VishwaCarRental';
+            await module.exports.sendSms(driverContact, 'Driver', msgDriver, '1407169488732567205');
+            var msgCusotmer = 'Dear ' + userName + ', Your trip has been ended.  Your trip details, Total journey:' + actualJourny + 'KM, Extra Km:' + extraKm + ' Extra charges:' + extraAmount + ', Your final payment amount Rs ' + finalAmount + ', Advance Paid:Rs ' + paid + ', Please pay Rs' + pending + ' + Night charges Rs.250,Toll,Parking (if Applicable) to ' + driverName + ' to completed trip Thank You Vishwajeet Tours and Travels';
             console.log("msgCusotmer:" + msgCusotmer);
-            await module.exports.sendSms(userMobileNo, 'Customer', msgCusotmer, '1507167044075062761');
+            await module.exports.sendSms(userMobileNo, 'Customer', msgCusotmer, '1407169471657968604');
 
         }
     },
@@ -180,12 +180,12 @@ module.exports = {
                 orderId=bookingObj['orderId'];
                 let adminMobile=7722055354;
                 let adminMobileVishwa=7710054367;
-                var msgDriver='TRVLPR: Hi Admin, We have new booking. Customer Name: '+userName+', Pickup : '+pickupCityName+' Drop : '+dropCityName+' On '+pickupDate+" PRN : "+orderId;
-                await module.exports.sendSms(adminMobile,'Admin',msgDriver,'1507167043980322643');
-                await module.exports.sendSms(adminMobileVishwa,'Admin',msgDriver,'1507167043980322643');
+                var msgDriver='Hi Admin, We have new booking. Customer Name: '+userName+', Pickup : '+pickupCityName+' Drop : '+dropCityName+' On '+pickupDate+" PRN : "+orderId+" Vishwajeet Tours and Travels";
+                await module.exports.sendSms(adminMobile,'Admin',msgDriver,'1407169488739796862');
+                await module.exports.sendSms(adminMobileVishwa,'Admin',msgDriver,'1407169488739796862');
                 //var msgCusotmer='TOURPR: Hi '+userName+' Thank you for booking with us, Your trip details Pickup : '+pickupCityName+', Drop : '+dropCityName+' On '+pickupDate+' PRN : '+orderId+' www.bookourcar.com';
-                var msgCusotmer='TOURPR: Hi '+userName+' Thank you for booking with us, here is your trip details Pickup : '+pickupCityName+', Drop : '+dropCityName+' On '+pickupDate+' PRN : '+orderId+' Team VishwaCarRental'
-                await module.exports.sendSms(userMobileNo,'Customer',msgCusotmer,'1507167043966993678');  
+                var msgCusotmer='Hi '+userName+' Thank you for booking with us, here is your trip details Pickup : '+pickupCityName+', Drop : '+dropCityName+' On '+pickupDate+' PRN : '+orderId+' Vishwajeet Tours and Travels'
+                await module.exports.sendSms(userMobileNo,'Customer',msgCusotmer,'1407169488746757454');  
                 console.log("Sms sent"); 
             }
         }catch(e){
@@ -197,9 +197,20 @@ module.exports = {
         
         try{
             let adminMobileVishwa=7710054367;
-            msgAdmin="TOURPR:Dear Admin, Customer "+custMobile+" Searched for Trip From "+pickupCityName+" To "+dropCityName+" On Date "+journeyDate;
-            await module.exports.sendSms(adminMobileVishwa, 'Admin', msgAdmin, '1507169251132774580');
-            await module.exports.sendSms('7722055354', 'Admin', msgAdmin, '1507169251132774580');
+            msgAdmin="Dear Admin, Customer "+custMobile+" Searched for Trip From "+pickupCityName+" To "+dropCityName+" On Date "+journeyDate+" Vishwajeet Tours and Travels";
+            await module.exports.sendSms(adminMobileVishwa, 'Admin', msgAdmin, '1407169457835885962');
+            await module.exports.sendSms('7722055354', 'Admin', msgAdmin, '1407169457835885962');
+             
+        }catch(e){
+            console.log("ERror:"+e);
+        }
+    },
+    callBackRequest:async(callbackNumber)=>{
+        
+        try{
+            let adminMobileVishwa=7710054367;
+            msgAdmin="Dear Admin you have callback request from customer on "+callbackNumber+" Vishwajeet Tours and Travels" ;
+            await module.exports.sendSms(adminMobileVishwa, 'Admin', msgAdmin, '1407169488837445456');
              
         }catch(e){
             console.log("ERror:"+e);
@@ -210,9 +221,10 @@ module.exports = {
             var msg = message;
             let smsUserID = process.env.smsId;
             let smsPassword = process.env.smsPassword;
-            let url = "http://servermsg.com/api/SmsApi/SendSingleApi?UserID=" + smsUserID + "&Password=" + smsPassword + "&SenderID=TRVLPR&Phno=" + mobileNo + "&Msg=" + encodeURIComponent(msg) + "&EntityID=1501482300000054811&TemplateID=" + templateId;
-
+            //let url = "http://servermsg.com/api/SmsApi/SendSingleApi?UserID=" + smsUserID + "&Password=" + smsPassword + "&SenderID=TRVLPR&Phno=" + mobileNo + "&Msg=" + encodeURIComponent(msg) + "&EntityID=1501482300000054811&TemplateID=" + templateId;
+            let url = "https://www.txtguru.in/imobile/api.php?username=vishwacarrental&password=31541032&source=VISCAB&dmobile="+mobileNo+"&dlttempid="+templateId+"&message="+ encodeURIComponent(msg)
             //let resOtp=await module.exports.expireOtp(mobileNo);
+            console.log("url:"+url);
             await request.get({ url: url }, async function (error, response, body) {
                 let status = response.statusCode;
                 reData = error;

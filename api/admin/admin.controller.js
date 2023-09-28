@@ -44,7 +44,7 @@ module.exports = {
                         bookingStatus = "Waiting for Approval";
                         canCancel = 'Y';
                     } else if (status == 'confirm') {
-                        bookingStatus = "Driver Assigned";
+                        bookingStatus = "Agent Assigned";
                         canCancel = 'Y';
                     } else if (status == 'canceled') {
                         bookingStatus = "Canceled";
@@ -183,7 +183,7 @@ module.exports = {
                         bookingStatus = "Waiting for Approval";
                         canCancel = 'Y';
                     } else if (status == 'confirm') {
-                        bookingStatus = "Driver Assigned";
+                        bookingStatus = "Agent Assigned";
                         canCancel = 'Y';
                     } else if (status == 'canceled') {
                         bookingStatus = "Canceled";
@@ -322,7 +322,7 @@ module.exports = {
                         bookingStatus = "Waiting for Approval";
                         canCancel = 'Y';
                     } else if (status == 'confirm') {
-                        bookingStatus = "Driver Assigned";
+                        bookingStatus = "Agent Assigned";
                         canCancel = 'Y';
                     } else if (status == 'canceled') {
                         bookingStatus = "Canceled";
@@ -459,7 +459,7 @@ module.exports = {
                         bookingStatus = "Waiting for Approval";
                         canCancel = 'Y';
                     } else if (status == 'confirm') {
-                        bookingStatus = "Driver Assigned";
+                        bookingStatus = "Agent Assigned";
                         canCancel = 'Y';
                     } else if (status == 'canceled') {
                         bookingStatus = "Canceled";
@@ -596,7 +596,7 @@ module.exports = {
                         bookingStatus = "Waiting for Approval";
                         canCancel = 'Y';
                     } else if (status == 'confirm') {
-                        bookingStatus = "Driver Assigned";
+                        bookingStatus = "Agent Assigned";
                         canCancel = 'Y';
                     } else if (status == 'canceled') {
                         bookingStatus = "Canceled";
@@ -733,7 +733,7 @@ module.exports = {
                         bookingStatus = "Waiting for Approval";
                         canCancel = 'Y';
                     } else if (status == 'confirm') {
-                        bookingStatus = "Driver Assigned";
+                        bookingStatus = "Agent Assigned";
                         canCancel = 'Y';
                     } else if (status == 'canceled') {
                         bookingStatus = "Canceled";
