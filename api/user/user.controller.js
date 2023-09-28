@@ -765,7 +765,7 @@ module.exports = {
             const userCollection = await CallBackRequestModel.create({
                 callBackNumber: callBackNumber,
             })            
-            let sms=callBackRequest(callbackNumber);
+            let sms=callBackRequest(callBackNumber);
             responce = JSON.stringify({ code: '200', message: 'CallBack Request placed', data: '' });
             res.status(200).send(responce);        
         } catch (e) {
