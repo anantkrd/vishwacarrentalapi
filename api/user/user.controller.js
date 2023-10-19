@@ -1,6 +1,6 @@
 const { json } = require('body-parser');
 
-const { callBackRequest } = require('../common/sendSms');
+const { callBackRequest,logSerchedSmsm } = require('../common/sendSms');
 const { getCabs } = require('../common/cabs');
 //const pool = require('../../config/database');
 const jwt = require('jsonwebtoken');
@@ -14,7 +14,6 @@ const CanceledBooking = require('../../models/canceledBooking');
 const Razorpay = require("razorpay");
 const AgentDetials = require('../../models/agentDetials');
 const CallBackRequestModel=require('../../models/requestCallBack');
-
 var SHA256 = require("crypto-js/sha256");
 
 module.exports = {
@@ -773,7 +772,23 @@ module.exports = {
             responce = JSON.stringify({ code: '501', message: e.message || "Some error occurred while retrieving tutorials.", data: '' });
             res.status(500).send(responce);
         }
-    }
+    },
+    sendSmsVishwajeetcab: async (req, res) => {
+        try {
+            let mobileNo=req.body.mobileNo;
+            let pickupCityName=req.body.pickupCityName;
+            let destinationCity=req.body.destinationCity;
+            let pickdateTime=req.body.pickdateTime;
+            let sms=logSerchedSmsm(mobileNo,pickupCityName,destinationCity,pickdateTime);
+            responce = JSON.stringify({ code: '200', message: "Sms Sent", data: '' });
+            res.status(200).send(responce);
+
+        } catch (e) {
+            console.log(e)
+            responce = JSON.stringify({ code: '500', message: e.message || "Some error occurred", data: '' });
+            res.status(500).send(responce);
+        }
+    },
 
 }
 updateSmsAttemptCount = async (mobileNo) => {

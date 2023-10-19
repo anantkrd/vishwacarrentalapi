@@ -199,7 +199,7 @@ module.exports = {
             let adminMobileVishwa=7710054367;
             msgAdmin="Dear Admin, Customer "+custMobile+" Searched for Trip From "+pickupCityName+" To "+dropCityName+" On Date "+journeyDate+" Vishwajeet Tours and Travels";
             await module.exports.sendSms(adminMobileVishwa, 'Admin', msgAdmin, '1407169457835885962');
-            await module.exports.sendSms('7722055354', 'Admin', msgAdmin, '1407169457835885962');
+            //await module.exports.sendSms('7722055354', 'Admin', msgAdmin, '1407169457835885962');
              
         }catch(e){
             console.log("ERror:"+e);
