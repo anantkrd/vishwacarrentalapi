@@ -29,7 +29,7 @@ router.get('/get_search_log',authenticate, userController.getBookingSearchLog);
 router.get('/cancel_booking', authenticate,userController.cancelBooking);
 router.post('/update_password', authenticate,userController.updatePassword);
 router.post('/request_call_back', authenticate,userController.requestCallBack);
-router.get('/send_sms', userController.sendSmsVishwajeetcab);
+router.post('/send_sms', userController.sendSmsVishwajeetcab);
 
 
 module.exports = router;
