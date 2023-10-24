@@ -65,7 +65,6 @@ module.exports = {
                     console.log("msgAdmin:" + msgAdmin);
                     let adminMobileVishwa=7710054367;
                     await module.exports.sendSms(adminMobileVishwa, 'Admin', msgAdmin, '1407169488798105377');
-                    await module.exports.sendSms('7722055354', 'Admin', msgAdmin, '1407169488798105377');
 
                     let msgAgent = 'Dear ' + agentName + ' You have confirmed trip, Booking ID:' + orderId + '. Customer Name: ' + userName + ' (' + userMobileNo + '), Pickup : ,' + pickupCityName + ' Drop : ' + dropCityName + ', starting on ' + pickupDate
                         + ' Total Limit:' + distance + 'KM, Extra Km Charges:Rs ' + extraRate + ' Night driving charges(If Applicable):Rs 250, Total Amount: Rs ' + finalAmount + ', Advance Paid:Rs ' + paid + ', cash to collect Rs' + pending + ' + Extra,Toll,Parking,Other,Please assign Vehical and driver. For any queries call +917710054367. Vishwajeet Tours and Travels';
@@ -197,6 +196,18 @@ module.exports = {
         
         try{
             let adminMobileVishwa=7710054367;
+            msgAdmin="Dear Admin, Customer "+custMobile+" Searched for Trip From "+pickupCityName+" To "+dropCityName+" On Date "+journeyDate+" Vishwajeet Tours and Travels";
+            await module.exports.sendSms(adminMobileVishwa, 'Admin', msgAdmin, '1407169457835885962');
+            //await module.exports.sendSms('7722055354', 'Admin', msgAdmin, '1407169457835885962');
+             
+        }catch(e){
+            console.log("ERror:"+e);
+        }
+    },
+    vishajeetRequestSmsm:async(custMobile,pickupCityName,dropCityName,journeyDate)=>{
+        
+        try{
+            let adminMobileVishwa=7688811106;
             msgAdmin="Dear Admin, Customer "+custMobile+" Searched for Trip From "+pickupCityName+" To "+dropCityName+" On Date "+journeyDate+" Vishwajeet Tours and Travels";
             await module.exports.sendSms(adminMobileVishwa, 'Admin', msgAdmin, '1407169457835885962');
             //await module.exports.sendSms('7722055354', 'Admin', msgAdmin, '1407169457835885962');

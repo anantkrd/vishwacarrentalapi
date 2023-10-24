@@ -158,21 +158,7 @@ module.exports = {
             responce = JSON.stringify({ code: '500', message: e.message || "Some error occurred", data: '' });
             res.status(500).send(responce);
         }
-    },
-    startTrip_old: async (userId, bookingId, startKm) => {
-        treipRes = await startTrip(userId, bookingId, startKm);
-        //console.log("treipRes==="+JSON.stringify(treipRes));
-        return treipRes;
-    },
-    endTrip_old: async (userId, bookingId, endKm) => {
-        treipRes = await endTrip(userId, bookingId, endKm);
-        //console.log("endTrip==="+JSON.stringify(treipRes));
-        return treipRes;
-    },
-    completeTrip_old: async (userId, bookingId) => {
-        treipRes = await completeTrip(userId, bookingId);
-        //console.log("endTrip==="+JSON.stringify(treipRes));
-        return treipRes;
-    },
+    }, 
+    
 
 }

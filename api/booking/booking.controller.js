@@ -68,7 +68,7 @@ module.exports = {
             if(userId=='' || userId==null|| userId==undefined){
                 console.log("In IF");
                 const checkUser = await User.findOne({ mobileNo: req.body.mobileNo },{userPassword:0});
-                console.log("checkUser:"+checkUser);
+                //console.log("checkUser:"+checkUser);
                 if (checkUser === null) {
                     const checkUserEmail = await User.findOne({ email: req.body.email },{userPassword:0});
                     if(checkUserEmail===null){

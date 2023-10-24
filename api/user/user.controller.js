@@ -779,7 +779,8 @@ module.exports = {
             let pickupCityName=req.body.pickupCityName;
             let destinationCity=req.body.destinationCity;
             let pickdateTime=req.body.pickdateTime;
-            let sms=logSerchedSmsm(mobileNo,pickupCityName,destinationCity,pickdateTime);
+            //let sms=logSerchedSmsm(mobileNo,pickupCityName,destinationCity,pickdateTime);
+            let sms=vishajeetRequestSmsm(mobileNo,pickupCityName,destinationCity,pickdateTime);
             responce = JSON.stringify({ code: '200', message: "Sms Sent", data: '' });
             res.status(200).send(responce);
 
