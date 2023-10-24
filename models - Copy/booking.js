@@ -1,0 +1,74 @@
+const {Sequelize,DataTypes,Model}=require('sequelize');
+const sequelize=require('../config/database');
+
+class Booking extends Model{
+    
+}
+Booking.init({
+    id:{
+        type:DataTypes.INTEGER,
+        primaryKey:true,
+        autoIncrement:true
+    },
+    userId:DataTypes.INTEGER,
+    userName:DataTypes.STRING,
+    userMobileNo:DataTypes.STRING,
+    orderId:DataTypes.STRING,
+    cabId:DataTypes.INTEGER,
+    pickup:DataTypes.STRING,
+    destination:DataTypes.STRING,
+    pickupCityName:DataTypes.STRING,
+    pickupDistrict:DataTypes.STRING,
+    pickupState:DataTypes.STRING,
+    dropCityName:DataTypes.STRING,
+    dropDistrict:DataTypes.STRING,
+    dropState:DataTypes.STRING,
+    pickupDate:DataTypes.DATE,
+    returnDate:DataTypes.DATE,
+    isReturn:DataTypes.CHAR,
+    pickupLat:DataTypes.STRING,
+    pickupLong:DataTypes.STRING,
+    destinationLat:DataTypes.STRING,
+    destinationLong:DataTypes.STRING,
+    distance:DataTypes.STRING,
+    journyDistance:DataTypes.INTEGER,
+    journyTime:DataTypes.STRING,
+    rate:DataTypes.INTEGER,
+    amount:DataTypes.INTEGER,
+    discount:DataTypes.INTEGER,
+    extraRate:DataTypes.INTEGER,
+    extraAmount:DataTypes.INTEGER,
+    tax:DataTypes.INTEGER,
+    charges:DataTypes.INTEGER,
+    finalAmount:DataTypes.INTEGER,
+    paid:DataTypes.INTEGER,
+    pending:DataTypes.INTEGER,
+    payment_orderId:DataTypes.TEXT,
+    agentId:DataTypes.INTEGER,
+    agentPrice:DataTypes.INTEGER,
+    driverName:DataTypes.STRING,
+    driverContact:DataTypes.STRING,
+    gadiNo:DataTypes.STRING,
+    gadiModel:DataTypes.STRING,
+    status:DataTypes.ENUM('pending','waiting','confirm','canceled','completed','returnInitiated','returnCompleted','returnRejected','started'),
+    journyStatus:DataTypes.ENUM('pending','start','completed'),
+    journyStartTime:DataTypes.DATE,
+    journyEndTime:DataTypes.DATE,
+    isDeleted:DataTypes.ENUM('N','Y'),
+    driverId:DataTypes.INTEGER,
+    carId:DataTypes.INTEGER,
+    startKm:DataTypes.INTEGER,
+    endKm:DataTypes.INTEGER,
+    agentPaid:DataTypes.INTEGER,
+    cashAmount:DataTypes.INTEGER,
+    updatedTime:DataTypes.DATE,
+    createdTime:DataTypes.DATE
+},{
+    sequelize,
+    modelName: 'Booking', 
+    tableName:'vcr_booking',
+    timestamps:true,
+    createdAt:false,
+    updatedAt:false
+})
+module.exports=Booking;

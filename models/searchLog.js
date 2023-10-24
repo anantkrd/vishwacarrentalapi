@@ -30,5 +30,5 @@ const logSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
-logSchema.index({createdAt: 1},{expireAfterSeconds: 3600});
+logSchema.index({createdAt: 1},{expireAfterSeconds: 2160000});
 module.exports = mongoose.model('vcr_search_log', logSchema);

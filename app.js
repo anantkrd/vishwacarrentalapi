@@ -37,7 +37,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 //app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-
+var createError = require('http-errors');
 app.use('/', indexRouter);
 app.use('/user', userRouter);
 app.use('/users', usersRouter);
@@ -49,8 +49,8 @@ app.use('/driver', driverRouters);
 //app.use('/v1/user', indexRouter);
 //app.use('/v1/jaap', jaapRoute);
 app.use(function(req, res, next) {
-  next(createError(404));
-  //res.render('error');
+  //next(createError(404));
+  res.render('error');
 });
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
@@ -67,7 +67,7 @@ app.use(function(err, req, res, next) {
 });
 
 let port=8080;//process.env.API_PORT;
-/*
+
 const httpServer = http.createServer(app);
 
 
@@ -79,16 +79,16 @@ mongoose.connect('mongodb+srv://vishwacarrental:L19pRrBYoa12UYv0@cluster0.mzxxv6
         console.log('HTTP Server running on port '+port);
     });
   } );
-*/
+
   /***FOR LIVE WITH HTTPS */
-  var privateKey  = fs.readFileSync('/etc/letsencrypt/live/vishwacarrental.com/privkey.pem', 'utf8');
+  /*var privateKey  = fs.readFileSync('/etc/letsencrypt/live/vishwacarrental.com/privkey.pem', 'utf8');
   var certificate = fs.readFileSync('/etc/letsencrypt/live/vishwacarrental.com/fullchain.pem', 'utf8');
   //console.log("certificate:"+certificate);
   var credentials = {key: privateKey, cert: certificate};
   const httpServer = http.createServer(app);
   const httpsServer = https.createServer(credentials, app);
 
-//mongodb+srv://vishwacarrental:<password>@cluster0.mzxxv66.mongodb.net/?retryWrites=true&w=majority
+
 mongoose.connect('mongodb+srv://vishwacarrental:L19pRrBYoa12UYv0@cluster0.mzxxv66.mongodb.net/vishwacarrental?retryWrites=true&w=majority')
   .then((result) =>{
     console.log('Connected!');
@@ -100,5 +100,5 @@ mongoose.connect('mongodb+srv://vishwacarrental:L19pRrBYoa12UYv0@cluster0.mzxxv6
   httpsServer.listen(port, () => {
       console.log('HTTPS Server running on port'+port);
   });
-  } );
+  } );*/
 //app.use('/', indexRouter);
