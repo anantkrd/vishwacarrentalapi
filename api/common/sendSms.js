@@ -216,13 +216,20 @@ module.exports = {
             console.log("ERror:"+e);
         }
     },
-    callBackRequest:async(callbackNumber)=>{
-        
+    callBackRequest:async(callbackNumber)=>{        
         try{
             let adminMobileVishwa=7710054367;
             msgAdmin="Dear Admin you have callback request from customer on "+callbackNumber+" Vishwajeet Tours and Travels" ;
-            await module.exports.sendSms(adminMobileVishwa, 'Admin', msgAdmin, '1407169488837445456');
-             
+            await module.exports.sendSms(adminMobileVishwa, 'Admin', msgAdmin, '1407169488837445456');             
+        }catch(e){
+            console.log("ERror:"+e);
+        }
+    },    
+    callBackRequestVishwajeet:async(callbackNumber)=>{        
+        try{
+            let adminMobileVishwa=7688811106;
+            msgAdmin="Dear Admin you have callback request from customer on "+callbackNumber+" Vishwajeet Tours and Travels" ;
+            await module.exports.sendSms(adminMobileVishwa, 'Admin', msgAdmin, '1407169488837445456');             
         }catch(e){
             console.log("ERror:"+e);
         }

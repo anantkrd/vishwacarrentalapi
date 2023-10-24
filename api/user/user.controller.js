@@ -1,6 +1,6 @@
 const { json } = require('body-parser');
 
-const { callBackRequest,logSerchedSmsm } = require('../common/sendSms');
+const { callBackRequest,logSerchedSmsm,vishajeetRequestSmsm,callBackRequestVishwajeet } = require('../common/sendSms');
 const { getCabs } = require('../common/cabs');
 //const pool = require('../../config/database');
 const jwt = require('jsonwebtoken');
@@ -781,6 +781,35 @@ module.exports = {
             let pickdateTime=req.body.pickdateTime;
             //let sms=logSerchedSmsm(mobileNo,pickupCityName,destinationCity,pickdateTime);
             let sms=vishajeetRequestSmsm(mobileNo,pickupCityName,destinationCity,pickdateTime);
+            responce = JSON.stringify({ code: '200', message: "Sms Sent", data: '' });
+            res.status(200).send(responce);
+
+        } catch (e) {
+            console.log(e)
+            responce = JSON.stringify({ code: '500', message: e.message || "Some error occurred", data: '' });
+            res.status(500).send(responce);
+        }
+    },
+    requestCallBackVishvajeet:async(req, res)=>
+    {
+        try {
+            let callBackNumber = req.body.callBackNumber;
+            const userCollection = await CallBackRequestModel.create({
+                callBackNumber: callBackNumber,
+            })            
+            let sms=callBackRequestVishwajeet(callBackNumber);
+            responce = JSON.stringify({ code: '200', message: 'CallBack Request placed', data: '' });
+            res.status(200).send(responce);        
+        } catch (e) {
+            console.log(e)
+            responce = JSON.stringify({ code: '501', message: e.message || "Some error occurred while retrieving tutorials.", data: '' });
+            res.status(500).send(responce);
+        }
+    },
+    callBackRequest: async (req, res) => {
+        try {
+            let mobileNo=req.body.callBackNumber;            
+            let sms=callBackRequest(mobileNo);
             responce = JSON.stringify({ code: '200', message: "Sms Sent", data: '' });
             res.status(200).send(responce);
 

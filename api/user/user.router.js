@@ -31,6 +31,9 @@ router.post('/update_password', authenticate,userController.updatePassword);
 router.post('/request_call_back', authenticate,userController.requestCallBack);
 router.post('/send_sms', userController.sendSmsVishwajeetcab);
 
+router.post('/request_callback',userController.requestCallBackVishvajeet);
+
+
 
 module.exports = router;
 
