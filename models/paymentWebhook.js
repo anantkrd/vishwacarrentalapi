@@ -10,6 +10,7 @@ const webhookSchema = new mongoose.Schema(
     id:ObjectId,    
     paymentId:{type: String,default:''},
     data:{type: String,default:''},
+    status:{type: String,default:''},
     isDeleted: {
       type: String,
       default: "N",

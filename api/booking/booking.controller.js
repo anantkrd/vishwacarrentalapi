@@ -545,14 +545,20 @@ module.exports = {
     },
     validatePayment: async (req, res) => {
         try {
-            rawData=req.body;
+            rawData=req.body.payload;
+            payment=rawData.payment;
+            paymentData=payment.entity;
+            paymentId=paymentData.order_id;
+            paymentStatus=paymentData.status;
             let rawResponcedata=JSON.stringify(rawData);
             console.log("rawResponcedata:"+rawResponcedata);
             let webhookLog = await WebhookLogs.create({
-                paymentId: 1,
+                paymentId: paymentId,
                 data: rawResponcedata,
+                status: paymentStatus,
                 isDeleted: 'N'
             })
+            updateBookingPay=await BookingPayment.updateOne({paymentId:paymentId},{$set:{status:paymentStatus,rawResponce:rawResponcedata}});
             responce = JSON.stringify({ code: '200', message: "Webhook called", data: '' });
             res.status(200).send(responce);
         } catch (e) {
