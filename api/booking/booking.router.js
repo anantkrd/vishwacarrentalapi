@@ -19,5 +19,5 @@ router.get('/getBookingById', authenticate,userController.getBookingById);
 router.post('/payment', bookingController.payment);
 router.post('/success', bookingController.paymentSuccess);
 router.get('/prepayment',bookingController.prepayment);
-
+router.post('/validatePayment',bookingController.validatePayment);
 module.exports = router;

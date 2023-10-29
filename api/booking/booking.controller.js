@@ -12,6 +12,7 @@ const CanceledBooking = require('../../models/canceledBooking');
 const Surge = require('../../models/surge');
 const BookingPayment = require('../../models/bookingPayment');
 const SpecialPrices = require('../../models/specialPrices');
+const WebhookLogs = require('../../models/paymentWebhook');
 var distance = require('google-distance-matrix');
 const Razorpay = require("razorpay");
 const mongoose = require('mongoose');
@@ -536,6 +537,24 @@ module.exports = {
                 responce = JSON.stringify({ code: '200', message: "", data: order });
                 res.status(200).send(responce);
             }
+        } catch (e) {
+            console.log(e)
+            responce = JSON.stringify({ code: '501', message: "Some error occurred while retrieving data.", data: '' });
+            res.status(500).send(responce);
+        }
+    },
+    validatePayment: async (req, res) => {
+        try {
+            rawData=req.body;
+            let rawResponcedata=JSON.stringify(rawData);
+            console.log("rawResponcedata:"+rawResponcedata);
+            let webhookLog = await WebhookLogs.create({
+                paymentId: 1,
+                data: rawResponcedata,
+                isDeleted: 'N'
+            })
+            responce = JSON.stringify({ code: '200', message: "Webhook called", data: '' });
+            res.status(200).send(responce);
         } catch (e) {
             console.log(e)
             responce = JSON.stringify({ code: '501', message: "Some error occurred while retrieving data.", data: '' });
