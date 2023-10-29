@@ -661,6 +661,15 @@ module.exports = {
                     data['note'] = bookingData['note'];
                     data['updatedTime'] = bookingData['updatedAt'];
                     data['createdTime'] = bookingData['createdAt'];
+                    if(bookingData['pickupDate']!=null && bookingData['pickupDate']!=undefined){
+                        data['pickupDate'] = moment(bookingData['pickupDate']).format("DD-MMM-YYYY hh:mm a");
+                    }
+                    if(bookingData['returnDate']!=null && bookingData['returnDate']!=undefined){
+                        data['returnDate'] = moment(bookingData['returnDate']).format("DD-MMM-YYYY hh:mm a");
+                    }
+                    if(bookingData['createdAt']!=null && bookingData['createdAt']!=undefined){
+                        data['createdTime'] = moment(bookingData['createdAt']).format("DD-MMM-YYYY hh:mm a");
+                    }  
                     dataObj.push(data);
                 }
                 //});      
