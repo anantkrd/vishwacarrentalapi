@@ -550,15 +550,28 @@ module.exports = {
             paymentData=payment.entity;
             paymentId=paymentData.order_id;
             paymentStatus=paymentData.status;
+            bookingAmount=(paymentData.amount)/100;
             let rawResponcedata=JSON.stringify(rawData);
-            console.log("rawResponcedata:"+rawResponcedata);
+            //console.log("rawResponcedata:"+rawResponcedata);
             let webhookLog = await WebhookLogs.create({
                 paymentId: paymentId,
                 data: rawResponcedata,
                 status: paymentStatus,
                 isDeleted: 'N'
             })
-            updateBookingPay=await BookingPayment.updateOne({paymentId:paymentId},{$set:{status:paymentStatus,rawResponce:rawResponcedata}});
+            razorpayOrderId=paymentId;
+            let bookingPaymentObj=await BookingPayment.findOne({paymentId:razorpayOrderId});
+            
+            if(bookingPaymentObj!==null && razorpayOrderId!==""){
+                bookingAmount=bookingPaymentObj['amount'];
+                orderId=bookingPaymentObj['orderId'];
+                updateBookingPay=await BookingPayment.updateOne({paymentId:paymentId},{$set:{status:paymentStatus,rawResponce:rawResponcedata}});
+                if(paymentStatus=='success'){
+                    let sendSms=sentBookingSmsToCustomer(razorpayOrderId);
+                    updateBooking=await Booking.updateOne({payment_orderId:paymentId},{$set:{paid:bookingAmount,status:'waiting'}});
+                }
+            }
+            
             responce = JSON.stringify({ code: '200', message: "Webhook called", data: '' });
             res.status(200).send(responce);
         } catch (e) {
