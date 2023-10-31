@@ -680,6 +680,7 @@ module.exports = {
                         let createdAt=bookingData['createdAt'];
                         createdAt = moment(createdAt).add(5, 'hours');
                         createdAt = moment(createdAt).add(30, 'minutes');
+                        console.log("createdAt:"+createdAt);
                         data['createdTime'] = moment(createdAt).format("DD-MMM-YYYY hh:mm a");
                     }  
                     dataObj.push(data);
