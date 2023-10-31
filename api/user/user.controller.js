@@ -365,8 +365,11 @@ module.exports = {
                 if(bookingData['returnDate']!=null && bookingData['returnDate']!=undefined){
                     data['returnDate'] = moment(bookingData['returnDate']).format("DD-MMM-YYYY hh:mm a");
                 }
-                if(bookingData['createdAt']!=null && bookingData['createdAt']!=undefined){
-                    data['createdTime'] = moment(bookingData['createdAt']).format("DD-MMM-YYYY hh:mm a");
+                if(bookingData['createdAt']!=null && bookingData['createdAt']!=undefined){                    
+                    let createdAt=bookingData['createdAt'];
+                    createdAt = moment(createdAt).add(5, 'hours');
+                    createdAt = moment(createdAt).add(30, 'minutes');
+                    data['createdTime'] = moment(createdAt).format("DD-MMM-YYYY hh:mm a");
                 }  
                 responce = JSON.stringify({ code: '200', message: '', data: data });
                 res.status(200).send(responce);
@@ -490,6 +493,12 @@ module.exports = {
                     data['cars'] = cars + " Or Similar";
                     data['note'] = note;
                     data['mobileNo'] = bookingData['mobileNo'];
+                    if(bookingData['createdAt']!=null && bookingData['createdAt']!=undefined){                    
+                        let createdAt=bookingData['createdAt'];
+                        createdAt = moment(createdAt).add(5, 'hours');
+                        createdAt = moment(createdAt).add(30, 'minutes');
+                        data['createdTime'] = moment(createdAt).format("DD-MMM-YYYY hh:mm a");
+                    }  
                     dataObj.push(data);
                 }
                 //});      
@@ -621,6 +630,12 @@ module.exports = {
                     data['cars'] = cars + " Or Similar";
                     data['note'] = note;
                     data['mobileNo'] = bookingData['mobileNo'];
+                    if(bookingData['createdAt']!=null && bookingData['createdAt']!=undefined){                    
+                        let createdAt=bookingData['createdAt'];
+                        createdAt = moment(createdAt).add(5, 'hours');
+                        createdAt = moment(createdAt).add(30, 'minutes');
+                        data['createdTime'] = moment(createdAt).format("DD-MMM-YYYY hh:mm a");
+                    }  
                     dataObj.push(data);
                 }
                 //});      
@@ -680,7 +695,6 @@ module.exports = {
                         let createdAt=bookingData['createdAt'];
                         createdAt = moment(createdAt).add(5, 'hours');
                         createdAt = moment(createdAt).add(30, 'minutes');
-                        console.log("createdAt:"+createdAt);
                         data['createdTime'] = moment(createdAt).format("DD-MMM-YYYY hh:mm a");
                     }  
                     dataObj.push(data);

@@ -143,6 +143,12 @@ module.exports = {
                     data['cars'] = cars + " Or Similar";
                     data['note'] = note;
                     data['mobileNo'] = bookingData['userMobileNo'];
+                    if(bookingData['createdAt']!=null && bookingData['createdAt']!=undefined){                    
+                        let createdAt=bookingData['createdAt'];
+                        createdAt = moment(createdAt).add(5, 'hours');
+                        createdAt = moment(createdAt).add(30, 'minutes');
+                        data['createdTime'] = moment(createdAt).format("DD-MMM-YYYY hh:mm a");
+                    }  
                     dataObj.push(data);
                 }
                 //});      
@@ -281,6 +287,12 @@ module.exports = {
                     data['cars'] = cars + " Or Similar";
                     data['note'] = note;
                     data['mobileNo'] = bookingData['userMobileNo'];
+                    if(bookingData['createdAt']!=null && bookingData['createdAt']!=undefined){                    
+                        let createdAt=bookingData['createdAt'];
+                        createdAt = moment(createdAt).add(5, 'hours');
+                        createdAt = moment(createdAt).add(30, 'minutes');
+                        data['createdTime'] = moment(createdAt).format("DD-MMM-YYYY hh:mm a");
+                    }  
                     dataObj.push(data);
                 }
                 //});      
@@ -417,6 +429,12 @@ module.exports = {
                     data['cars'] = cars + " Or Similar";
                     data['note'] = note;
                     data['mobileNo'] = bookingData['userMobileNo'];
+                    if(bookingData['createdAt']!=null && bookingData['createdAt']!=undefined){                    
+                        let createdAt=bookingData['createdAt'];
+                        createdAt = moment(createdAt).add(5, 'hours');
+                        createdAt = moment(createdAt).add(30, 'minutes');
+                        data['createdTime'] = moment(createdAt).format("DD-MMM-YYYY hh:mm a");
+                    }  
                     dataObj.push(data);
                 }
                 //});      
