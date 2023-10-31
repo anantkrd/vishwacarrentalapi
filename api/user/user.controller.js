@@ -677,7 +677,10 @@ module.exports = {
                         data['returnDate'] = moment(bookingData['returnDate']).format("DD-MMM-YYYY hh:mm a");
                     }
                     if(bookingData['createdAt']!=null && bookingData['createdAt']!=undefined){
-                        data['createdTime'] = moment(bookingData['createdAt']).format("DD-MMM-YYYY hh:mm a");
+                        let createdAt=bookingData['createdAt'];
+                        createdAt = moment(createdAt).add(5, 'hours');
+                        createdAt = moment(createdAt).add(30, 'minutes');
+                        data['createdTime'] = moment(createdAt).format("DD-MMM-YYYY hh:mm a");
                     }  
                     dataObj.push(data);
                 }
